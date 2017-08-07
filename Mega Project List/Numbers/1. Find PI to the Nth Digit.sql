@@ -5,10 +5,12 @@
 * 
 * My comment:
 * Scale in this case will be 1 and max avaliable precision will be 37. NUMBER datatype in Oracle has 38 significant digits.
-* I've added an user defined exception - no matter how big number over 38 will be passed as "precision" parameter, function will return 38 signs only.
+* I've added an user defined exception - no matter how big number over 38 will be passed as "precision" parameter, 
+* function will return 38 signs only.
 * 
 * To calculate value of pi, I'm basing on Arcsine Function/Inverse Sine Function.
-* In my case my parameter is 1, but it can be any other number between -1 and 1. This is because the Arcsin function is undefined for arguments greater than 1 or less than -1.
+* In my case my parameter is 1, but it can be any other number between -1 and 1. 
+* This is because the Arcsin function is undefined for arguments greater than 1 or less than -1.
 * 
 */
   
