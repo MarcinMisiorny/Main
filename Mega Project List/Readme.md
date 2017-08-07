@@ -1,4 +1,4 @@
-This is my repository, which contains my solutions to Mega Project List from topic: https://github.com/karan/Projects in SQL and PL/SQL.
+This is my repository, which contains my solutions to Mega Project List from repository: https://github.com/karan/Projects in SQL and PL/SQL.
 
 <br />
 Version of database used:<br />
