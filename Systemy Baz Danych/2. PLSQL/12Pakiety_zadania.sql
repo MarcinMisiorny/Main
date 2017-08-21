@@ -130,8 +130,6 @@
 			       FROM	' 
 			       || p_nazwa_relacji;
 		 
-		
-		
 		EXECUTE IMMEDIATE v_sql_stmt
 		INTO 		  n_ile_rekordow;
 	
