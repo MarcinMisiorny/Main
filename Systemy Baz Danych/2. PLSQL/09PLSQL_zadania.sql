@@ -26,8 +26,8 @@
 	
 --------------------------------------------------------
 -- 2. Do zmiennych zadeklarowanych w zadaniu 1 dodaj odpowiednio: do zmiennej v_tekst wartość
---   „Witaj, nowy dniu!”, do zmiennej v_liczba dodaj wartość 1015. Wyświetl wartości tych
---   zmiennych.
+--    „Witaj, nowy dniu!”, do zmiennej v_liczba dodaj wartość 1015. Wyświetl wartości tych
+--    zmiennych.
 
 	DECLARE
 		v_tekst VARCHAR2(20) := 'Witaj świecie!';
