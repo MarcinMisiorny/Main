@@ -24,30 +24,30 @@ CREATE OR REPLACE FUNCTION fn_pi
 RETURN NUMBER
 IS
     n_pi NUMBER;
-  ex_too_big_number EXCEPTION;
-  ex_negative_number EXCEPTION;
+    ex_too_big_number EXCEPTION;
+    ex_negative_number EXCEPTION;
 BEGIN
-  IF p_precision > 38 THEN
-    RAISE ex_too_big_number;
-  ELSIF p_precision < 0 THEN 
-    RAISE ex_negative_number;
-  END IF;
+    IF p_precision > 38 THEN
+      RAISE ex_too_big_number;
+    ELSIF p_precision < 0 THEN 
+      RAISE ex_negative_number;
+    END IF;
 
-  n_pi := ROUND(2 * (ASIN(SQRT(1 - POWER(1, 2))) + ABS(ASIN(1))), p_precision); --Arcsine Function/Inverse Sine Function, calculate pi
+    n_pi := ROUND(2 * (ASIN(SQRT(1 - POWER(1, 2))) + ABS(ASIN(1))), p_precision); --Arcsine Function/Inverse Sine Function, calculate pi
 
-  RETURN n_pi;
+    RETURN n_pi;
 EXCEPTION
-  WHEN ex_too_big_number THEN
-    RAISE_APPLICATION_ERROR(-20001,
-    'Max possible input value of parameter "precision" is 38. Value given by user: '
-    || p_precision);
-  WHEN ex_negative_number THEN
-    RAISE_APPLICATION_ERROR(-20002,
-    'Value of parameter "precision" cannot be a negative number. Value given by user: '
-    || p_precision);
-  WHEN OTHERS THEN
-    RAISE_APPLICATION_ERROR(-20999, 
-    'Generic error.');
+    WHEN ex_too_big_number THEN
+      RAISE_APPLICATION_ERROR(-20001,
+      'Max possible input value of parameter "precision" is 38. Value given by user: '
+      || p_precision);
+    WHEN ex_negative_number THEN
+      RAISE_APPLICATION_ERROR(-20002,
+      'Value of parameter "precision" cannot be a negative number. Value given by user: '
+      || p_precision);
+    WHEN OTHERS THEN
+      RAISE_APPLICATION_ERROR(-20999, 
+      'Generic error.');
 END fn_pi;
 /
 
