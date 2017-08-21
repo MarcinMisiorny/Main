@@ -1,81 +1,81 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 4. Po≥πczenia ñ zadania
+* Rozdzia≈Ç 4. Po≈ÇƒÖczenia ‚Äì zadania
 * --------------------------------------------
 * 
 * Plik z zadaniami: 04Polaczenia_zadania.pdf
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 * 
 */
 
 --------------------------------------------------------
--- 1. Wyúwietl nazwiska, etaty, numery zespo≥Ûw i nazwy zespo≥Ûw wszystkich pracownikÛw.
+-- 1. Wy≈õwietl nazwiska, etaty, numery zespo≈Ç√≥w i nazwy zespo≈Ç√≥w wszystkich pracownik√≥w.
 
 	SELECT	p.nazwisko
-			,p.etat
-			,p.id_zesp
-			,z.nazwa
+		,p.etat
+		,p.id_zesp
+		,z.nazwa
 	FROM	pracownicy p
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp); 
 
 --------------------------------------------------------
--- 2. Wyúwietl wszystkich pracownikÛw z ul. Piotrowo 3a. Uporzπdkuj wyniki wed≥ug nazwisk pracownikÛw.
+-- 2. Wy≈õwietl wszystkich pracownik√≥w z ul. Piotrowo 3a. UporzƒÖdkuj wyniki wed≈Çug nazwisk pracownik√≥w.
 
 	SELECT	p.nazwisko
-			,p.etat
-			,p.id_zesp
-			,z.adres
+		,p.etat
+		,p.id_zesp
+		,z.adres
 	FROM	pracownicy p
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp)
 	WHERE	z.adres LIKE 'PIOTROWO%'
 	ORDER BY p.nazwisko;
 
 --------------------------------------------------------
--- 3. Wyúwietl nazwiska, miejsca pracy oraz nazwy zespo≥Ûw tych pracownikÛw, ktÛrych miesiÍczna pensja
+-- 3. Wy≈õwietl nazwiska, miejsca pracy oraz nazwy zespo≈Ç√≥w tych pracownik√≥w, kt√≥rych miesiƒôczna pensja
 
 	SELECT	p.nazwisko
-			,z.adres
-			,z.nazwa
+		,z.adres
+		,z.nazwa
 	FROM	pracownicy p
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp)
 	WHERE	p.placa_pod > 400; 
 
 --------------------------------------------------------
--- 4. Dla kaødego pracownika wyúwietl jego kategoriÍ p≥acowπ i wide≥ki p≥acowe w jakich mieúci siÍ pensja
+-- 4. Dla ka≈ºdego pracownika wy≈õwietl jego kategoriƒô p≈ÇacowƒÖ i wide≈Çki p≈Çacowe w jakich mie≈õci siƒô pensja
 
 	SELECT	p.nazwisko
-			,p.placa_pod
-			,e.nazwa AS kat_plac
-			,e.placa_min
-			,e.placa_max
+		,p.placa_pod
+		,e.nazwa AS kat_plac
+		,e.placa_min
+		,e.placa_max
 	FROM	pracownicy p
 	JOIN	etaty e ON (p.placa_pod BETWEEN e.placa_min AND e.placa_max)
 	ORDER BY e.placa_min ASC; 
 
 --------------------------------------------------------
--- 5. Wyúwietl nazwiska i etaty pracownikÛw, ktÛrych rzeczywiste zarobki odpowiadajπ wide≥kom p≥acowym
+-- 5. Wy≈õwietl nazwiska i etaty pracownik√≥w, kt√≥rych rzeczywiste zarobki odpowiadajƒÖ wide≈Çkom p≈Çacowym
 
 	SELECT	p.nazwisko
-			,p.etat
-			,p.placa_pod
-			,e.nazwa
-			,e.placa_min
-			,e.placa_max
+		,p.etat
+		,p.placa_pod
+		,e.nazwa
+		,e.placa_min
+		,e.placa_max
 	FROM	pracownicy p
 	JOIN	etaty e ON (p.placa_pod BETWEEN e.placa_min AND e.placa_max)
 	WHERE	e.nazwa = 'SEKRETARKA'
 	ORDER BY e.placa_min ASC; 
 
 --------------------------------------------------------
--- 6. Wyúwietl nazwiska, etaty, wynagrodzenia, kategorie p≥acowe i nazwy zespo≥Ûw pracownikÛw nie bÍdπcych
---	  asystentami. Wyniki uszereguj zgodnie z malejπcym wynagrodzeniem.
+-- 6. Wy≈õwietl nazwiska, etaty, wynagrodzenia, kategorie p≈Çacowe i nazwy zespo≈Ç√≥w pracownik√≥w nie bƒôdƒÖcych
+--	  asystentami. Wyniki uszereguj zgodnie z malejƒÖcym wynagrodzeniem.
 
 	SELECT	p.nazwisko
-			,p.etat
-			,p.placa_pod
-			,e.nazwa
-			,z.nazwa
+		,p.etat
+		,p.placa_pod
+		,e.nazwa
+		,z.nazwa
 	FROM	pracownicy p
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp)
 	JOIN	etaty e ON (p.placa_pod BETWEEN e.placa_min AND e.placa_max)
@@ -83,80 +83,80 @@
 	ORDER BY p.placa_pod DESC; 
 
 --------------------------------------------------------
--- 7. Wyúwietl poniøsze informacje o tych pracownikach, ktÛrzy sπ asystentami lub adiunktami i ktÛrych roczne
---    dochody przekraczajπ 5500. Roczne dochody to dwunastokrotnoúÊ p≥acy podstawowej powiÍkszona o
---    ewentualnπ p≥acÍ dodatkowπ. Ostatni atrybut to nazwa kategorii p≥acowej pracownika.
+-- 7. Wy≈õwietl poni≈ºsze informacje o tych pracownikach, kt√≥rzy sƒÖ asystentami lub adiunktami i kt√≥rych roczne
+--    dochody przekraczajƒÖ 5500. Roczne dochody to dwunastokrotno≈õƒá p≈Çacy podstawowej powiƒôkszona o
+--    ewentualnƒÖ p≈Çacƒô dodatkowƒÖ. Ostatni atrybut to nazwa kategorii p≈Çacowej pracownika.
 
 	SELECT	p.nazwisko
-			p.etat
-			p.placa_pod * 12 + NVL(placa_dod, 0) AS roczna_placa,
-			z.nazwa,
-			e.nazwa
+		p.etat
+		p.placa_pod * 12 + NVL(placa_dod, 0) AS roczna_placa,
+		z.nazwa,
+		e.nazwa
 	FROM	pracownicy p
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp)
 	JOIN	etaty e ON (p.etat = e.nazwa)
 	WHERE	p.placa_pod * 12 + NVL(placa_dod, 0) > 5500
-	AND		p.etat IN ('ASYSTENT', 'ADIUNKT')
+	AND	p.etat IN ('ASYSTENT', 'ADIUNKT')
 	ORDER BY roczna_placa DESC; 
 
 --------------------------------------------------------
--- 8. Wyúwietl nazwiska i numery pracownikÛw wraz z numerami i nazwiskami ich szefÛw.
+-- 8. Wy≈õwietl nazwiska i numery pracownik√≥w wraz z numerami i nazwiskami ich szef√≥w.
 
 	SELECT	p.id_prac
-			,p.nazwisko
-			,s.id_prac
-			,s.nazwisko
+		,p.nazwisko
+		,s.id_prac
+		,s.nazwisko
 	FROM	pracownicy p
 	JOIN	pracownicy s ON (p.id_szefa = s.id_prac)
 	ORDER BY p.id_prac ASC; 
 
 --------------------------------------------------------
--- 9. Zmodyfikuj powyøsze zlecenie w ten sposÛb, aby by≥o moøliwe wyúwietlenie pracownika WEGLARZ
---    (ktÛry nie ma szefa).
+-- 9. Zmodyfikuj powy≈ºsze zlecenie w ten spos√≥b, aby by≈Ço mo≈ºliwe wy≈õwietlenie pracownika WEGLARZ
+--    (kt√≥ry nie ma szefa).
 
 	SELECT	p.id_prac
-			,p.nazwisko
-			,s.id_prac
-			,s.nazwisko
+		,p.nazwisko
+		,s.id_prac
+		,s.nazwisko
 	FROM	pracownicy p
-	LEFT JOIN	pracownicy s ON (p.id_szefa = s.id_prac)
+	LEFT JOIN  pracownicy s ON (p.id_szefa = s.id_prac)
 	ORDER BY p.id_prac ASC; 
 
 --------------------------------------------------------
--- 10. Dla kaødego zespo≥u wyúwietl liczbÍ zatrudnionych w nim pracownikÛw i ich úredniπ p≥acÍ.
+-- 10. Dla ka≈ºdego zespo≈Çu wy≈õwietl liczbƒô zatrudnionych w nim pracownik√≥w i ich ≈õredniƒÖ p≈Çacƒô.
 
 	SELECT	z.nazwa
-			,COUNT(p.id_prac) AS liczba
-			,NVL(AVG(p.placa_pod), 0) AS úrednia
+		,COUNT(p.id_prac) AS liczba
+		,NVL(AVG(p.placa_pod), 0) AS ≈õrednia
 	FROM	zespoly z
-	LEFT JOIN	pracownicy p ON (p.id_zesp = z.id_zesp)
+	LEFT JOIN  pracownicy p ON (p.id_zesp = z.id_zesp)
 	GROUP BY z.nazwa
 	ORDER BY z.nazwa; 
 
 --------------------------------------------------------
--- 11. Dla kaødego pracownika posiadajπcego podw≥adnych wyúwietl ich liczbÍ. Wyniki posortuj zgodnie z
+-- 11. Dla ka≈ºdego pracownika posiadajƒÖcego podw≈Çadnych wy≈õwietl ich liczbƒô. Wyniki posortuj zgodnie z
 
 	SELECT	s.nazwisko
-			,COUNT(*) AS liczba
+		,COUNT(*) AS liczba
 	FROM	pracownicy p
 	JOIN	pracownicy s ON (p.id_szefa = s.id_prac)
 	GROUP BY s.nazwisko
 	ORDER BY COUNT(*) DESC; 
 
 --------------------------------------------------------
--- 12. Wyúwietl nazwiska i daty zatrudnienia pracownikÛw, ktÛrzy zostali zatrudnieni nie pÛüniej niø 10 lat (3650
---	   dni) po swoich prze≥oøonych.
+-- 12. Wy≈õwietl nazwiska i daty zatrudnienia pracownik√≥w, kt√≥rzy zostali zatrudnieni nie p√≥≈∫niej ni≈º 10 lat (3650
+--	   dni) po swoich prze≈Ço≈ºonych.
 
 	SELECT	 p.nazwisko
-			,p.zatrudniony
-			,s.nazwisko
-			,s.zatrudniony
+		,p.zatrudniony
+		,s.nazwisko
+		,s.zatrudniony
 	FROM	pracownicy p
 	JOIN	pracownicy s ON (p.zatrudniony < s.zatrudniony + 3650)
-	AND		p.id_szefa = s.id_prac; 
+	AND	p.id_szefa = s.id_prac; 
 	
 --------------------------------------------------------
--- 13. Wyúwietl nazwy etatÛw, na ktÛre przyjÍto pracownikÛw zarÛwno w 1992 jak i 1993 roku.
+-- 13. Wy≈õwietl nazwy etat√≥w, na kt√≥re przyjƒôto pracownik√≥w zar√≥wno w 1992 jak i 1993 roku.
 
 	SELECT	etat
 	FROM	pracownicy
@@ -166,7 +166,7 @@
 	FROM	pracownicy WHERE EXTRACT(YEAR FROM zatrudniony) = '1993';
 								
 --------------------------------------------------------
--- 14. Wyúwietl numer zespo≥u ktÛry nie zatrudnia øadnych pracownikÛw.
+-- 14. Wy≈õwietl numer zespo≈Çu kt√≥ry nie zatrudnia ≈ºadnych pracownik√≥w.
 
 	SELECT	id_zesp
 	FROM	zespoly 
@@ -176,42 +176,42 @@
 	JOIN	zespoly z ON (p.id_zesp = z.id_zesp);
 	
 --------------------------------------------------------
--- 15. Wyúwietl poniøszy raport.
+-- 15. Wy≈õwietl poni≈ºszy raport.
 
 -- 
--- NAZWISKO			PLACA_POD	PROG
+-- NAZWISKO	   PLACA_POD	PROG
 -- --------------- ---------	---------------------
--- ZAKRZEWICZ		208			Poniøej 480 z≥otych
--- BIALY			250			Poniøej 480 z≥otych
--- MATYSIAK			371			Poniøej 480 z≥otych
--- MAREK			410,2		Poniøej 480 z≥otych
--- JEZIERSKI		439,7		Poniøej 480 z≥otych
--- HAPKE			480			Dokladnie 480 z≥otych
--- KONOPKA			480			Dokladnie 480 z≥otych
--- KOSZLAJDA		590			Powyøej 480 z≥otych
--- KROLIKOWSKI		645,5		Powyøej 480 z≥otych
--- MORZY			830			Powyøej 480 z≥otych
--- BRZEZINSKI		960			Powyøej 480 z≥otych
--- SLOWINSKI		1070		Powyøej 480 z≥otych
--- BLAZEWICZ		1350		Powyøej 480 z≥otych
--- WEGLARZ			1730		Powyøej 480 z≥otych
+-- ZAKRZEWICZ	   208		Poni≈ºej 480 z≈Çotych
+-- BIALY	   250		Poni≈ºej 480 z≈Çotych
+-- MATYSIAK	   371		Poni≈ºej 480 z≈Çotych
+-- MAREK	   410,2	Poni≈ºej 480 z≈Çotych
+-- JEZIERSKI	   439,7	Poni≈ºej 480 z≈Çotych
+-- HAPKE	   480		Dokladnie 480 z≈Çotych
+-- KONOPKA	   480		Dokladnie 480 z≈Çotych
+-- KOSZLAJDA	   590		Powy≈ºej 480 z≈Çotych
+-- KROLIKOWSKI	   645,5	Powy≈ºej 480 z≈Çotych
+-- MORZY	   830		Powy≈ºej 480 z≈Çotych
+-- BRZEZINSKI	   960		Powy≈ºej 480 z≈Çotych
+-- SLOWINSKI	   1070		Powy≈ºej 480 z≈Çotych
+-- BLAZEWICZ	   1350		Powy≈ºej 480 z≈Çotych
+-- WEGLARZ	   1730		Powy≈ºej 480 z≈Çotych
 -- 
 	
 	SELECT	nazwisko
-			,placa_pod
-			,'Powyøej 480 zotych' AS prog
+		,placa_pod
+		,'Powy≈ºej 480 zotych' AS prog
 	FROM	pracownicy
 	WHERE	placa_pod > 480
 	UNION
 	SELECT	nazwisko
-			,placa_pod
-			,'Dokadnie 480 zotych' AS prog
+		,placa_pod
+		,'Dokadnie 480 zotych' AS prog
 	FROM	pracownicy
 	WHERE	placa_pod = 480
 	UNION
 	SELECT	nazwisko
-			,placa_pod
-			,'Poniøej 480 zotych' AS prog
+		,placa_pod
+		,'Poni≈ºej 480 zotych' AS prog
 	FROM	pracownicy
 	WHERE	placa_pod < 480
 	ORDER BY placa_pod;
