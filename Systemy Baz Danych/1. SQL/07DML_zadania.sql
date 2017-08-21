@@ -1,184 +1,184 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 7. JÍzyk manipulowania danymi DML
-* ñ zadania
+* Rozdzia≈Ç 7. Jƒôzyk manipulowania danymi DML
+* ‚Äì zadania
 * --------------------------------------------
 * 
 * Plik z zadaniami: 07DML_zadania.pdf
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 *  
 */
 
 --------------------------------------------------------
--- 1. Wstaw do relacji PROJEKTY nastÍpujπce krotki
+-- 1. Wstaw do relacji PROJEKTY nastƒôpujƒÖce krotki
 
 -- 
--- atrybut				wartoúÊ					wartoúÊ
--- ID_PROJEKTU			1						2
+-- atrybut			warto≈õƒá				warto≈õƒá
+-- ID_PROJEKTU			1				2
 -- OPIS_PROJEKTU		Indeksy bitmapowe		Sieci komputerowe
 -- DATA_ROZPOCZECIA		2 kwietnia 1999 r.		12 listopada 2000 r.
 -- DATA_ZAKONCZENIA		31 sierpnia 2001 r.	
--- FUNDUSZ				25 000					19 000
+-- FUNDUSZ			25 000				19 000
 --	
 
 	INSERT INTO projekty (ID_PROJEKTU
-						 ,OPIS_PROJEKTU
-						 ,DATA_ROZPOCZECIA
-						 ,DATA_ZAKONCZENIA
-						 ,FUNDUSZ)
+			     ,OPIS_PROJEKTU
+			     ,DATA_ROZPOCZECIA
+			     ,DATA_ZAKONCZENIA
+			     ,FUNDUSZ)
 	VALUES		
-						 (1
-						 ,'Indeksy bitmapowe'
-						 ,'1999-04-02'
-						 ,'2001-08-31'
-						 ,25000);
+			     (1
+			     ,'Indeksy bitmapowe'
+			     ,'1999-04-02'
+			     ,'2001-08-31'
+			     ,25000);
 			
 	INSERT INTO projekty (ID_PROJEKTU
-						 ,OPIS_PROJEKTU
-						 ,DATA_ROZPOCZECIA 
-						 ,DATA_ZAKONCZENIA,
-						 ,FUNDUSZ)
+			     ,OPIS_PROJEKTU
+			     ,DATA_ROZPOCZECIA 
+			     ,DATA_ZAKONCZENIA,
+			     ,FUNDUSZ)
 	VALUES		
-						 (2
-						 ,'Sieci komputerowe'
-						 ,'2000-11-12'
-						 ,NULL
-						 ,19000); 
+			     (2
+			     ,'Sieci komputerowe'
+			     ,'2000-11-12'
+			     ,NULL
+			     ,19000); 
 
 --------------------------------------------------------
--- 2. Wstaw do relacji PRZYDZIALY nastÍpujπce krotki
+-- 2. Wstaw do relacji PRZYDZIALY nastƒôpujƒÖce krotki
 
 -- 
--- atrybut			wartoúÊ					wartoúÊ
--- ID_PROJEKTU		1						1
--- NR_PRACOWNIKA	170						140
+-- atrybut			warto≈õƒá				warto≈õƒá
+-- ID_PROJEKTU			1				1
+-- NR_PRACOWNIKA		170				140
 -- OD				10 kwietnia 1999 r.		1 grudnia 2000 r.
 -- DO				10 maja 1999 r.
--- STAWKA			1 000					1 500
--- ROLA				KIERUJ•CY				ANALITYK
--- GODZINY			20						40
+-- STAWKA			1 000				1 500
+-- ROLA				KIERUJƒÑCY			ANALITYK
+-- GODZINY			20				40
 -- 
 
 	INSERT INTO przydzialy  (ID_PROJEKTU
-							,NR_PRACOWNIKA
-							,OD
-							,DO
-							,STAWKA
-							,ROLA
-							,GODZINY)
+				,NR_PRACOWNIKA
+				,OD
+				,DO
+				,STAWKA
+				,ROLA
+				,GODZINY)
 	VALUES		
-							(1
-							,170
-							,'1999-04-10'
-							,'1999-05-10'
-							,1000
-							,'KIERUJ•CY'
-							,20);
+				(1
+				,170
+				,'1999-04-10'
+				,'1999-05-10'
+				,1000
+				,'KIERUJƒÑCY'
+				,20);
 			
 			
 	INSERT INTO przydzialy  (ID_PROJEKTU
-							,NR_PRACOWNIKA
-							,OD
-							,DO
-							,STAWKA
-							,ROLA
-							,GODZINY)
+				,NR_PRACOWNIKA
+				,OD
+				,DO
+				,STAWKA
+				,ROLA
+				,GODZINY)
 	VALUES		
-							(1
-							,140
-							,'2000-12-01'
-							,NULL
-							,1500
-							,'ANALITYK'
-							,40); 
+				(1
+				,140
+				,'2000-12-01'
+				,NULL
+				,1500
+				,'ANALITYK'
+				,40); 
 
 --------------------------------------------------------		
--- 3. Podnieú stawkÍ pracownika o numerze 170 do 1200 z≥otych (relacja PRZYDZIALY).
+-- 3. Podnie≈õ stawkƒô pracownika o numerze 170 do 1200 z≈Çotych (relacja PRZYDZIALY).
 	
 	UPDATE	przydzialy
-	SET		stawka = 1200
+	SET	stawka = 1200
 	WHERE	nr_pracownika = 170; 
 	
 --------------------------------------------------------
--- 4. ZmieÒ datÍ zakoÒczenia projektu ëIndeksy bitmapoweí na 31 grudnia 2001 r. i zmniejsz
---	  fundusz tego projektu do 19000 z≥otych.
+-- 4. Zmie≈Ñ datƒô zako≈Ñczenia projektu ‚ÄòIndeksy bitmapowe‚Äô na 31 grudnia 2001 r. i zmniejsz
+--	  fundusz tego projektu do 19000 z≈Çotych.
 
 	UPDATE	projekty
-	SET		data_zakonczenia = '2001-12-31'
-			,fundusz = 19000 
+	SET	data_zakonczenia = '2001-12-31'
+		,fundusz = 19000 
 	WHERE opis_projektu = 'Indeksy bitmapowe'; 
 		
 --------------------------------------------------------	  
--- 5. Wstaw dwie propozycje w≥asnych projektÛw.
+-- 5. Wstaw dwie propozycje w≈Çasnych projekt√≥w.
 
 	INSERT INTO projekty (ID_PROJEKTU
-						 ,OPIS_PROJEKTU
-						 ,DATA_ROZPOCZECIA
-						 ,DATA_ZAKONCZENIA
-						 ,FUNDUSZ)
+			     ,OPIS_PROJEKTU
+			     ,DATA_ROZPOCZECIA
+			     ,DATA_ZAKONCZENIA
+			     ,FUNDUSZ)
 	VALUES		
-						 (3
-						 ,'BIG DATA'
-						 ,'2011-11-02'
-						 ,'2014-12-31'
-						 ,36000);
+			     (3
+			     ,'BIG DATA'
+			     ,'2011-11-02'
+			     ,'2014-12-31'
+			     ,36000);
 			
 	INSERT INTO projekty (ID_PROJEKTU
-						 ,OPIS_PROJEKTU
-						 ,DATA_ROZPOCZECIA
-						 ,DATA_ZAKONCZENIA
-						 ,FUNDUSZ)
+			     ,OPIS_PROJEKTU
+			     ,DATA_ROZPOCZECIA
+			     ,DATA_ZAKONCZENIA
+			     ,FUNDUSZ)
 	VALUES		
-						 (4
-						 ,'eWnioski'
-						 ,'2015-04-02'
-						 ,'2015-06-20'
-						 ,9999);
+			     (4
+			     ,'eWnioski'
+			     ,'2015-04-02'
+			     ,'2015-06-20'
+			     ,9999);
 
 --------------------------------------------------------
--- 6. UsuÒ informacje o projektach do ktÛrych nie przydzielono øadnych pracownikÛw.
+-- 6. Usu≈Ñ informacje o projektach do kt√≥rych nie przydzielono ≈ºadnych pracownik√≥w.
 	
 	DELETE
 	FROM	projekty p
-	WHERE NOT EXISTS (SELECT	id_projektu
-					  FROM		przydzialy
-					  WHERE		id_projektu = p.id_projektu);
+	WHERE NOT EXISTS (SELECT  id_projektu
+			  FROM	  przydzialy
+			  WHERE	  id_projektu = p.id_projektu);
 	 
 --------------------------------------------------------	 
--- 7. Wszystkim pracownikom podnieú p≥acÍ podstawowπ o 10% úredniej p≥acy podstawowej
---	  w ich zespole (relacja PRACOWNICY).
+-- 7. Wszystkim pracownikom podnie≈õ p≈Çacƒô podstawowƒÖ o 10% ≈õredniej p≈Çacy podstawowej
+--    w ich zespole (relacja PRACOWNICY).
 
 	UPDATE	pracownicy p
-	SET		p.placa_pod = p.placa_pod + (SELECT AVG(placa_pod) * 0.1
-										 FROM	pracownicy
-										 WHERE	p.id_zesp = id_zesp);
+	SET	p.placa_pod = p.placa_pod + (SELECT  AVG(placa_pod) * 0.1
+					     FROM    pracownicy
+					     WHERE   p.id_zesp = id_zesp);
 
 --------------------------------------------------------
---8. Podnieú do úredniej pracowniczej p≥acÍ podstawowπ najmniej zarabiajπcym pracownikom.
+--8. Podnie≈õ do ≈õredniej pracowniczej p≈Çacƒô podstawowƒÖ najmniej zarabiajƒÖcym pracownikom.
 	
 	UPDATE	pracownicy
-	SET		placa_pod = (SELECT ROUND(AVG(placa_pod), 2)
-						 FROM	pracownicy)
-	WHERE	placa_pod = (SELECT	MIN(placa_pod)
-						 FROM	pracownicy); 
+	SET	placa_pod = (SELECT  ROUND(AVG(placa_pod), 2)
+			     FROM    pracownicy)
+	WHERE	placa_pod = (SELECT  MIN(placa_pod)
+			     FROM    pracownicy); 
 		
 --------------------------------------------------------	 
--- 9. Uaktualnij p≥ace dodatkowe pracownikÛw zespo≥u 20. Nowe p≥ace dodatkowe majπ byÊ
---	  rÛwne úredniej p≥acy podstawowej pracownikÛw, ktÛrych prze≥oøonym jest prof. Morzy.
+-- 9. Uaktualnij p≈Çace dodatkowe pracownik√≥w zespo≈Çu 20. Nowe p≈Çace dodatkowe majƒÖ byƒá
+--    r√≥wne ≈õredniej p≈Çacy podstawowej pracownik√≥w, kt√≥rych prze≈Ço≈ºonym jest prof. Morzy.
 
 	UPDATE	pracownicy
-	SET		placa_dod = (SELECT AVG(p.placa_pod)
-						 FROM	pracownicy p
-						 WHERE	p.id_szefa = (SELECT id_prac
-											  FROM	 pracownicy
-											  WHERE  id_prac = p.id_szefa
-											  AND	 nazwisko = 'MORZY')) 
+	SET	placa_dod = (SELECT  AVG(p.placa_pod)
+			     FROM    pracownicy p
+			     WHERE   p.id_szefa = (SELECT  id_prac
+						   FROM	   pracownicy
+						   WHERE   id_prac = p.id_szefa
+						   AND	   nazwisko = 'MORZY')) 
 	WHERE id_zesp = 20;
 	
 -------------------------------------------------------- 
--- 10. Pracownikom zespo≥u o nazwie SYSTEMY ROZPROSZONE daj 25% podwyøkÍ (p≥aca
---	   podstawowa). Zastosuj modyfikacjÍ po≥πczenia.
+-- 10. Pracownikom zespo≈Çu o nazwie SYSTEMY ROZPROSZONE daj 25% podwy≈ºkƒô (p≈Çaca
+--     podstawowa). Zastosuj modyfikacjƒô po≈ÇƒÖczenia.
 
 	UPDATE (SELECT	p.placa_pod
 			FROM	pracownicy p
@@ -187,24 +187,24 @@
 	SET		placa_pod = placa_pod + 0.25 * placa_pod;
 
 -------------------------------------------------------- 
--- 11. UsuÒ bezpoúrednich podw≥adnych pracownika o nazwisku Morzy. Zastosuj usuwanie
---	   krotek z wyniku po≥πczenia relacji.
+-- 11. Usu≈Ñ bezpo≈õrednich podw≈Çadnych pracownika o nazwisku Morzy. Zastosuj usuwanie
+--     krotek z wyniku po≈ÇƒÖczenia relacji.
 
 	DELETE
-	FROM (SELECT	p.nazwisko AS pracownik
-					,e.nazwisko AS szef
-		  FROM		pracownicy p
-		  JOIN		pracownicy e ON (e.id_prac = p.id_szefa)
-		  WHERE		e.nazwisko = 'MORZY'); 
+	FROM (SELECT  p.nazwisko AS pracownik
+		      ,e.nazwisko AS szef
+	      FROM    pracownicy p
+	      JOIN    pracownicy e ON (e.id_prac = p.id_szefa)
+	      WHERE   e.nazwisko = 'MORZY'); 
 	 
 --------------------------------------------------------	 
--- 12. Wyúwietl aktualnπ zawartoúÊ relacji PRACOWNICY.
+-- 12. Wy≈õwietl aktualnƒÖ zawarto≈õƒá relacji PRACOWNICY.
 
 	SELECT	*
 	FROM	pracownicy; 
   
 --------------------------------------------------------  
--- 13. UtwÛrz sekwencjÍ MYSEQ rozpoczynajπcπ siÍ od 300 i zwiÍkszajπcπ siÍ w kaødym kroku o 10.
+-- 13. Utw√≥rz sekwencjƒô MYSEQ rozpoczynajƒÖcƒÖ siƒô od 300 i zwiƒôkszajƒÖcƒÖ siƒô w ka≈ºdym kroku o 10.
 
 	CREATE SEQUENCE myseq
 	START WITH 300 
@@ -212,45 +212,45 @@
 	NOMAXVALUE; 
 	
 --------------------------------------------------------  
--- 14. Wykorzystaj utworzonπ sekwencjÍ do wstawienia nowego staøysty o nazwisku
---	   TrπbczyÒski do relacji Pracownicy.
+-- 14. Wykorzystaj utworzonƒÖ sekwencjƒô do wstawienia nowego sta≈ºysty o nazwisku
+--     TrƒÖbczy≈Ñski do relacji Pracownicy.
 	
 	INSERT INTO pracownicy  (ID_PRAC
-							,NAZWISKO
-							,ETAT
-							,ID_SZEFA
-							,ZATRUDNIONY
-							,PLACA_POD
-							,PLACA_DOD
-							,ID_ZESP)
+				,NAZWISKO
+				,ETAT
+				,ID_SZEFA
+				,ZATRUDNIONY
+				,PLACA_POD
+				,PLACA_DOD
+				,ID_ZESP)
 	VALUES		
-							(myseq.NEXTVAL
-							,'TRABCZYNSKI'
-							,'STAZYSTA'
-							,130
-							,'2015-11-21'
-							,1000
-							,NULL
-							,30);
+				(myseq.NEXTVAL
+				,'TRABCZYNSKI'
+				,'STAZYSTA'
+				,130
+				,'2015-11-21'
+				,1000
+				,NULL
+				,30);
 
 --------------------------------------------------------
--- 15. Zmodyfikuj pracownikowi TrπbczyÒskiemu p≥acÍ dodatkowπ na wartoúÊ wskazywanπ
---	   przez sekwencjÍ.
+-- 15. Zmodyfikuj pracownikowi TrƒÖbczy≈Ñskiemu p≈Çacƒô dodatkowƒÖ na warto≈õƒá wskazywanƒÖ
+--     przez sekwencjƒô.
 	
 	UPDATE	pracownicy
-	SET		placa_dod = myseq.NEXTVAL
+	SET	placa_dod = myseq.NEXTVAL
 	WHERE	id_prac = 300;
  
 -------------------------------------------------------- 
--- 16. UsuÒ pracownika o nazwisku TrπbczyÒski.
+-- 16. Usu≈Ñ pracownika o nazwisku TrƒÖbczy≈Ñski.
 	
 	DELETE
 	FROM	pracownicy 
 	WHERE	id_prac = 300; 
 	
 -------------------------------------------------------- 
--- 17. StwÛrz nowπ sekwencjÍ o niskiej wartoúci maksymalnej. Zaobserwuj, co siÍ dzieje, gdy
---	   nastÍpuje Ñprzepe≥nienieî sekwencji.
+-- 17. Stw√≥rz nowƒÖ sekwencjƒô o niskiej warto≈õci maksymalnej. Zaobserwuj, co siƒô dzieje, gdy
+--     nastƒôpuje ‚Äûprzepe≈Çnienie‚Äù sekwencji.
 
 	CREATE SEQUENCE myseqtest
 	START WITH 1 
