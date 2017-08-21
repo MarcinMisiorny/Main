@@ -122,9 +122,15 @@
 		v_sql_stmt VARCHAR2(100);
 		n_ile_rekordow NUMBER;
 	BEGIN
+		-- UWAGA! Nie można tu zastosować 'SELECT COUNT(*) FROM :nazwa_relacji',
+		-- ponieważ spowoduje to ORA-00903: invalid table name
+		-- Tips: Identifiers (table names, column names and so forth) cannot be bound. 
+		
 		v_sql_stmt := 'SELECT	COUNT(*)
 			       FROM	' 
 			       || p_nazwa_relacji;
+		 
+		
 		
 		EXECUTE IMMEDIATE v_sql_stmt
 		INTO 		  n_ile_rekordow;
