@@ -33,3 +33,4 @@ FROM   dual;
 
 /* Query result: */
 1346269
+
