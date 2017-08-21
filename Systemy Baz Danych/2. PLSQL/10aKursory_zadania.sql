@@ -1,24 +1,24 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 10a. Kursory ñ zadania
+* Rozdzia≈Ç 10a. Kursory ‚Äì zadania
 * --------------------------------------------
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 * 
 * Plik z zadaniami: 10aKursory_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siÍ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siƒô do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Zdefiniuj kursor zawierajπcy nazwiska i daty zatrudnienia wszystkich asystentÛw. Pos≥uø siÍ
---	  tym kursorem do wyúwietlenia nastÍpujπcych informacji (wykorzystaj polecenia OPEN-FETCH-CLOSE).
+-- 1. Zdefiniuj kursor zawierajƒÖcy nazwiska i daty zatrudnienia wszystkich asystent√≥w. Pos≈Çu≈º siƒô
+--    tym kursorem do wy≈õwietlenia nastƒôpujƒÖcych informacji (wykorzystaj polecenia OPEN-FETCH-CLOSE).
 
 	DECLARE
 		CURSOR c_pracownicy IS
 		SELECT	nazwisko
-				,zatrudniony
+			,zatrudniony
 		FROM	pracownicy
 		WHERE	etat = 'ASYSTENT'
 		ORDER BY zatrudniony;
@@ -38,8 +38,8 @@
 	/
 
 --------------------------------------------------------
--- 2. Zdefiniuj kursor, dziÍki ktÛremu bÍdzie moøna wyúwietliÊ 3 najlepiej zarabiajπcych
---	  pracownikÛw. Pos≥uø siÍ atrybutem kursora %ROWCOUNT.
+-- 2. Zdefiniuj kursor, dziƒôki kt√≥remu bƒôdzie mo≈ºna wy≈õwietliƒá 3 najlepiej zarabiajƒÖcych
+--    pracownik√≥w. Pos≈Çu≈º siƒô atrybutem kursora %ROWCOUNT.
 	
 	DECLARE
 		CURSOR c_zarobki_prac IS
@@ -62,10 +62,10 @@
 	/
 
 --------------------------------------------------------
--- 3. Zbuduj kursor, ktÛry pozwoli Ci zwiÍkszyÊ o 20% p≥acÍ podstawowπ pracownikÛw
---	  zatrudnionych w poniedzia≥ek. Pos≥uø siÍ pÍtlπ FOR z kursorem.
+-- 3. Zbuduj kursor, kt√≥ry pozwoli Ci zwiƒôkszyƒá o 20% p≈Çacƒô podstawowƒÖ pracownik√≥w
+--    zatrudnionych w poniedzia≈Çek. Pos≈Çu≈º siƒô pƒôtlƒÖ FOR z kursorem.
 	
-	ALTER SESSION SET NLS_TERRITORY = 'POLAND'; --zmiana parametrÛw sesji, aby poniedzia≥ek by≥ pierwszym dniem tygodnia
+	ALTER SESSION SET NLS_TERRITORY = 'POLAND'; --zmiana parametr√≥w sesji, aby poniedzia≈Çek by≈Ç pierwszym dniem tygodnia
 	
 	DECLARE
 		CURSOR c_podwyzka IS
@@ -83,15 +83,15 @@
 	/
 
 --------------------------------------------------------
--- 4. Zdefiniuj kursor, ktÛry pos≥uøy do dokonania nastÍpujπcej modyfikacji: pracownikom zespo≥u
---	  ALGORYTMY podnieú p≥acÍ dodatkowπ o 100 z≥otych, pracownikom zespo≥u
---	  ADMINISTRACJA podnieú p≥acÍ dodatkowπ o 150 z≥otych a w pozosta≥ych zespo≥ach usuÒ
---	  staøystÛw.
+-- 4. Zdefiniuj kursor, kt√≥ry pos≈Çu≈ºy do dokonania nastƒôpujƒÖcej modyfikacji: pracownikom zespo≈Çu
+--    ALGORYTMY podnie≈õ p≈Çacƒô dodatkowƒÖ o 100 z≈Çotych, pracownikom zespo≈Çu
+--    ADMINISTRACJA podnie≈õ p≈Çacƒô dodatkowƒÖ o 150 z≈Çotych a w pozosta≈Çych zespo≈Çach usu≈Ñ
+--    sta≈ºyst√≥w.
 
 	DECLARE
 		CURSOR c_modyfikacje IS
 		SELECT	p.etat AS etat
-				,z.nazwa AS nazwa_zespolu
+			,z.nazwa AS nazwa_zespolu
 		FROM	pracownicy p
 		JOIN	zespoly z ON (p.id_zesp = z.id_zesp)
 		FOR UPDATE;
@@ -99,11 +99,11 @@
 		FOR i IN c_modyfikacje LOOP
 			IF i.nazwa_zespolu = 'ALGORYTMY' THEN
 				UPDATE	pracownicy
-				SET		placa_dod = NVL(placa_dod, 0) + 100
+				SET	placa_dod = NVL(placa_dod, 0) + 100
 				WHERE	CURRENT OF c_modyfikacje;
 			ELSIF i.nazwa_zespolu = 'ADMINISTRACJA' THEN
 				UPDATE	pracownicy
-				SET		placa_dod = NVL(placa_dod, 0) + 150
+				SET	placa_dod = NVL(placa_dod, 0) + 150
 				WHERE	CURRENT OF c_modyfikacje; 
 			ELSIF i.nazwa_zespolu NOT IN ('ALGORYTMY', 'ADMINISTRACJA') 
 				AND i.etat = 'STAZYSTA' THEN
@@ -115,13 +115,13 @@
 	/
 
 --------------------------------------------------------
--- 5. Napisz program, ktÛry zapyta uøytkownika o øπdany etat a nastÍpnie wyúwietli nazwiska
---	  wszystkich pracownikÛw posiadajπcych dany etat. Zastosuj pÍtlÍ FOR z kursorem
---	  sparametryzowanym.
+-- 5. Napisz program, kt√≥ry zapyta u≈ºytkownika o ≈ºƒÖdany etat a nastƒôpnie wy≈õwietli nazwiska
+--    wszystkich pracownik√≥w posiadajƒÖcych dany etat. Zastosuj pƒôtlƒô FOR z kursorem
+--    sparametryzowanym.
 	
 	DECLARE
 		CURSOR c_wypisz_pracownikow (p_etat VARCHAR2) IS
-		SELECT	nazwisko
+		SELECT  nazwisko
 		FROM	pracownicy 
 		WHERE	etat = p_etat
 		ORDER BY nazwisko;
@@ -137,49 +137,49 @@
 	/
 
 --------------------------------------------------------
--- 6. Napisz program, ktÛry wyúwietli na ekranie zestawienie pracownikÛw wg etatÛw w
---	  nastÍpujπcym formacie:
+-- 6. Napisz program, kt√≥ry wy≈õwietli na ekranie zestawienie pracownik√≥w wg etat√≥w w
+--    nastƒôpujƒÖcym formacie:
 
---	  Etat: <nazwa etatu>
---	  <lp> <nazwisko_pracownika>, pensja: <p≥aca podstawowa + p≥aca dodatkowa>
---	  Ö
---	  Liczba pracownikÛw: <liczba pracownikÛw na danym etacie>
---	  årednia p≥aca na etacie: <úrednia p≥aca pracownikÛw na etacie>
---	  Ö
---	  Jeúli na etacie nie ma øadnych pracownikÛw, w miejsce úredniej pensji powinien pojawiÊ siÍ
---	  napis Ñbrakî. Przyk≥adowy wynik dzia≥ania programu:
---	  Etat: ADIUNKT
---	  1 KOSZLAJDA, pensja: 590,00
---	  2 KROLIKOWSKI, pensja: 645,50
---	  Liczba pracownikÛw: 2
---	  årednia pensja: 617,75
---	  Etat: ASYSTENT
---	  1 HAPKE, pensja: 570,00
---	  2 JEZIERSKI, pensja: 520,20
---	  3 KONOPKA, pensja: 480,00
---	  Liczba pracownikÛw: 3
---	  årednia pensja: 523,40
---	  Etat: DYREKTOR
---	  1 WEGLARZ, pensja: 2 150,50
---	  Liczba pracownikÛw: 1
---	  årednia pensja: 2 150,50
---	  Etat: PROFESOR
---	  1 BLAZEWICZ, pensja: 1 560,00
---	  2 BRZEZINSKI, pensja: 960,00
---	  3 SLOWINSKI, pensja: 1 070,00
---	  Liczba pracownikÛw: 3
---	  årednia pensja: 1 196,67
---	  Etat: SEKRETARKA
---	  1 MAREK, pensja: 410,20
---	  Liczba pracownikÛw: 1
---	  årednia pensja: 410,20
---	  Etat: STAZYSTA
---	  1 BIALY, pensja: 420,60
---	  Liczba pracownikÛw: 1
---	  årednia pensja: 420,60
+--    Etat: <nazwa etatu>
+--    <lp> <nazwisko_pracownika>, pensja: <p≈Çaca podstawowa + p≈Çaca dodatkowa>
+--    ‚Ä¶
+--    Liczba pracownik√≥w: <liczba pracownik√≥w na danym etacie>
+--    ≈örednia p≈Çaca na etacie: <≈õrednia p≈Çaca pracownik√≥w na etacie>
+--    ‚Ä¶
+--    Je≈õli na etacie nie ma ≈ºadnych pracownik√≥w, w miejsce ≈õredniej pensji powinien pojawiƒá siƒô
+--    napis ‚Äûbrak‚Äù. Przyk≈Çadowy wynik dzia≈Çania programu:
+--    Etat: ADIUNKT
+--    1 KOSZLAJDA, pensja: 590,00
+--    2 KROLIKOWSKI, pensja: 645,50
+--    Liczba pracownik√≥w: 2
+--    ≈örednia pensja: 617,75
+--    Etat: ASYSTENT
+--    1 HAPKE, pensja: 570,00
+--    2 JEZIERSKI, pensja: 520,20
+--    3 KONOPKA, pensja: 480,00
+--    Liczba pracownik√≥w: 3
+--    ≈örednia pensja: 523,40
+--    Etat: DYREKTOR
+--    1 WEGLARZ, pensja: 2 150,50
+--    Liczba pracownik√≥w: 1
+--    ≈örednia pensja: 2 150,50
+--    Etat: PROFESOR
+--    1 BLAZEWICZ, pensja: 1 560,00
+--    2 BRZEZINSKI, pensja: 960,00
+--    3 SLOWINSKI, pensja: 1 070,00
+--    Liczba pracownik√≥w: 3
+--    ≈örednia pensja: 1 196,67
+--    Etat: SEKRETARKA
+--    1 MAREK, pensja: 410,20
+--    Liczba pracownik√≥w: 1
+--    ≈örednia pensja: 410,20
+--    Etat: STAZYSTA
+--    1 BIALY, pensja: 420,60
+--    Liczba pracownik√≥w: 1
+--    ≈örednia pensja: 420,60
 
---	  W rozwiπzaniu pos≥uø siÍ dwoma kursorami: jednym na relacji ETATY, drugim na relacji
---	  PRACOWNICY. Drugi kursor ma byÊ kursorem sparametryzowanym.
+--    W rozwiƒÖzaniu pos≈Çu≈º siƒô dwoma kursorami: jednym na relacji ETATY, drugim na relacji
+--    PRACOWNICY. Drugi kursor ma byƒá kursorem sparametryzowanym.
 	
 	DECLARE
 		CURSOR c_etaty IS
@@ -189,12 +189,12 @@
 		
 		CURSOR c_pensje_pracownikow(p_etat VARCHAR2) IS
 		SELECT	ROWNUM AS lp
-				,osoba.*
-		FROM	(SELECT nazwisko
-						,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja
-				FROM	pracownicy
-				WHERE	etat = p_etat
-				ORDER BY nazwisko) osoba;
+			,osoba.*
+		FROM	(SELECT  nazwisko
+				 ,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja
+			 FROM	 pracownicy
+			 WHERE	 etat = p_etat
+			 ORDER BY nazwisko) osoba;
 		
 		v_srednia_pensja VARCHAR2(10);
 		n_liczba_osob NUMBER;
@@ -207,32 +207,32 @@
 			END LOOP;
 		
 			SELECT	COUNT(*)
-					,TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak'))
+				,TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak'))
 			INTO	n_liczba_osob
-					,v_srednia_pensja
+				,v_srednia_pensja
 			FROM	pracownicy 
 			WHERE	etat = i.nazwa;
 		
-			DBMS_OUTPUT.PUT_LINE('Liczba pracownikÛw: ' || n_liczba_osob);
-			DBMS_OUTPUT.PUT_LINE('årednia pensja: ' || v_srednia_pensja);
+			DBMS_OUTPUT.PUT_LINE('Liczba pracownik√≥w: ' || n_liczba_osob);
+			DBMS_OUTPUT.PUT_LINE('≈örednia pensja: ' || v_srednia_pensja);
 			DBMS_OUTPUT.NEW_LINE;
 		END LOOP;
 	END;
 
 --------------------------------------------------------
--- 7. Zaprojektuj program, w ktÛrym wykorzystasz zmiennπ kursorowπ s≥abo typowanπ. Program ma
---	  znaleüÊ zespÛ≥, ktÛrego pracownicy majπ sumarycznie najd≥uøszy staø pracy (pierwsze uøycie
---	  zmiennej kursorowej), wypisaÊ nazwÍ znalezionego zespo≥u, a nastÍpnie listÍ pracownikÛw tego
---	  zespo≥u, dla kaødego pracownika program ma podaÊ staø pracy w latach i miesiπcach (drugie
---	  uøycie zmiennej kursorowej). 
+-- 7. Zaprojektuj program, w kt√≥rym wykorzystasz zmiennƒÖ kursorowƒÖ s≈Çabo typowanƒÖ. Program ma
+--    znale≈∫ƒá zesp√≥≈Ç, kt√≥rego pracownicy majƒÖ sumarycznie najd≈Çu≈ºszy sta≈º pracy (pierwsze u≈ºycie
+--    zmiennej kursorowej), wypisaƒá nazwƒô znalezionego zespo≈Çu, a nastƒôpnie listƒô pracownik√≥w tego
+--    zespo≈Çu, dla ka≈ºdego pracownika program ma podaƒá sta≈º pracy w latach i miesiƒÖcach (drugie
+--    u≈ºycie zmiennej kursorowej). 
 
---	  Przyk≥adowy wynik dzia≥ania programu:
---	  ZespÛ≥ z najd≥uøszym staøem: SYSTEMY ROZPROSZONE
---	  BRZEZINSKI, staø: lat: 44, miesiÍcy: 7
---	  JEZIERSKI, staø: lat: 20, miesiÍcy: 4
---	  KONOPKA, staø: lat: 19, miesiÍcy: 4
---	  KOSZLAJDA, staø: lat: 27, miesiÍcy: 11
---	  KROLIKOWSKI, staø: lat: 35, miesiÍcy: 5
+--    Przyk≈Çadowy wynik dzia≈Çania programu:
+--    Zesp√≥≈Ç z najd≈Çu≈ºszym sta≈ºem: SYSTEMY ROZPROSZONE
+--    BRZEZINSKI, sta≈º: lat: 44, miesiƒôcy: 7
+--    JEZIERSKI, sta≈º: lat: 20, miesiƒôcy: 4
+--    KONOPKA, sta≈º: lat: 19, miesiƒôcy: 4
+--    KOSZLAJDA, sta≈º: lat: 27, miesiƒôcy: 11
+--    KROLIKOWSKI, sta≈º: lat: 35, miesiƒôcy: 5
 
 	
 	DECLARE	
@@ -244,63 +244,63 @@
 		n_lata NUMBER;	
 		n_miesiace NUMBER;	
 	BEGIN
-		OPEN c_ref_cur FOR SELECT	nazwa	
-						   FROM		(SELECT	z.nazwa	
-											,SUM(TRUNC(SYSDATE) - zatrudniony) AS sumaryczny_staz --w dniach	
-									FROM	pracownicy p	
-									JOIN	zespoly z ON (p.id_zesp = z.id_zesp)	
-									GROUP BY z.nazwa	
-									ORDER BY sumaryczny_staz DESC	
-									FETCH FIRST 1 ROW ONLY) zespolowy_najwyzszy_staz;
+		OPEN c_ref_cur FOR SELECT  nazwa	
+				   FROM	   (SELECT  z.nazwa	
+						    ,SUM(TRUNC(SYSDATE) - zatrudniony) AS sumaryczny_staz --w dniach	
+					    FROM    pracownicy p	
+					    JOIN    zespoly z ON (p.id_zesp = z.id_zesp)	
+					    GROUP BY z.nazwa	
+					    ORDER BY sumaryczny_staz DESC	
+					    FETCH FIRST 1 ROW ONLY) zespolowy_najwyzszy_staz;
 		
 		FETCH	c_ref_cur	
 		INTO	v_nazwa;
 	
-		DBMS_OUTPUT.PUT_LINE('ZespÛ≥ z najd≥uøszym staøem: ' || v_nazwa);
+		DBMS_OUTPUT.PUT_LINE('Zesp√≥≈Ç z najd≈Çu≈ºszym sta≈ºem: ' || v_nazwa);
 
-		OPEN c_ref_cur FOR SELECT	p.nazwisko	
-									,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony)/12) AS lata	
-									,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) -	
-									(TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) / 12) * 12)) AS miesiace	
-						   FROM		pracownicy p	
-						   JOIN		zespoly z ON (p.id_zesp = z.id_zesp)	
-						   WHERE	z.nazwa = v_nazwa	
-						   ORDER BY p.nazwisko;
+		OPEN c_ref_cur FOR SELECT  p.nazwisko	
+					   ,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony)/12) AS lata	
+					   ,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) -	
+					   (TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) / 12) * 12)) AS miesiace	
+				   FROM	   pracownicy p	
+				   JOIN	   zespoly z ON (p.id_zesp = z.id_zesp)	
+				   WHERE   z.nazwa = v_nazwa	
+				   ORDER BY p.nazwisko;
 			
 		LOOP	
 			FETCH	c_ref_cur	
 			INTO	v_nazwisko	
-					,n_lata	
-					,n_miesiace;		
+				,n_lata	
+				,n_miesiace;		
 	
 			EXIT WHEN c_ref_cur%NOTFOUND;			
 	
-			DBMS_OUTPUT.PUT_LINE(v_nazwisko || ', staø: lat: ' || n_lata || ', miesiÍcy: ' || n_miesiace);					
+			DBMS_OUTPUT.PUT_LINE(v_nazwisko || ', sta≈º: lat: ' || n_lata || ', miesiƒôcy: ' || n_miesiace);					
 		END LOOP;	
 	END;
 	/
 
 --------------------------------------------------------
--- 8. SprÛbuj rozwiπzaÊ zadanie 6. stosujπc wyraøenie CURSOR.
+-- 8. Spr√≥buj rozwiƒÖzaƒá zadanie 6. stosujƒÖc wyra≈ºenie CURSOR.
 
-	--wersja z podzapytaniami w klauzuli SELECT obliczajπcymi liczbÍ pracownikÛw na etacie i úredniπ pensjÍ na etacie
+	--wersja z podzapytaniami w klauzuli SELECT obliczajƒÖcymi liczbƒô pracownik√≥w na etacie i ≈õredniƒÖ pensjƒô na etacie
 	DECLARE
 		TYPE t_ref_pracownicy IS REF CURSOR;
 		c_ref_pracownicy t_ref_pracownicy;
 		
 		CURSOR c_raport IS
 		SELECT	e.nazwa
-				,CURSOR(SELECT	nazwisko
-								,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja 
-						FROM	pracownicy
-						WHERE	etat = e.nazwa
-						ORDER BY nazwisko) AS pracownik 
-				,(SELECT	COUNT(*)
-				  FROM		pracownicy
-				  WHERE		etat = e.nazwa) AS ilu_pracownikow
-				,(SELECT	TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak')) AS srednia_pensja
-				  FROM		pracownicy
-				  WHERE		etat = e.nazwa) AS srednia_pensja 
+			,CURSOR(SELECT	nazwisko
+					,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja 
+				FROM	pracownicy
+				WHERE	etat = e.nazwa
+				ORDER BY nazwisko) AS pracownik 
+			,(SELECT  COUNT(*)
+			  FROM	  pracownicy
+			  WHERE	  etat = e.nazwa) AS ilu_pracownikow
+			,(SELECT  TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak')) AS srednia_pensja
+			  FROM	  pracownicy
+			  WHERE	  etat = e.nazwa) AS srednia_pensja 
 		FROM	etaty e
 		ORDER BY e.nazwa; 
 		
@@ -315,9 +315,9 @@
 		LOOP
 			FETCH	c_raport
 			INTO	v_nazwa
-					,c_ref_pracownicy
-					,n_liczba_osob
-					,v_srednia_pensja;
+				,c_ref_pracownicy
+				,n_liczba_osob
+				,v_srednia_pensja;
 			
 			EXIT WHEN c_raport%NOTFOUND;
 			
@@ -332,14 +332,14 @@
 					DBMS_OUTPUT.PUT_LINE(c_ref_pracownicy%ROWCOUNT || ' ' || v_nazwisko || ', pensja: ' || v_pensja);
 				END LOOP;
 		
-			DBMS_OUTPUT.PUT_LINE('Liczba pracownikÛw: ' || n_liczba_osob);
-			DBMS_OUTPUT.PUT_LINE('årednia pensja: ' || v_srednia_pensja);
+			DBMS_OUTPUT.PUT_LINE('Liczba pracownik√≥w: ' || n_liczba_osob);
+			DBMS_OUTPUT.PUT_LINE('≈örednia pensja: ' || v_srednia_pensja);
 			DBMS_OUTPUT.NEW_LINE;
 		END LOOP;
 	END;
 	/
 
-	-- wersja tylko z wyraøeniem CURSOR	
+	-- wersja tylko z wyra≈ºeniem CURSOR	
 	DECLARE
 		TYPE t_ref_pracownicy IS REF CURSOR;
 		c_ref_pracownicy t_ref_pracownicy;
@@ -348,17 +348,17 @@
 		
 		CURSOR c_raport IS
 		SELECT	e.nazwa
-				,CURSOR(SELECT	nazwisko
-								,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja 
-						FROM	pracownicy
-						WHERE	etat = e.nazwa
-						ORDER BY nazwisko) AS pracownik 
-				,CURSOR(SELECT	COUNT(*)
-						FROM	pracownicy
-						WHERE	etat = e.nazwa) AS ilu_pracownikow
-				,CURSOR(SELECT	TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak')) AS srednia_pensja
-						FROM	pracownicy
-						WHERE	etat = e.nazwa) AS srednia_pensja 
+			,CURSOR(SELECT	nazwisko
+					,TRIM(TO_CHAR(placa_pod + NVL(placa_dod, 0), '999G999D99')) AS pensja 
+				FROM	pracownicy
+				WHERE	etat = e.nazwa
+				ORDER BY nazwisko) AS pracownik 
+			,CURSOR(SELECT	COUNT(*)
+				FROM	pracownicy
+				WHERE	etat = e.nazwa) AS ilu_pracownikow
+			,CURSOR(SELECT	TRIM(NVL(TO_CHAR(AVG(placa_pod + NVL(placa_dod, 0)), '999G999D99'), 'Brak')) AS srednia_pensja
+				FROM	pracownicy
+				WHERE	etat = e.nazwa) AS srednia_pensja 
 		FROM	etaty e
 		ORDER BY e.nazwa; 
 		
@@ -373,9 +373,9 @@
 		LOOP
 			FETCH	c_raport
 			INTO	v_nazwa
-					,c_ref_pracownicy
-					,c_ref_ilu_pracownikow
-					,c_ref_srednia_pensja;
+				,c_ref_pracownicy
+				,c_ref_ilu_pracownikow
+				,c_ref_srednia_pensja;
 			
 			EXIT WHEN c_raport%NOTFOUND;
 			
@@ -384,7 +384,7 @@
 				LOOP
 					FETCH	c_ref_pracownicy
 					INTO	v_nazwisko
-							,v_pensja;
+						,v_pensja;
 					
 					EXIT WHEN c_ref_pracownicy%NOTFOUND;
 					DBMS_OUTPUT.PUT_LINE(c_ref_pracownicy%ROWCOUNT || ' ' || v_nazwisko || ', pensja: ' || v_pensja);
@@ -393,12 +393,12 @@
 			FETCH	c_ref_ilu_pracownikow
 			INTO	n_liczba_osob;
 							
-			DBMS_OUTPUT.PUT_LINE('Liczba pracownikÛw: ' || n_liczba_osob);
+			DBMS_OUTPUT.PUT_LINE('Liczba pracownik√≥w: ' || n_liczba_osob);
 			
 			FETCH	c_ref_srednia_pensja
 			INTO	v_srednia_pensja;
 			
-			DBMS_OUTPUT.PUT_LINE('årednia pensja: ' || v_srednia_pensja);
+			DBMS_OUTPUT.PUT_LINE('≈örednia pensja: ' || v_srednia_pensja);
 			
 			DBMS_OUTPUT.NEW_LINE;
 		END LOOP;
