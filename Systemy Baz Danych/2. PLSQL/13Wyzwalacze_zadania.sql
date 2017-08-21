@@ -1,27 +1,27 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 13. Wyzwalacze bazy danych ñ zadania
+* Rozdzia≈Ç 13. Wyzwalacze bazy danych ‚Äì zadania
 * --------------------------------------------
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 * 
 * Plik z zadaniami: 13Wyzwalacze_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siÍ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siƒô do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Napisz wyzwalacz, ktÛry bÍdzie automatycznie przyznawa≥ kolejne identyfikatory nowym zespo≥om.
---	  Wartoúci dla identyfikatorÛw powinny byÊ generowane przez sekwencjÍ. Przetestuj dzia≥anie
---	  wyzwalacza z poniøszymi poleceniami.
---	  
---	  INSERT INTO ZESPOLY(NAZWA) VALUES('KRYPTOGRAFIA');
---	  1 wiersz zosta≥ utworzony.
---	  
---	  INSERT INTO ZESPOLY(NAZWA) SELECT substr('NOWE '||NAZWA,1,20) FROM ZESPOLY
---	  WHERE ID_ZESP in (10,20);
---	  2 wiersze zosta≥y utworzone.
+-- 1. Napisz wyzwalacz, kt√≥ry bƒôdzie automatycznie przyznawa≈Ç kolejne identyfikatory nowym zespo≈Çom.
+--    Warto≈õci dla identyfikator√≥w powinny byƒá generowane przez sekwencjƒô. Przetestuj dzia≈Çanie
+--    wyzwalacza z poni≈ºszymi poleceniami.
+--    
+--    INSERT INTO ZESPOLY(NAZWA) VALUES('KRYPTOGRAFIA');
+--    1 wiersz zosta≈Ç utworzony.
+--    
+--    INSERT INTO ZESPOLY(NAZWA) SELECT substr('NOWE '||NAZWA,1,20) FROM ZESPOLY
+--    WHERE ID_ZESP in (10,20);
+--    2 wiersze zosta≈Çy utworzone.
 
 	CREATE SEQUENCE seq_id_zesp
 	START WITH 100 
@@ -38,32 +38,32 @@
 	END;
 	/
 	
--- 2. Dodaj do relacji ZESPOLY atrybut LICZBA_PRACOWNIKOW. Napisz zlecenie SQL ktÛre
---	  zainicjuje poczπtkowe wartoúci atrybutu. Napisz wyzwalacz wierszowy, ktÛry bÍdzie pielÍgnowa≥
---	  wartoúÊ tego atrybutu. Przetestuj dzia≥anie wyzwalacza.
+-- 2. Dodaj do relacji ZESPOLY atrybut LICZBA_PRACOWNIKOW. Napisz zlecenie SQL kt√≥re
+--    zainicjuje poczƒÖtkowe warto≈õci atrybutu. Napisz wyzwalacz wierszowy, kt√≥ry bƒôdzie pielƒôgnowa≈Ç
+--    warto≈õƒá tego atrybutu. Przetestuj dzia≈Çanie wyzwalacza.
 
 	ALTER TABLE ZESPOLY ADD LICZBA_PRACOWNIKOW NUMBER;
 
 	UPDATE	zespoly z
-	SET		z.liczba_pracownikow = (SELECT	COUNT(*) 
-									FROM	pracownicy 
-									WHERE	id_zesp = z.id_zesp);
+	SET	z.liczba_pracownikow = (SELECT	COUNT(*) 
+					FROM	pracownicy 
+					WHERE	id_zesp = z.id_zesp);
 
 	CREATE OR REPLACE TRIGGER trigger_liczba_pracownikow
 	AFTER INSERT OR UPDATE OR DELETE ON pracownicy
 	BEGIN
 		UPDATE	zespoly z
-		SET		z.liczba_pracownikow = (SELECT	COUNT(*) 
-										FROM	pracownicy 
-										WHERE	id_zesp = z.id_zesp);
+		SET	z.liczba_pracownikow = (SELECT	COUNT(*) 
+						FROM	pracownicy 
+						WHERE	id_zesp = z.id_zesp);
 	END;
 	/
 
 
--- 3. Zdefiniuj relacjÍ HISTORIA o schemacie (ID_PRAC, PLACA_POD, ETAT, ZESPOL,
---	  MODYFIKACJA). Napisz wyzwalacz, ktÛry po kaødej modyfikacji wartoúci p≥acy podstawowej, etatu
---	  lub zespo≥u w relacji PRACOWNICY bÍdzie wpisywa≥ wartoúci historyczne do relacji HISTORIA
---	  (wartoúci sprzed modyfikacji).
+-- 3. Zdefiniuj relacjƒô HISTORIA o schemacie (ID_PRAC, PLACA_POD, ETAT, ZESPOL,
+--    MODYFIKACJA). Napisz wyzwalacz, kt√≥ry po ka≈ºdej modyfikacji warto≈õci p≈Çacy podstawowej, etatu
+--    lub zespo≈Çu w relacji PRACOWNICY bƒôdzie wpisywa≈Ç warto≈õci historyczne do relacji HISTORIA
+--    (warto≈õci sprzed modyfikacji).
 
 	CREATE TABLE historia
 	(id_prac NUMBER
@@ -77,35 +77,35 @@
 	FOR EACH ROW
 	BEGIN
 		INSERT INTO historia (ID_PRAC
-							 ,PLACA_POD
-							 ,ETAT
-							 ,ZESPOL
-							 ,MODYFIKACJA)
+				     ,PLACA_POD
+				     ,ETAT
+				     ,ZESPOL
+				     ,MODYFIKACJA)
 		VALUES
-							 (:OLD.id_prac
-							 ,:OLD.placa_pod
-							 ,:OLD.etat
-							 ,(SELECT nazwa FROM zespoly where id_zesp = :OLD.id_zesp)
-							 ,SYSDATE);
+				     (:OLD.id_prac
+				     ,:OLD.placa_pod
+				     ,:OLD.etat
+				     ,(SELECT nazwa FROM zespoly where id_zesp = :OLD.id_zesp)
+				     ,SYSDATE);
 	END;
 	/
 
 
--- 4. Zdefiniuj perspektywÍ SZEFOWIE(SZEF, PRACOWNICY) zawierajπcπ nazwisko szefa i liczbÍ jego
---	  podw≥adnych. Napisz procedurÍ wyzwalanπ ktÛra umoøliwi, za pomocπ powyøszej perspektywy,
---	  usuwanie szefÛw wraz z kaskadowym usuniÍciem wszystkich podw≥adnych danego szefa. Jeúli
---	  podw≥adny usuwanego szefa sam jest szefem innych pracownikÛw, przerwij dzia≥anie wyzwalacza
---	  b≥Ídem o numerze ORA-20001 i komunikacie ÑJeden z podw≥adnych usuwanego pracownika jest
---	  szefem innych pracownikÛw. Usuwanie anulowane!î.
---	  
---	  PrzywrÛÊ usuniÍte rekordy wycofujπc poleceniem ROLLBACK transakcjÍ, w ktÛrej nastπpi≥o
---	  usuniÍcie pracownika MORZY.
+-- 4. Zdefiniuj perspektywƒô SZEFOWIE(SZEF, PRACOWNICY) zawierajƒÖcƒÖ nazwisko szefa i liczbƒô jego
+--    podw≈Çadnych. Napisz procedurƒô wyzwalanƒÖ kt√≥ra umo≈ºliwi, za pomocƒÖ powy≈ºszej perspektywy,
+--    usuwanie szef√≥w wraz z kaskadowym usuniƒôciem wszystkich podw≈Çadnych danego szefa. Je≈õli
+--    podw≈Çadny usuwanego szefa sam jest szefem innych pracownik√≥w, przerwij dzia≈Çanie wyzwalacza
+--    b≈Çƒôdem o numerze ORA-20001 i komunikacie ‚ÄûJeden z podw≈Çadnych usuwanego pracownika jest
+--    szefem innych pracownik√≥w. Usuwanie anulowane!‚Äù.
+--    
+--    Przywr√≥ƒá usuniƒôte rekordy wycofujƒÖc poleceniem ROLLBACK transakcjƒô, w kt√≥rej nastƒÖpi≈Ço
+--    usuniƒôcie pracownika MORZY.
 
 	CREATE OR REPLACE VIEW szefowie (szef
-									,pracownicy)
+					,pracownicy)
 	AS
 	SELECT	p.nazwisko AS szef
-			,COUNT(pr.nazwisko) AS podwladny
+		,COUNT(pr.nazwisko) AS podwladny
 	FROM	pracownicy p
 	JOIN	pracownicy pr ON (p.id_prac = pr.id_szefa)
 	GROUP BY p.nazwisko
@@ -132,12 +132,12 @@
 		
 		FOR i IN c_podwladni(n_id_szefa) LOOP
 			SELECT	CASE 
-					WHEN EXISTS (SELECT	1 
-								 FROM	pracownicy p
-								 WHERE	p.id_szefa = i.id_prac)
-					THEN 1 
-					ELSE 0 
-					END
+				    WHEN EXISTS (SELECT	 1 
+						 FROM	 pracownicy p
+						 WHERE	 p.id_szefa = i.id_prac)
+				    THEN 1 
+				    ELSE 0 
+				    END
 			INTO	n_czy_pracown_ma_podwladn
 			FROM	dual;
 		
@@ -155,25 +155,25 @@
 			WHERE	id_prac = n_id_szefa;
 	EXCEPTION
 		WHEN ex_szef_szefa THEN
-			RAISE_APPLICATION_ERROR(-20001, 'Jeden z podw≥adnych usuwanego pracownika jest szefem innych pracownikÛw. Usuwanie anulowane!');
+			RAISE_APPLICATION_ERROR(-20001, 'Jeden z podw≈Çadnych usuwanego pracownika jest szefem innych pracownik√≥w. Usuwanie anulowane!');
 	END;
 	/
 
 
--- 5. W relacji PRACOWNICY usuÒ ograniczenie referencyjne FK_ID_SZEFA (klucz obcy miÍdzy
---	  pracownikiem a jego szefem), nastÍpnie utwÛrz je ponownie z cechπ usuwania kaskadowego.
---	  
---	  Zdefiniuj teraz wyzwalacz wierszowy o nazwie USUN_PRAC. Wyzwalacz ma uruchamiaÊ siÍ po
---	  wykonaniu operacji DELETE na relacji PRACOWNICY. Jedynym zadaniem wyzwalacza bÍdzie
---	  wypisanie na ekranie, za pomocπ procedury DBMS_OUTPUT.PUT_LINE, nazwiska usuwanego
---	  pracownika. Przetestuj dzia≥anie wyzwalacza usuwajπc z relacji PRACOWNICY rekord opisujπcy
---	  pracownika o nazwisko MORZY. Nie zapomnij przed wykonaniem polecenia DELETE ustawiÊ
---	  zmiennej SERVEROUTPUT na wartoúÊ ON. Po zakoÒczeniu zadania wycofaj transakcjÍ przy pomocy
---	  polecenia ROLLBACK;
---	  
---	  Wykonaj ponownie zadanie 5. Tym razem wyzwalacz USUN_PRAC ma siÍ uruchamiaÊ przed
---	  wykonaniem operacji DELETE na relacji PRACOWNICY. PorÛwnaj otrzymane teraz wyniki z
---	  wynikami z pierwszej czÍúci zadania.
+-- 5. W relacji PRACOWNICY usu≈Ñ ograniczenie referencyjne FK_ID_SZEFA (klucz obcy miƒôdzy
+--    pracownikiem a jego szefem), nastƒôpnie utw√≥rz je ponownie z cechƒÖ usuwania kaskadowego.
+--    
+--    Zdefiniuj teraz wyzwalacz wierszowy o nazwie USUN_PRAC. Wyzwalacz ma uruchamiaƒá siƒô po
+--    wykonaniu operacji DELETE na relacji PRACOWNICY. Jedynym zadaniem wyzwalacza bƒôdzie
+--    wypisanie na ekranie, za pomocƒÖ procedury DBMS_OUTPUT.PUT_LINE, nazwiska usuwanego
+--    pracownika. Przetestuj dzia≈Çanie wyzwalacza usuwajƒÖc z relacji PRACOWNICY rekord opisujƒÖcy
+--    pracownika o nazwisko MORZY. Nie zapomnij przed wykonaniem polecenia DELETE ustawiƒá
+--    zmiennej SERVEROUTPUT na warto≈õƒá ON. Po zako≈Ñczeniu zadania wycofaj transakcjƒô przy pomocy
+--    polecenia ROLLBACK;
+--    
+--    Wykonaj ponownie zadanie 5. Tym razem wyzwalacz USUN_PRAC ma siƒô uruchamiaƒá przed
+--    wykonaniem operacji DELETE na relacji PRACOWNICY. Por√≥wnaj otrzymane teraz wyniki z
+--    wynikami z pierwszej czƒô≈õci zadania.
 
 	ALTER TABLE pracownicy 
 	DROP CONSTRAINT fk_id_szefa;
@@ -227,7 +227,7 @@
 	-- 
 	-- Wniosek: 
 	-- 
-	-- w zaleønoúci od kolejnoúci zdefiniowania wykonywania wyzwalacza, 
-	-- nazwisko jest wypisywane na poczπtku lub na koÒcu wykonywania operacji
+	-- w zale≈ºno≈õci od kolejno≈õci zdefiniowania wykonywania wyzwalacza, 
+	-- nazwisko jest wypisywane na poczƒÖtku lub na ko≈Ñcu wykonywania operacji
 	-- 
 
