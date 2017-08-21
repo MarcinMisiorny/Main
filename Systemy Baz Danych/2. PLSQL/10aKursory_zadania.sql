@@ -259,7 +259,7 @@
 		DBMS_OUTPUT.PUT_LINE('Zespół z najdłuższym stażem: ' || v_nazwa);
 
 		OPEN c_ref_cur FOR SELECT  p.nazwisko	
-					   ,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony)/12) AS lata	
+					   ,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) / 12) AS lata	
 					   ,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) -	
 					   (TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE), p.zatrudniony) / 12) * 12)) AS miesiace	
 				   FROM	   pracownicy p	
@@ -326,7 +326,7 @@
 				LOOP
 					FETCH	c_ref_pracownicy
 					INTO	v_nazwisko
-							,v_pensja;
+						,v_pensja;
 					
 					EXIT WHEN c_ref_pracownicy%NOTFOUND;
 					DBMS_OUTPUT.PUT_LINE(c_ref_pracownicy%ROWCOUNT || ' ' || v_nazwisko || ', pensja: ' || v_pensja);
