@@ -1,118 +1,118 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 3a. Funkcje znakowe i liczbowe,
-* konwersja, funkcje dzia≥ajπce na datach
-* i funkcje polimorficzne ñ zadania
+* Rozdzia≈Ç 3a. Funkcje znakowe i liczbowe,
+* konwersja, funkcje dzia≈ÇajƒÖce na datach
+* i funkcje polimorficzne ‚Äì zadania
 * --------------------------------------------
 * 
 * Plik z zadaniami: 03aFunkcjeWierszowe_zadania.pdf
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 * 
 */
 
 --------------------------------------------------------
--- 1. Dla kaødego pracownika wygeneruj kod sk≥adajπcy siÍ z dwÛch pierwszych liter jego etatu i jego numeru
+-- 1. Dla ka≈ºdego pracownika wygeneruj kod sk≈ÇadajƒÖcy siƒô z dw√≥ch pierwszych liter jego etatu i jego numeru
 
 	SELECT	nazwisko,
-			SUBSTR(etat, 1, 2) 
-			|| id_prac AS kod
+	SUBSTR(etat, 1, 2) 
+	|| id_prac AS kod
 	FROM	pracownicy;
 
 --------------------------------------------------------
--- 2. Wydaj wojnÍ literom ÑKî, ÑLî, ÑMî zamieniajπc je wszystkie na literÍ ÑXî w nazwiskach pracownikÛw
+-- 2. Wydaj wojnƒô literom ‚ÄûK‚Äù, ‚ÄûL‚Äù, ‚ÄûM‚Äù zamieniajƒÖc je wszystkie na literƒô ‚ÄûX‚Äù w nazwiskach pracownik√≥w
 
 	SELECT	nazwisko,
-			TRANSLATE(nazwisko, 'KLM', 'XXX') AS wojna_literom
+	TRANSLATE(nazwisko, 'KLM', 'XXX') AS wojna_literom
 	FROM	pracownicy; 
 
 --------------------------------------------------------
--- 3. Wyúwietl nazwiska pracownikÛw ktÛrzy posiadajπ literÍ ÑLî w pierwszej po≥owie swojego nazwiska.
+-- 3. Wy≈õwietl nazwiska pracownik√≥w kt√≥rzy posiadajƒÖ literƒô ‚ÄûL‚Äù w pierwszej po≈Çowie swojego nazwiska.
 
 	SELECT	nazwisko
 	FROM	pracownicy
 	WHERE	INSTR(nazwisko, 'L') BETWEEN 1 AND (LENGTH(nazwisko)) / 2; 
 
 --------------------------------------------------------
--- 4. Wyúwietl nazwiska i p≥ace pracownikÛw powiÍkszone o 15% i zaokrπglone do liczb ca≥kowitych
+-- 4. Wy≈õwietl nazwiska i p≈Çace pracownik√≥w powiƒôkszone o 15% i zaokrƒÖglone do liczb ca≈Çkowitych
 
 	SELECT	nazwisko
-			,ROUND(placa_pod * 1.15) AS podwyzka
+		,ROUND(placa_pod * 1.15) AS podwyzka
 	FROM	pracownicy; 
 
 --------------------------------------------------------  
--- 5. Kaødy pracownik od≥oøy≥ 20% swoich miesiÍcznych zarobkÛw na 10-letniπ lokatÍ oprocentowanπ 10% w skali roku i
---    kapitalizowanπ co roku. Wyúwietl informacjÍ o tym, jaki zysk bÍdzie mia≥ kaødy pracownik po zamkniÍciu lokaty.
+-- 5. Ka≈ºdy pracownik od≈Ço≈ºy≈Ç 20% swoich miesiƒôcznych zarobk√≥w na 10-letniƒÖ lokatƒô oprocentowanƒÖ 10% w skali roku i
+--    kapitalizowanƒÖ co roku. Wy≈õwietl informacjƒô o tym, jaki zysk bƒôdzie mia≈Ç ka≈ºdy pracownik po zamkniƒôciu lokaty.
 
 	SELECT	nazwisko
-			,placa_pod
-			,placa_pod * 0.2 AS inwestycja
-			,placa_pod * 0.2 * POWER(1.1, 10) AS kapital
-			,placa_pod * 0.2 * POWER(1.1, 10) - placa_pod * 0.2 AS zysk
+		,placa_pod
+		,placa_pod * 0.2 AS inwestycja
+		,placa_pod * 0.2 * POWER(1.1, 10) AS kapital
+		,placa_pod * 0.2 * POWER(1.1, 10) - placa_pod * 0.2 AS zysk
 	FROM	pracownicy; 
 	
 --------------------------------------------------------  
--- 6. Policz, jaki staø mia≥ kaødy pracownik 1 stycznia 2000 roku.
+-- 6. Policz, jaki sta≈º mia≈Ç ka≈ºdy pracownik 1 stycznia 2000 roku.
 
 	SELECT	nazwisko
-			,zatrudniony
-			,ROUND((DATE '2000-01-01' - zatrudniony) / 365) AS staz_w_2000
+		,zatrudniony
+		,ROUND((DATE '2000-01-01' - zatrudniony) / 365) AS staz_w_2000
 	FROM	pracownicy; 
 
 --------------------------------------------------------  
--- 7. Wyúwietl poniøsze informacje o datach przyjÍcia pracownikÛw zespo≥u 20
+-- 7. Wy≈õwietl poni≈ºsze informacje o datach przyjƒôcia pracownik√≥w zespo≈Çu 20
 
 	SELECT	nazwisko
-			,TO_CHAR(zatrudniony, 'MONTH'
-			||' ,'
-			||' DD'
-			||' YYYY') AS data_zatrudnienia
+		,TO_CHAR(zatrudniony, 'MONTH'
+		||' ,'
+		||' DD'
+		||' YYYY') AS data_zatrudnienia
 	FROM	pracownicy 
 	WHERE	id_zesp = 20; 
 
 --------------------------------------------------------  
--- 8. Sprawdü, jaki mamy dziú dzieÒ tygodnia
+-- 8. Sprawd≈∫, jaki mamy dzi≈õ dzie≈Ñ tygodnia
 
 	SELECT	TO_CHAR(SYSDATE, 'day') AS dzis
 	FROM	dual; 
 
 --------------------------------------------------------	
--- 9. Przyjmij, øe MieløyÒskiego i Strzelecka naleøπ do dzielnicy Stare Miasto, Piotrowo naleøy do dzielnicy Nowe Miasto a
---    W≥odkowica naleøy do dzielnicy Grunwald. Wyúwietl poniøszy raport (skorzystaj z wyraøenia CASE)
+-- 9. Przyjmij, ≈ºe Miel≈ºy≈Ñskiego i Strzelecka nale≈ºƒÖ do dzielnicy Stare Miasto, Piotrowo nale≈ºy do dzielnicy Nowe Miasto a
+--    W≈Çodkowica nale≈ºy do dzielnicy Grunwald. Wy≈õwietl poni≈ºszy raport (skorzystaj z wyra≈ºenia CASE)
 
 	SELECT	nazwa
-			,adres
-			,CASE
-				WHEN adres LIKE 'PIOTROWO%' THEN 'NOWE MIASTO'
-				WHEN adres LIKE 'WLODKOWICA%' THEN 'GRUNWALD'
-				ELSE 'STARE MIASTO'
-			END AS dzielnica
+		,adres
+		,CASE
+			WHEN adres LIKE 'PIOTROWO%' THEN 'NOWE MIASTO'
+			WHEN adres LIKE 'WLODKOWICA%' THEN 'GRUNWALD'
+			ELSE 'STARE MIASTO'
+		END AS dzielnica
 	FROM	zespoly; 
 
 --------------------------------------------------------
--- 10. Dla kaødego pracownika wyúwietl informacjÍ o tym, czy jego pensja jest mniejsza niø, rÛwna lub wiÍksza niø 480
+-- 10. Dla ka≈ºdego pracownika wy≈õwietl informacjƒô o tym, czy jego pensja jest mniejsza ni≈º, r√≥wna lub wiƒôksza ni≈º 480
 
 	SELECT	nazwisko
-			,placa_pod
-			,CASE
-				WHEN placa_pod < 480 THEN 'Poniøej 480'
-				WHEN placa_pod = 480 THEN 'Dok≥adnie 480'
-				ELSE 'Powyøej 480'
-			END AS prÛg
+		,placa_pod
+		,CASE
+			WHEN placa_pod < 480 THEN 'Poni≈ºej 480'
+			WHEN placa_pod = 480 THEN 'Dok≈Çadnie 480'
+			ELSE 'Powy≈ºej 480'
+		END AS pr√≥g
 	FROM	pracownicy
 	ORDER BY placa_pod DESC;
 	
 --------------------------------------------------------	
--- 11. (dla chÍtnych) Napisz to samo zapytanie przy pomocy funkcji DECODE
+-- 11. (dla chƒôtnych) Napisz to samo zapytanie przy pomocy funkcji DECODE
 
 	SELECT	nazwisko
-			,placa_pod
-			,DECODE(SIGN(placa_pod / 480 - 1) + 1
-			,0
-			,'Poniøej 480'
-			,1
-			,'Dok≥adnie 480'
-			,'Powyøej 480') AS prÛg
+		,placa_pod
+		,DECODE(SIGN(placa_pod / 480 - 1) + 1
+		,0
+		,'Poni≈ºej 480'
+		,1
+		,'Dok≈Çadnie 480'
+		,'Powy≈ºej 480') AS pr√≥g
 	FROM	pracownicy
 	ORDER BY placa_pod DESC;
 
