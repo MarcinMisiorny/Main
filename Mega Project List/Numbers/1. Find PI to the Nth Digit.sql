@@ -8,7 +8,7 @@
 * I've added an user defined exception - no matter how big number over 38 will be passed as "precision" parameter, 
 * function will return 38 signs only.
 * 
-* To calculate value of pi, I'm basing on Arcsine Function/Inverse Sine Function.
+* To calculate value of PI, I'm basing on Arcsine Function/Inverse Sine Function.
 * In my case, my parameter is 1, but it can be any other number between -1 and 1, include 0. 
 * This is because the Arcsin function is undefined for arguments greater than 1 or less than -1.
 * 
@@ -33,7 +33,7 @@ BEGIN
       RAISE ex_negative_number;
     END IF;
 
-    n_pi := ROUND(2 * (ASIN(SQRT(1 - POWER(1, 2))) + ABS(ASIN(1))), p_precision); --Arcsine Function/Inverse Sine Function, calculate pi
+    n_pi := ROUND(2 * (ASIN(SQRT(1 - POWER(1, 2))) + ABS(ASIN(1))), p_precision); -- Arcsine Function/Inverse Sine Function, estimates PI
 
     RETURN n_pi;
 EXCEPTION
