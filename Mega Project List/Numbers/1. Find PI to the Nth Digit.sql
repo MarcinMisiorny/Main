@@ -57,7 +57,6 @@ END fn_pi;
 SELECT fn_pi(38)
 FROM   dual; 
 
-
 /* Query result: */
 3.1415926535897932384626433832795028842
 
