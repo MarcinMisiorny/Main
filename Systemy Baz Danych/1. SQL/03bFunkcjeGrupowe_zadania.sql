@@ -1,86 +1,86 @@
 /*
 * --------------------------------------------
-* Rozdzia³ 3b. Podzia³ na grupy, klauzula GROUP BY -
+* RozdziaÅ‚ 3b. PodziaÅ‚ na grupy, klauzula GROUP BY -
 * zadania
 * --------------------------------------------
 * 
 * Plik z zadaniami: 03bFunkcjeGrupowe_zadania.pdf
 * 
-* Plik tworz¹cy bazê do æwiczeñ: Pldemobld.sql
+* Plik tworzÄ…cy bazÄ™ do Ä‡wiczeÅ„: Pldemobld.sql
 * 
 */
 
 --------------------------------------------------------
--- 1. Wyœwietl najni¿sz¹ i najwy¿sz¹ pensjê w firmie. Wyœwietl informacjê o ró¿nicy dziel¹cej najlepiej i najgorzej
---    zarabiaj¹cych pracowników.
+-- 1. WyÅ›wietl najniÅ¼szÄ… i najwyÅ¼szÄ… pensjÄ™ w firmie. WyÅ›wietl informacjÄ™ o rÃ³Å¼nicy dzielÄ…cej najlepiej i najgorzej
+--    zarabiajÄ…cych pracownikÃ³w.
 
 	SELECT	MIN(placa_pod) AS minimum
-			,MAX(placa_pod) AS maksimum
-			,MAX(placa_pod) - MIN(placa_pod) AS ró¿nica
+		,MAX(placa_pod) AS maksimum
+		,MAX(placa_pod) - MIN(placa_pod) AS rÃ³Å¼nica
 	FROM	pracownicy;
 	
 --------------------------------------------------------
--- 2. Wyœwietl œrednie pensje dla wszystkich etatów. Wyniki uporz¹dkuj wg malej¹cej œredniej pensji.
+-- 2. WyÅ›wietl Å›rednie pensje dla wszystkich etatÃ³w. Wyniki uporzÄ…dkuj wg malejÄ…cej Å›redniej pensji.
 
 	SELECT	etat
-			,AVG(placa_pod) AS srednia_placa
+		,AVG(placa_pod) AS srednia_placa
 	FROM	pracownicy
 	GROUP BY etat
 	ORDER BY AVG(placa_pod) DESC;
 	
 --------------------------------------------------------
--- 3. Wyœwietl liczbê profesorów zatrudnionych w Instytucie
+-- 3. WyÅ›wietl liczbÄ™ profesorÃ³w zatrudnionych w Instytucie
 
 	SELECT	COUNT(etat) AS profesorowie
 	FROM	pracownicy
 	WHERE	etat = 'PROFESOR';
 	
 --------------------------------------------------------
--- 4. ZnajdŸ sumaryczne miesiêczne p³ace dla ka¿dego zespo³u. Nie zapomnij o p³acach dodatkowych.
+-- 4. ZnajdÅº sumaryczne miesiÄ™czne pÅ‚ace dla kaÅ¼dego zespoÅ‚u. Nie zapomnij o pÅ‚acach dodatkowych.
 
 	SELECT	id_zesp
-			,SUM(placa_pod + NVL(placa_dod, 0)) AS sumaryczne_place
+		,SUM(placa_pod + NVL(placa_dod, 0)) AS sumaryczne_place
 	FROM	pracownicy
 	GROUP BY id_zesp; 
 	
 --------------------------------------------------------
--- 5. Zmodyfikuj zapytanie z zadania poprzedniego w taki sposób, aby jego wynikiem by³a sumaryczna miesiêczna p³aca w
---    zespole, który wyp³aca swoim pracownikom najwiêcej pieniêdzy.
+-- 5. Zmodyfikuj zapytanie z zadania poprzedniego w taki sposÃ³b, aby jego wynikiem byÅ‚a sumaryczna miesiÄ™czna pÅ‚aca w
+--    zespole, ktÃ³ry wypÅ‚aca swoim pracownikom najwiÄ™cej pieniÄ™dzy.
 
 	SELECT	MAX(SUM(placa_pod + NVL(placa_dod, 0))) AS maksymalna_sumaryczna_placa
 	FROM	pracownicy
 	GROUP BY id_zesp;
 	
 --------------------------------------------------------
--- 6. Dla ka¿dego pracownika wyœwietl pensjê najgorzej zarabiaj¹cego podw³adnego. Wyniki uporz¹dkuj wg malej¹cej
+-- 6. Dla kaÅ¼dego pracownika wyÅ›wietl pensjÄ™ najgorzej zarabiajÄ…cego podwÅ‚adnego. Wyniki uporzÄ…dkuj wg malejÄ…cej
 
 	SELECT	id_szefa
-			,MIN(placa_pod) AS minimalna
+		,MIN(placa_pod) AS minimalna
 	FROM	pracownicy
 	GROUP BY id_szefa;
 	
 --------------------------------------------------------
--- 7. Wyœwietl numery zespo³ów wraz z liczb¹ pracowników w ka¿dym zespole. Wyniki uporz¹dkuj wg malej¹cej liczby
+-- 7. WyÅ›wietl numery zespoÅ‚Ã³w wraz z liczbÄ… pracownikÃ³w w kaÅ¼dym zespole. Wyniki uporzÄ…dkuj wg malejÄ…cej liczby
 
 	SELECT	id_zesp
-			,COUNT(id_zesp) AS ilu_pracuje
+		,COUNT(id_zesp) AS ilu_pracuje
 	FROM	pracownicy
 	GROUP BY id_zesp
 	ORDER BY ilu_pracuje DESC;
 	
 --------------------------------------------------------
--- 8. Zmodyfikuj zapytanie z zadania poprzedniego, aby wyœwietliæ numery tylko tych zespo³ów, które zatrudniaj¹ wiêcej
---	  ni¿ 3 pracowników.
+-- 8. Zmodyfikuj zapytanie z zadania poprzedniego, aby wyÅ›wietliÄ‡ numery tylko tych zespoÅ‚Ã³w, ktÃ³re zatrudniajÄ… wiÄ™cej
+--	  niÅ¼ 3 pracownikÃ³w.
 
 	SELECT	id_zesp
-			,COUNT(id_zesp) AS ilu_pracuje
+		,COUNT(id_zesp) AS ilu_pracuje
 	FROM	pracownicy
 	GROUP BY id_zesp
 	HAVING COUNT(id_zesp) > 3
 	ORDER BY ilu_pracuje DESC;
 	
 --------------------------------------------------------
--- 9. SprawdŸ, czy identyfikatory pracowników s¹ unikalne. Wyœwietl zdublowane wartoœci identyfikatorów.
+-- 9. SprawdÅº, czy identyfikatory pracownikÃ³w sÄ… unikalne. WyÅ›wietl zdublowane wartoÅ›ci identyfikatorÃ³w.
 
 	SELECT	id_prac
 	FROM	pracownicy
@@ -88,65 +88,65 @@
 	HAVING COUNT(*) > 1;
 	
 --------------------------------------------------------
--- 10. Wyœwietl œrednie pensje wyp³acane w ramach poszczególnych etatów i liczbê zatrudnionych na danym etacie. Pomiñ
---	   pracowników zatrudnionych po 1990 roku.
+-- 10. WyÅ›wietl Å›rednie pensje wypÅ‚acane w ramach poszczegÃ³lnych etatÃ³w i liczbÄ™ zatrudnionych na danym etacie. PomiÅ„
+--	   pracownikÃ³w zatrudnionych po 1990 roku.
 
 	SELECT	etat
-			,AVG(placa_pod) AS srednia
-			,COUNT(*) AS liczba
+		,AVG(placa_pod) AS srednia
+		,COUNT(*) AS liczba
 	FROM	pracownicy
 	WHERE	zatrudniony <= '1990-01-01'
 	GROUP BY etat;
 	
 --------------------------------------------------------
--- 11. Zbuduj zapytanie, które wyœwietli œrednie i maksymalne pensje asystentów i profesorów w poszczególnych zespo³ach
---	   (weŸ pod uwagê zarówno p³ace podstawowe jak i dodatkowe). Dokonaj zaokr¹glenia pensji do wartoœci ca³kowitych.
---	   Wynik zapytania posortuj wg identyfikatorów zespo³ów i nazw etatów.
+-- 11. Zbuduj zapytanie, ktÃ³re wyÅ›wietli Å›rednie i maksymalne pensje asystentÃ³w i profesorÃ³w w poszczegÃ³lnych zespoÅ‚ach
+--	   (weÅº pod uwagÄ™ zarÃ³wno pÅ‚ace podstawowe jak i dodatkowe). Dokonaj zaokrÄ…glenia pensji do wartoÅ›ci caÅ‚kowitych.
+--	   Wynik zapytania posortuj wg identyfikatorÃ³w zespoÅ‚Ã³w i nazw etatÃ³w.
 
 	SELECT	id_zesp
-			,etat
-			,ROUND(AVG(placa_pod + NVL(placa_dod, 0)), 0) AS œrednia
-			,ROUND(MAX(placa_pod + NVL(placa_dod, 0)), 0) AS maksymalna
+		,etat
+		,ROUND(AVG(placa_pod + NVL(placa_dod, 0)), 0) AS Å›rednia
+		,ROUND(MAX(placa_pod + NVL(placa_dod, 0)), 0) AS maksymalna
 	FROM	pracownicy
 	WHERE	etat IN ('ASYSTENT', 'PROFESOR')
 	GROUP BY id_zesp, etat
 	ORDER BY id_zesp, etat;
 	
 --------------------------------------------------------		 
--- 12. Zbuduj zapytanie, które wyœwietli, ilu pracowników zosta³o zatrudnionych w poszczególnych latach. Wynik posortuj
---	   rosn¹co ze wzglêdu na rok zatrudnienia.
+-- 12. Zbuduj zapytanie, ktÃ³re wyÅ›wietli, ilu pracownikÃ³w zostaÅ‚o zatrudnionych w poszczegÃ³lnych latach. Wynik posortuj
+--	   rosnÄ…co ze wzglÄ™du na rok zatrudnienia.
 
 	SELECT	EXTRACT (YEAR FROM zatrudniony) AS rok
-			,COUNT(*) AS ilu_pracowników
+		,COUNT(*) AS ilu_pracownikÃ³w
 	FROM	pracownicy
 	GROUP BY EXTRACT (YEAR FROM zatrudniony)
 	ORDER BY rok ASC;
 	
 --------------------------------------------------------
--- 13. Zbuduj zapytanie, które policzy liczbê liter w nazwiskach pracowników i wyœwietli liczbê nazwisk z dan¹ liczb¹ liter.
---	   Wynik zapytania posortuj rosn¹co wg liczby liter w nazwiskach.
+-- 13. Zbuduj zapytanie, ktÃ³re policzy liczbÄ™ liter w nazwiskach pracownikÃ³w i wyÅ›wietli liczbÄ™ nazwisk z danÄ… liczbÄ… liter.
+--	   Wynik zapytania posortuj rosnÄ…co wg liczby liter w nazwiskach.
 
 	SELECT	LENGTH(nazwisko) AS ile_liter
-			,COUNT(*) AS w_ilu_nazwiskach
+		,COUNT(*) AS w_ilu_nazwiskach
 	FROM	pracownicy
 	GROUP BY LENGTH (nazwisko)
 	ORDER BY ile_liter;
 	
 --------------------------------------------------------
--- 14. Zbuduj zapytanie, które wyliczy, ilu pracowników w swoim nazwisku posiada chocia¿ jedn¹ literê „a” lub „A”, a ilu
---	   chocia¿ jedn¹ literê „e” lub „E”.
+-- 14. Zbuduj zapytanie, ktÃ³re wyliczy, ilu pracownikÃ³w w swoim nazwisku posiada chociaÅ¼ jednÄ… literÄ™ â€žaâ€ lub â€žAâ€, a ilu
+--	   chociaÅ¼ jednÄ… literÄ™ â€žeâ€ lub â€žEâ€.
 
 	SELECT	COUNT(CASE
-					WHEN INSTR(nazwisko,'A') > 0
-						 OR INSTR(nazwisko,'a') > 0 
-					THEN 1
-					ELSE NULL
-					END) AS ile_nazwisk_z_a
-			,COUNT(CASE
-					WHEN INSTR(nazwisko,'E') > 0
-						 OR INSTR(nazwisko,'e') > 0 
-					THEN 1
-					ELSE NULL
-					END) AS ile_nazwisk_z_e
+			WHEN INSTR(nazwisko,'A') > 0
+				OR INSTR(nazwisko,'a') > 0 
+			THEN 1
+			ELSE NULL
+			END) AS ile_nazwisk_z_a
+		,COUNT(CASE
+			WHEN INSTR(nazwisko,'E') > 0
+				OR INSTR(nazwisko,'e') > 0 
+			THEN 1
+			ELSE NULL
+			END) AS ile_nazwisk_z_e
 	FROM	pracownicy;
 
