@@ -1,20 +1,20 @@
 /*
 * --------------------------------------------
-* Rozdzia³ 10b. Wyj¹tki – zadania
+* RozdziaÅ‚ 10b. WyjÄ…tki â€“ zadania
 * --------------------------------------------
 * 
-* Plik tworz¹cy bazê do æwiczeñ: Pldemobld.sql
+* Plik tworzÄ…cy bazÄ™ do Ä‡wiczeÅ„: Pldemobld.sql
 * 
 * Plik z zadaniami: 10bWyjatki_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siê do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siÄ™ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Rozszerz program z zadania 5 czêœci 1. rozdzia³u 10. o obs³ugê b³êdu wpisania niepoprawnej
---	  nazwy etatu (etat uznajemy za niepoprawny jeœli nie istnieje opisuj¹cy go rekord w relacji
---	  ETATY). Wykorzystaj mechanizm obs³ugi wyj¹tku NO_DATA_FOUND.
+-- 1. Rozszerz program z zadania 5 czÄ™Å›ci 1. rozdziaÅ‚u 10. o obsÅ‚ugÄ™ bÅ‚Ä™du wpisania niepoprawnej
+--    nazwy etatu (etat uznajemy za niepoprawny jeÅ›li nie istnieje opisujÄ…cy go rekord w relacji
+--    ETATY). Wykorzystaj mechanizm obsÅ‚ugi wyjÄ…tku NO_DATA_FOUND.
 
 	DECLARE
 		CURSOR c_wypisz_pracownikow (p_etat VARCHAR2) IS
@@ -45,11 +45,11 @@
 	/
 
 
--- 2. Napisz program, wykorzystuj¹cy kursor, który odczyta informacje o wszystkich profesorach i
---	  przyzna im podwy¿kê w wysokoœci 10% sumy p³ac podstawowych ich podw³adnych. Jeœli po
---	  podwy¿ce pensja któregoœ z profesorów przekroczy³aby 2000 z³otych, program powinien zg³osiæ
---	  b³¹d ORA-20010 i wypisaæ komunikat „Pensja po podwy¿ce przekroczy³aby 2000!” (skorzystaj
---	  z procedury RAISE APPLICATION ERROR).
+-- 2. Napisz program, wykorzystujÄ…cy kursor, ktÃ³ry odczyta informacje o wszystkich profesorach i
+--    przyzna im podwyÅ¼kÄ™ w wysokoÅ›ci 10% sumy pÅ‚ac podstawowych ich podwÅ‚adnych. JeÅ›li po
+--    podwyÅ¼ce pensja ktÃ³regoÅ› z profesorÃ³w przekroczyÅ‚aby 2000 zÅ‚otych, program powinien zgÅ‚osiÄ‡
+--    bÅ‚Ä…d ORA-20010 i wypisaÄ‡ komunikat â€Pensja po podwyÅ¼ce przekroczyÅ‚aby 2000!â€ (skorzystaj
+--    z procedury RAISE APPLICATION ERROR).
 	
 	DECLARE
 		CURSOR c_profesorowie IS
@@ -70,10 +70,10 @@
 		FOR i IN c_profesorowie LOOP
 			FOR j IN c_kwota_podwyzki(i.nazwisko) LOOP
 				IF i.pensja_profesora + j.podwyzka > 2000 THEN
-					RAISE_APPLICATION_ERROR(-20001, i.nazwisko || ' - pensja po podwy¿ce przekroczy³aby 2000!');
+					RAISE_APPLICATION_ERROR(-20001, i.nazwisko || ' - pensja po podwyÅ¼ce przekroczyÅ‚aby 2000!');
 				ELSE
 					UPDATE	pracownicy p
-					SET		placa_pod = placa_pod + j.podwyzka
+					SET	placa_pod = placa_pod + j.podwyzka
 					WHERE	p.nazwisko = j.nazwisko;
 				END IF;
 			END LOOP;
@@ -81,20 +81,20 @@
 	END;
 	/
 	
--- 3. Napisz program, który spróbuje dodaæ do relacji PRACOWNICY rekord, opisuj¹cy nowego
---	  pracownika. U¿ytkownik ma podaæ identyfikator i nazwisko nowego pracownika, identyfikator
---	  zespo³u, do którego ma nale¿eæ pracownik, oraz p³acê podstawow¹ pracownika. Obs³u¿,
---	  wykorzystuj¹c sekcjê obs³ugi OTHERS i funkcjê SQLCODE nastêpuj¹ce sytuacje b³êdne przy
---	  wykonaniu polecenia INSERT INTO:
---	  · u¿ytkownik poda³ identyfikator, którego wartoœæ dubluje istniej¹ce ju¿ identyfikatory
---	  pracowników – wartoœæ SQLCODE = -1,
---	  · u¿ytkownik nie poda³ wartoœci identyfikatora – wartoœæ SQLCODE = -1400,
---	  · u¿ytkownik poda³ wartoœæ p³acy mniejsz¹ ni¿ 101 (w relacji PRACOWNICY zdefiniowano
---	  ograniczenie CHECK okreœlaj¹ce minimaln¹ wartoœæ p³acy pracownika na 101) – wartoœæ
---	  SQLCODE = -2290.
---	  · u¿ytkownik poda³ identyfikator nieistniej¹cego zespo³u – wartoœæ SQLCODE = -2291.
---	  Po wyst¹pieniu ka¿dej z ww. sytuacji powinien zostaæ wypisany na ekranie odpowiedni
---	  komunikat.
+-- 3. Napisz program, ktÃ³ry sprÃ³buje dodaÄ‡ do relacji PRACOWNICY rekord, opisujÄ…cy nowego
+--    pracownika. UÅ¼ytkownik ma podaÄ‡ identyfikator i nazwisko nowego pracownika, identyfikator
+--    zespoÅ‚u, do ktÃ³rego ma naleÅ¼eÄ‡ pracownik, oraz pÅ‚acÄ™ podstawowÄ… pracownika. ObsÅ‚uÅ¼,
+--    wykorzystujÄ…c sekcjÄ™ obsÅ‚ugi OTHERS i funkcjÄ™ SQLCODE nastÄ™pujÄ…ce sytuacje bÅ‚Ä™dne przy
+--    wykonaniu polecenia INSERT INTO:
+--    Â· uÅ¼ytkownik podaÅ‚ identyfikator, ktÃ³rego wartoÅ›Ä‡ dubluje istniejÄ…ce juÅ¼ identyfikatory
+--    pracownikÃ³w â€“ wartoÅ›Ä‡ SQLCODE = -1,
+--    Â· uÅ¼ytkownik nie podaÅ‚ wartoÅ›ci identyfikatora â€“ wartoÅ›Ä‡ SQLCODE = -1400,
+--    Â· uÅ¼ytkownik podaÅ‚ wartoÅ›Ä‡ pÅ‚acy mniejszÄ… niÅ¼ 101 (w relacji PRACOWNICY zdefiniowano
+--    ograniczenie CHECK okreÅ›lajÄ…ce minimalnÄ… wartoÅ›Ä‡ pÅ‚acy pracownika na 101) â€“ wartoÅ›Ä‡
+--    SQLCODE = -2290.
+--    Â· uÅ¼ytkownik podaÅ‚ identyfikator nieistniejÄ…cego zespoÅ‚u â€“ wartoÅ›Ä‡ SQLCODE = -2291.
+--    Po wystÄ…pieniu kaÅ¼dej z ww. sytuacji powinien zostaÄ‡ wypisany na ekranie odpowiedni
+--    komunikat.
 
 	DECLARE
 		CURSOR c_identyfikatory IS
@@ -103,9 +103,9 @@
 
 		CURSOR c_czy_istnieje_zespol(p_identyfikator_zespolu NUMBER) IS
 		SELECT	CASE
-				WHEN EXISTS (SELECT 1 
-							 FROM	zespoly 
-							 WHERE	id_zesp = p_identyfikator_zespolu) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    zespoly 
+					     WHERE   id_zesp = p_identyfikator_zespolu) 
 				THEN 1 
 				ELSE 0 
 				END
@@ -156,59 +156,59 @@
 		END IF;
 	
 		INSERT INTO pracownicy	(ID_PRAC
-								,NAZWISKO
-								,ETAT
-								,ID_SZEFA
-								,ZATRUDNIONY 
-								,PLACA_POD
-								,PLACA_DOD
-								,ID_ZESP)
+					,NAZWISKO
+					,ETAT
+					,ID_SZEFA
+					,ZATRUDNIONY 
+					,PLACA_POD
+					,PLACA_DOD
+					,ID_ZESP)
 		VALUES 
-								(n_identyfikator
-								,UPPER(v_nazwisko)
-								,NULL
-								,NULL
-								,SYSDATE
-								,n_placa_pod
-								,NULL
-								,n_identyfikator_zespolu);
+					(n_identyfikator
+					,UPPER(v_nazwisko)
+					,NULL
+					,NULL
+					,SYSDATE
+					,n_placa_pod
+					,NULL
+					,n_identyfikator_zespolu);
 	EXCEPTION
 		WHEN ex_dubel_identyfikatora THEN
-			DBMS_OUTPUT.PUT_LINE('Podano identyfikator, którego wartoœæ dubluje istniej¹ce ju¿ identyfikatory. SQLCODE = ' || SQLCODE);
+			DBMS_OUTPUT.PUT_LINE('Podano identyfikator, ktÃ³rego wartoÅ›Ä‡ dubluje istniejÄ…ce juÅ¼ identyfikatory. SQLCODE = ' || SQLCODE);
 		WHEN EX_PUSTY_IDENTYFIKATOR THEN
 			DBMS_OUTPUT.PUT_LINE('Nie podano identyfikatora pracownika. SQLCODE = ' || SQLCODE);
 		WHEN ex_zbyt_mala_placa THEN
-			DBMS_OUTPUT.PUT_LINE('Pensja pracownika nie mo¿e byæ ni¿sza niz 101, podano: ' || n_placa_pod || '. SQLCODE = ' || SQLCODE);
+			DBMS_OUTPUT.PUT_LINE('Pensja pracownika nie moÅ¼e byÄ‡ niÅ¼sza niz 101, podano: ' || n_placa_pod || '. SQLCODE = ' || SQLCODE);
 		WHEN ex_nieistniejacy_zespol THEN
-			DBMS_OUTPUT.PUT_LINE('Podano identyfikator zespolu który nie istnieje. SQLCODE = ' || SQLCODE);
+			DBMS_OUTPUT.PUT_LINE('Podano identyfikator zespolu ktÃ³ry nie istnieje. SQLCODE = ' || SQLCODE);
 		WHEN OTHERS THEN
 			DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 	END;
 	/
 
--- 4. Napisz program, którego zadaniem bêdzie zapytanie u¿ytkownika o nazwisko pracownika a
---	  nastêpnie usuniêcie wskazanego pracownika. Program powinien obs³ugiwaæ nastêpuj¹ce
---	  sytuacje:
---	  a) u¿ytkownik poda nazwisko nieistniej¹cego pracownika – program powinien zakoñczyæ siê
---	  b³êdem ORA-20020 i komunikatem „Nie istnieje taki pracownik”,
---	  b) u¿ytkownik poda nazwisko, które wskazuje na wiêcej ni¿ jednego pracownika – program
---	  powinien zakoñczyæ siê b³êdem ORA-20030 i komunikatem „Niejednoznaczne wskazanie
---	  pracownika”,
---	  c) u¿ytkownik poda poprawne nazwisko, jednak pracownik, który ma byæ usuniêty, jest
---	  prze³o¿onym innych pracowników – program powinien zakoñczyæ siê b³êdem ORA-20040 i
---	  komunikatem „Nie mo¿esz usun¹æ prze³o¿onego”.
---	  Sytuacjê c) obs³u¿ w³asnym wyj¹tkiem, skojarzonym z b³êdem systemowym ORA-2292, który
---	  jest generowany przy próbie usuniêcia rekordu, dla którego istniej¹ przywi¹zane kluczem obcym
---	  rekordy w innej relacji (czyli przechwytuj w³asny wyj¹tek, generowany przez polecenie
---	  DELETE). Przetestuj dzia³anie programu, próbuj¹c usun¹æ pracownika WEGLARZ (sytuacja c),
---	  pracownika XYZ (sytuacja a) i pracownika dodanego w zadaniu 3. (poprawne usuniêcie).
+-- 4. Napisz program, ktÃ³rego zadaniem bÄ™dzie zapytanie uÅ¼ytkownika o nazwisko pracownika a
+--    nastÄ™pnie usuniÄ™cie wskazanego pracownika. Program powinien obsÅ‚ugiwaÄ‡ nastÄ™pujÄ…ce
+--    sytuacje:
+--    a) uÅ¼ytkownik poda nazwisko nieistniejÄ…cego pracownika â€“ program powinien zakoÅ„czyÄ‡ siÄ™
+--    bÅ‚Ä™dem ORA-20020 i komunikatem â€Nie istnieje taki pracownikâ€,
+--    b) uÅ¼ytkownik poda nazwisko, ktÃ³re wskazuje na wiÄ™cej niÅ¼ jednego pracownika â€“ program
+--    powinien zakoÅ„czyÄ‡ siÄ™ bÅ‚Ä™dem ORA-20030 i komunikatem â€Niejednoznaczne wskazanie
+--    pracownikaâ€,
+--    c) uÅ¼ytkownik poda poprawne nazwisko, jednak pracownik, ktÃ³ry ma byÄ‡ usuniÄ™ty, jest
+--    przeÅ‚oÅ¼onym innych pracownikÃ³w â€“ program powinien zakoÅ„czyÄ‡ siÄ™ bÅ‚Ä™dem ORA-20040 i
+--    komunikatem â€Nie moÅ¼esz usunÄ…Ä‡ przeÅ‚oÅ¼onegoâ€.
+--    SytuacjÄ™ c) obsÅ‚uÅ¼ wÅ‚asnym wyjÄ…tkiem, skojarzonym z bÅ‚Ä™dem systemowym ORA-2292, ktÃ³ry
+--    jest generowany przy prÃ³bie usuniÄ™cia rekordu, dla ktÃ³rego istniejÄ… przywiÄ…zane kluczem obcym
+--    rekordy w innej relacji (czyli przechwytuj wÅ‚asny wyjÄ…tek, generowany przez polecenie
+--    DELETE). Przetestuj dziaÅ‚anie programu, prÃ³bujÄ…c usunÄ…Ä‡ pracownika WEGLARZ (sytuacja c),
+--    pracownika XYZ (sytuacja a) i pracownika dodanego w zadaniu 3. (poprawne usuniÄ™cie).
 
 	DECLARE
 		CURSOR c_czy_istnieje_pracownik(p_nazwisko VARCHAR2) IS
 		SELECT	CASE
-				WHEN EXISTS (SELECT 1 
-							 FROM	pracownicy 
-							 WHERE	nazwisko = p_nazwisko) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    pracownicy 
+					     WHERE   nazwisko = p_nazwisko) 
 				THEN 1 
 				ELSE 0 
 				END
@@ -221,10 +221,10 @@
 		
 		CURSOR c_czy_ma_podwladnych(p_nazwisko VARCHAR2) IS
 		SELECT	CASE
-				WHEN EXISTS (SELECT	1 
-							 FROM	pracownicy p
-							 JOIN	pracownicy pr ON (p.id_prac = pr.id_szefa)
-							 WHERE	p.nazwisko = p_nazwisko)
+				WHEN EXISTS (SELECT  1 
+					     FROM    pracownicy p
+					     JOIN    pracownicy pr ON (p.id_prac = pr.id_szefa)
+					     WHERE   p.nazwisko = p_nazwisko)
 				THEN 1 
 				ELSE 0 
 				END
@@ -272,10 +272,10 @@
 		FROM	pracownicy
 		WHERE	nazwisko = v_nazwisko;
 	
-		DBMS_OUTPUT.PUT_LINE('Usuniêto pracownika: ' || v_nazwisko);
+		DBMS_OUTPUT.PUT_LINE('UsuniÄ™to pracownika: ' || v_nazwisko);
 	EXCEPTION
 		WHEN ex_usuniecie_przelozonego THEN
-			RAISE_APPLICATION_ERROR(-20040, 'Nie mo¿esz usun¹æ prze³o¿onego');
+			RAISE_APPLICATION_ERROR(-20040, 'Nie moÅ¼esz usunÄ…Ä‡ przeÅ‚oÅ¼onego');
 		WHEN OTHERS THEN
 			DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 	END;
