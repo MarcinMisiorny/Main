@@ -25,14 +25,14 @@
 -- 3. Wyświetl nazwiska i roczne dochody pracowników.
 
 	SELECT	nazwisko
-		,placa_pod * 12
+			,placa_pod * 12
 	FROM	pracownicy; 
 	
 --------------------------------------------------------
 -- 4. Wyświetl nazwy etatów i sumaryczne miesięczne dochody pracowników (z uwzględnieniem płac dodatkowych)
 
 	SELECT	etat
-		,placa_pod + NVL(placa_dod, 0)
+			,placa_pod + NVL(placa_dod, 0)
 	FROM	pracownicy; 
 	
 --------------------------------------------------------
@@ -60,10 +60,10 @@
 -- 8. Wybierz poniższe dane o pracownikach zespołów 30 i 40 w kolejności malejących zarobków.
 
 	SELECT	id_prac
-		,nazwisko
-		,etat
-		,placa_pod
-		,id_zesp
+			,nazwisko
+			,etat
+			,placa_pod
+			,id_zesp
 	FROM	pracownicy 
 	WHERE	ID_ZESP IN (30, 40)
 	ORDER BY placa_pod DESC; 
@@ -72,8 +72,8 @@
 -- 9. Wybierz dane o pracownikach których płace podstawowe mieszczą się w przedziale 300 do 800 zł.
 
 	SELECT	nazwisko
-		,id_zesp
-		,placa_pod
+			,id_zesp
+			,placa_pod
 	FROM	pracownicy
 	WHERE	placa_pod BETWEEN 300 AND 800; 
 
@@ -81,8 +81,8 @@
 -- 10. Wyświetl poniższe informacje o pracownikach, których nazwisko kończy się na SKI
 
 	SELECT	nazwisko
-		,etat
-		,id_zesp
+			,etat
+			,id_zesp
 	FROM	pracownicy 
 	WHERE	nazwisko LIKE '%SKI'; 
 
@@ -90,9 +90,9 @@
 -- 11. Wyświetl poniższe informacje o tych pracownikach, którzy zarabiają powyżej 1000 złotych i posiadają szefa.
 
 	SELECT	id_prac
-		,id_szefa
-		,nazwisko
-		,placa_pod
+			,id_szefa
+			,nazwisko
+			,placa_pod
 	FROM	pracownicy 
 	WHERE	placa_pod > 1000
 	AND 	id_szefa IS NOT NULL;
@@ -102,10 +102,10 @@
 --	   zaczyna się na ‘M’ lub kończy na ‘SKI’.
 
 	SELECT	nazwisko
-		,id_zesp
+			,id_zesp
 	FROM	pracownicy WHERE id_zesp = 20
-	AND	(nazwisko LIKE 'M%'
-	OR	nazwisko LIKE '%SKI');
+	AND		(nazwisko LIKE 'M%'
+	OR		nazwisko LIKE '%SKI');
 	
 --------------------------------------------------------	   
 -- 13. Wyświetl nazwiska, etaty i stawki godzinowe tych pracowników, którzy nie są ani adiunktami ani
@@ -113,8 +113,8 @@
 --     uszereguj według stawek godzinowych pracowników (przyjmij 20-dniowy miesiąc pracy i 8-godzinny dzień pracy).
 
 	SELECT	nazwisko
-		,etat
-		,placa_pod/20/8 AS stawka
+			,etat
+			,placa_pod / 20 / 8 AS stawka
 	FROM	pracownicy 
 	WHERE	etat NOT IN ('ADIUNKT', 'ASYSTENT', 'STAZYSTA')
 	AND		placa_pod NOT BETWEEN 400 AND 800
@@ -122,13 +122,13 @@
 	
 --------------------------------------------------------
 -- 14.  Wyświetl poniższe informacje o pracownikach, dla których suma płacy podstawowej i dodatkowej
---	jest wyższa niż 1000 złotych. Wyniki uporządkuj według nazw etatów. Jeżeli dwóch pracowników
---	ma ten sam etat, to posortuj ich według nazwisk.
+--		jest wyższa niż 1000 złotych. Wyniki uporządkuj według nazw etatów. Jeżeli dwóch pracowników
+--		ma ten sam etat, to posortuj ich według nazwisk.
 
 	SELECT	nazwisko
-		,etat
-		,placa_pod
-		,placa_dod
+			,etat
+			,placa_pod
+			,placa_dod
 	FROM	pracownicy
 	WHERE	placa_pod + NVL(placa_dod, 0) > 1000
 	ORDER BY etat, nazwisko; 
@@ -146,10 +146,10 @@
 --
 
 	SELECT	nazwisko 
-		|| ' PRACUJE OD ' 
-		|| zatrudniony 
-		|| ' I ZARABIA ' 
-		|| placa_pod AS profesorowie
+			|| ' PRACUJE OD ' 
+			|| zatrudniony 
+			|| ' I ZARABIA ' 
+			|| placa_pod AS profesorowie
 	FROM	pracownicy
 	WHERE	etat = 'PROFESOR'
 	ORDER BY placa_pod DESC;
