@@ -14,16 +14,15 @@
 --------------------------------------------------------
 -- 1. Dla każdego pracownika wygeneruj kod składający się z dwóch pierwszych liter jego etatu i jego numeru
 
-	SELECT	nazwisko,
-	SUBSTR(etat, 1, 2) 
-	|| id_prac AS kod
+	SELECT	nazwisko
+		,SUBSTR(etat, 1, 2) || id_prac AS kod
 	FROM	pracownicy;
 
 --------------------------------------------------------
 -- 2. Wydaj wojnę literom „K”, „L”, „M” zamieniając je wszystkie na literę „X” w nazwiskach pracowników
 
-	SELECT	nazwisko,
-	TRANSLATE(nazwisko, 'KLM', 'XXX') AS wojna_literom
+	SELECT	nazwisko
+		,TRANSLATE(nazwisko, 'KLM', 'XXX') AS wojna_literom
 	FROM	pracownicy; 
 
 --------------------------------------------------------
