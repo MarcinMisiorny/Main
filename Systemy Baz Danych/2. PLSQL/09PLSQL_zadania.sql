@@ -1,22 +1,22 @@
 /*
 * --------------------------------------------
-* Rozdzia≥ 9. Wprowadzenie do PL/SQL ñ zadania
+* Rozdzia≈Ç 9. Wprowadzenie do PL/SQL ‚Äì zadania
 * --------------------------------------------
 * 
-* Plik tworzπcy bazÍ do ÊwiczeÒ: Pldemobld.sql
+* Plik tworzƒÖcy bazƒô do ƒáwicze≈Ñ: Pldemobld.sql
 * 
 * Plik z zadaniami: 09PLSQL_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siÍ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siƒô do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Zadeklaruj zmienne v_tekst i v_liczba o wartoúciach odpowiednio ÑWitaj, úwiecie!î i 1000.456.
---	  Wyúwietl wartoúci tych zmiennych.
+-- 1. Zadeklaruj zmienne v_tekst i v_liczba o warto≈õciach odpowiednio ‚ÄûWitaj, ≈õwiecie!‚Äù i 1000.456.
+--    Wy≈õwietl warto≈õci tych zmiennych.
 
 	DECLARE
-		v_tekst VARCHAR2(20) := 'Witaj úwiecie!';
+		v_tekst VARCHAR2(20) := 'Witaj ≈õwiecie!';
 		v_liczba NUMBER := 1000.456;
 	BEGIN
 		DBMS_OUTPUT.PUT_LINE('Zmienna v_tekst: ' || v_tekst);
@@ -25,12 +25,12 @@
 	/
 	
 --------------------------------------------------------
--- 2. Do zmiennych zadeklarowanych w zadaniu 1 dodaj odpowiednio: do zmiennej v_tekst wartoúÊ
---	  ÑWitaj, nowy dniu!î, do zmiennej v_liczba dodaj wartoúÊ 1015. Wyúwietl wartoúci tych
---	  zmiennych.
+-- 2. Do zmiennych zadeklarowanych w zadaniu 1 dodaj odpowiednio: do zmiennej v_tekst warto≈õƒá
+--   ‚ÄûWitaj, nowy dniu!‚Äù, do zmiennej v_liczba dodaj warto≈õƒá 1015. Wy≈õwietl warto≈õci tych
+--   zmiennych.
 
 	DECLARE
-		v_tekst VARCHAR2(20) := 'Witaj úwiecie!';
+		v_tekst VARCHAR2(20) := 'Witaj ≈õwiecie!';
 		v_liczba NUMBER := 1000.456;
 	BEGIN
 		v_tekst := v_tekst || ' Witaj, nowy dniu!';
@@ -42,20 +42,20 @@
 	/
 	
 --------------------------------------------------------
--- 3. Napisz program dodajπcy do siebie dwie liczby. Liczby, ktÛre majπ byÊ do siebie dodane,
---	  powinny byÊ podawane dynamicznie z konsoli.
+-- 3. Napisz program dodajƒÖcy do siebie dwie liczby. Liczby, kt√≥re majƒÖ byƒá do siebie dodane,
+--    powinny byƒá podawane dynamicznie z konsoli.
 
 	DECLARE
 		n_liczba_1 NUMBER;
 		n_liczba_2 NUMBER;
 		n_wynik NUMBER;
 	BEGIN
-		/* Uwaga. Nigdy nie naleøy przypisywaÊ wartoúci do zmiennych podstawianych w bloku deklaracji, 
-		poniewaø w sekcji obs≥ugi wyjπtkÛw nie moøna przechwyciÊ zg≥oszonych tu wyjπtkÛw zwiπzanych
-		z b≥Ídami przypisywania. Takie przypisania zawsze powinny znajdowaÊ siÍ w sekcji wykonawczej. */
+		/* Uwaga. Nigdy nie nale≈ºy przypisywaƒá warto≈õci do zmiennych podstawianych w bloku deklaracji, 
+		poniewa≈º w sekcji obs≈Çugi wyjƒÖtk√≥w nie mo≈ºna przechwyciƒá zg≈Çoszonych tu wyjƒÖtk√≥w zwiƒÖzanych
+		z b≈Çƒôdami przypisywania. Takie przypisania zawsze powinny znajdowaƒá siƒô w sekcji wykonawczej. */
 		
-		n_liczba_1 := &podaj_pierwszπ_liczbÍ;
-		n_liczba_2 := &podaj_drugπ_liczbÍ;	
+		n_liczba_1 := &podaj_pierwszƒÖ_liczbƒô;
+		n_liczba_2 := &podaj_drugƒÖ_liczbƒô;	
 		
 		n_wynik := n_liczba_1 + n_liczba_2;
 		
@@ -64,30 +64,30 @@
 	/
 	
 --------------------------------------------------------
--- 4. Napisz program, ktÛry oblicza pole powierzchni ko≥a i obwÛd ko≥a o podanym promieniu.
---	  W programie pos≥uø siÍ zdefiniowanπ przez siebie sta≥π PI = 3.14.
+-- 4. Napisz program, kt√≥ry oblicza pole powierzchni ko≈Ça i obw√≥d ko≈Ça o podanym promieniu.
+--    W programie pos≈Çu≈º siƒô zdefiniowanƒÖ przez siebie sta≈ÇƒÖ PI = 3.14.
 
 	DECLARE
 		n_pi CONSTANT NUMBER := 3.14;
-		n_promien NUMBER := &podaj_promieÒ_okrÍgu;
+		n_promien NUMBER := &podaj_promie≈Ñ_okrƒôgu;
 		n_obwod NUMBER;
 		n_pole NUMBER;
 	BEGIN
 		n_obwod := 2 * n_pi * n_promien;
 		n_pole := n_pi * POWER(n_promien, 2);
 	
-		DBMS_OUTPUT.PUT_LINE('ObwÛd ko≥a o promieniu rÛwnym ' || n_promien || ' wynosi: ' || n_obwod || ' jednostek');
-		DBMS_OUTPUT.PUT_LINE('Pole ko≥a o promieniu rÛwnym ' || n_promien || ' wynosi: ' || n_pole || ' jednostek');
+		DBMS_OUTPUT.PUT_LINE('Obw√≥d ko≈Ça o promieniu r√≥wnym ' || n_promien || ' wynosi: ' || n_obwod || ' jednostek');
+		DBMS_OUTPUT.PUT_LINE('Pole ko≈Ça o promieniu r√≥wnym ' || n_promien || ' wynosi: ' || n_pole || ' jednostek');
 	END;
 	/
 	
 --------------------------------------------------------
--- 5. Napisz program, ktÛry wyúwietli poniøsze informacje o najlepiej zarabiajπcym pracowniku
---	  Instytutu. Program powinien korzystaÊ ze zmiennych v_nazwisko i v_etat o typach identycznych
---	  z typami atrybutÛw, odpowiednio: nazwisko i etat w relacji pracownicy.
+-- 5. Napisz program, kt√≥ry wy≈õwietli poni≈ºsze informacje o najlepiej zarabiajƒÖcym pracowniku
+--    Instytutu. Program powinien korzystaƒá ze zmiennych v_nazwisko i v_etat o typach identycznych
+--    z typami atrybut√≥w, odpowiednio: nazwisko i etat w relacji pracownicy.
 
---	  Najlepiej zarabia pracownik WEGLARZ.
---	  Pracuje on jako DYREKTOR.
+--    Najlepiej zarabia pracownik WEGLARZ.
+--    Pracuje on jako DYREKTOR.
 
 	DECLARE
 		v_nazwisko pracownicy.nazwisko%TYPE;
@@ -95,12 +95,12 @@
 	BEGIN
 		--jednowierszowy kursor niejawny
 		SELECT	nazwisko
-				,etat 
+			,etat 
 		INTO	v_nazwisko
-				,v_etat 
+			,v_etat 
 		FROM	pracownicy 
-		WHERE	placa_pod = (SELECT	MAX(placa_pod) 
-							 FROM	pracownicy);
+		WHERE	placa_pod = (SELECT  MAX(placa_pod) 
+				     FROM    pracownicy);
 	
 		DBMS_OUTPUT.PUT_LINE('Najlepiej zarabia pracownik '|| v_nazwisko || '.');
 		DBMS_OUTPUT.PUT_LINE('Pracuje on jako ' || v_etat || '.');
@@ -108,8 +108,8 @@
 	/
 
 --------------------------------------------------------
--- 6. Napisz program dzia≥ajπcy identycznie jak program z zadania poprzedniego, tym razem jednak
---	  uøyj zmiennych rekordowych.
+-- 6. Napisz program dzia≈ÇajƒÖcy identycznie jak program z zadania poprzedniego, tym razem jednak
+--    u≈ºyj zmiennych rekordowych.
 
 	DECLARE
 		r_najlepiej_zarabiajacy pracownicy%ROWTYPE;
@@ -117,8 +117,8 @@
 		SELECT	* 
 		INTO	r_najlepiej_zarabiajacy
 		FROM	pracownicy
-		WHERE	placa_pod = (SELECT	MAX(placa_pod) 
-							 FROM	pracownicy);
+		WHERE	placa_pod = (SELECT  MAX(placa_pod) 
+				     FROM    pracownicy);
 	
 		DBMS_OUTPUT.PUT_LINE('Najlepiej zarabia pracownik ' || r_najlepiej_zarabiajacy.nazwisko || '.');
 		DBMS_OUTPUT.PUT_LINE('Pracuje on jako ' || r_najlepiej_zarabiajacy.etat || '.');
@@ -126,8 +126,8 @@
 	/
 
 --------------------------------------------------------
--- 7. Zdefiniuj w oparciu o typ NUMBER w≥asny podtyp o nazwie PIENIADZE i zdefiniuj zmiennπ
---	  tego typu. Wczytaj do niej roczne zarobki prof. S≥owiÒskiego.
+-- 7. Zdefiniuj w oparciu o typ NUMBER w≈Çasny podtyp o nazwie PIENIADZE i zdefiniuj zmiennƒÖ
+--    tego typu. Wczytaj do niej roczne zarobki prof. S≈Çowi≈Ñskiego.
 
 	DECLARE
 		SUBTYPE pieniadze IS NUMBER;
@@ -135,9 +135,9 @@
 		v_nazwisko pracownicy.nazwisko%TYPE;
 	BEGIN
 		SELECT	nazwisko
-				,placa_pod * 12 
+			,placa_pod * 12 
 		INTO	v_nazwisko
-				,n_pensja_roczna
+			,n_pensja_roczna
 		FROM	pracownicy
 		WHERE	nazwisko = 'SLOWINSKI';
 	
@@ -146,8 +146,8 @@
 	/
 	
 --------------------------------------------------------
--- 8. Napisz program, ktÛry bÍdzie wyúwietla≥, w zaleønoúci od wyboru uøytkownika, bieøπcπ datÍ
---	  systemowπ (1. przypadek) lub bieøπcy czas systemowy (2 przypadek). Pos≥uø siÍ instrukcjπ IF THEN ELSE
+-- 8. Napisz program, kt√≥ry bƒôdzie wy≈õwietla≈Ç, w zale≈ºno≈õci od wyboru u≈ºytkownika, bie≈ºƒÖcƒÖ datƒô
+--    systemowƒÖ (1. przypadek) lub bie≈ºƒÖcy czas systemowy (2 przypadek). Pos≈Çu≈º siƒô instrukcjƒÖ IF THEN ELSE
 
 	DECLARE
 		n_parametr NUMBER;
@@ -176,8 +176,8 @@
 	/
 	
 --------------------------------------------------------
--- 9. Napisz program dzia≥ajπcy identycznie jak program z zadania poprzedniego, tym razem pos≥uø
---	  siÍ instrukcjπ CASE.
+-- 9. Napisz program dzia≈ÇajƒÖcy identycznie jak program z zadania poprzedniego, tym razem pos≈Çu≈º
+--    siƒô instrukcjƒÖ CASE.
 
 	DECLARE
 		n_parametr NUMBER;
@@ -207,7 +207,7 @@
 	/
 	
 --------------------------------------------------------
--- 10. Napisz program, ktÛry bÍdzie dzia≥a≥ tak d≥ugo, jak d≥ugo nie nadejdzie 25 sekunda dowolnej minuty.
+-- 10. Napisz program, kt√≥ry bƒôdzie dzia≈Ça≈Ç tak d≈Çugo, jak d≈Çugo nie nadejdzie 25 sekunda dowolnej minuty.
 
 	DECLARE
 		n_sekunda NUMBER;
@@ -220,15 +220,15 @@
 			FROM	dual;
 		END LOOP;
 		
-		DBMS_OUTPUT.PUT_LINE ('Nadesz≥a '|| n_sekunda || ' sekunda!');
+		DBMS_OUTPUT.PUT_LINE ('Nadesz≈Ça '|| n_sekunda || ' sekunda!');
 	END;
 	/
 	
 --------------------------------------------------------
--- 11. Napisz program, ktÛry dla podanego przez uøytkownika n obliczy wartoúÊ wyraøenia
---	   n! = 1 * 2 * 3 * ... * n
+-- 11. Napisz program, kt√≥ry dla podanego przez u≈ºytkownika n obliczy warto≈õƒá wyra≈ºenia
+--     n! = 1 * 2 * 3 * ... * n
 
--- wersja z pÍtlπ FOR
+-- wersja z pƒôtlƒÖ FOR
 
 	DECLARE
 		n_silnia NUMBER;
@@ -249,7 +249,7 @@
 	END;
 	/
 	
--- wersja z pÍtlπ WHILE
+-- wersja z pƒôtlƒÖ WHILE
 	DECLARE
 		n_silnia NUMBER;
 		n_poczatkowe_n NUMBER;
@@ -269,10 +269,10 @@
 	/
 	
 --------------------------------------------------------
--- 12. Napisz program ktÛry wyliczy, kiedy w XXI wieku bÍdπ piπtki przypadajπce na 13 dzieÒ
---	   miesiπca.
+-- 12. Napisz program kt√≥ry wyliczy, kiedy w XXI wieku bƒôdƒÖ piƒÖtki przypadajƒÖce na 13 dzie≈Ñ
+--     miesiƒÖca.
 	
-	ALTER SESSION SET NLS_TERRITORY = 'POLAND'; --zmiana parametrÛw sesji, aby piπtek by≥ piπtym dniem tygodnia
+	ALTER SESSION SET NLS_TERRITORY = 'POLAND'; --zmiana parametr√≥w sesji, aby piƒÖtek by≈Ç piƒÖtym dniem tygodnia
 	
 	DECLARE
 		d_data_pocz DATE;
@@ -289,7 +289,8 @@
 				DBMS_OUTPUT.PUT_LINE(TO_CHAR(d_data_pocz, 'DD-MM-YYYY'));
 			END IF;
 	
-			d_data_pocz := d_data_pocz + 7; -- 1999-12-31 to piπtek, dlatego nie trzeba iterowaÊ dzieÒ po dniu, moøna od razu tygniami
+			d_data_pocz := d_data_pocz + 7; -- 1999-12-31 to piƒÖtek, dlatego nie trzeba iterowaƒá dzie≈Ñ po dniu, 
+							-- mo≈ºna od razu tygodniami
 	
 			v_dzien_miesiaca := TO_CHAR(d_data_pocz, 'dd');
 			v_numer_dnia_tygodnia := TO_CHAR(d_data_pocz, 'd');
