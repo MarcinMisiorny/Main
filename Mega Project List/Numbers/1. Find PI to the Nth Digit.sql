@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION fn_pi
 (p_precision IN NUMBER) 
 RETURN NUMBER
 IS
-  n_pi NUMBER;
+    n_pi NUMBER;
   ex_too_big_number EXCEPTION;
   ex_negative_number EXCEPTION;
 BEGIN
