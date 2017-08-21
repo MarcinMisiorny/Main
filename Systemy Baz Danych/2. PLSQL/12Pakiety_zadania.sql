@@ -1,21 +1,21 @@
 /*
 * --------------------------------------------
-* Rozdzia³ 12. Pakiety, dynamiczny SQL – zadania
+* RozdziaÅ‚ 12. Pakiety, dynamiczny SQL â€“ zadania
 * --------------------------------------------
 * 
-* Plik tworz¹cy bazê do æwiczeñ: Pldemobld.sql
+* Plik tworzÄ…cy bazÄ™ do Ä‡wiczeÅ„: Pldemobld.sql
 * 
 * Plik z zadaniami: 12Pakiety_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siê do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siÄ™ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Napisz pakiet KONWERSJA zawieraj¹cy funkcje CELS_TO_FAHR (konwertuj¹c¹ skalê Celsjusza na
---	  skalê Fahrenheita) i FAHR_TO_CELS (konwertuj¹c¹ skalê Fahrenheita na skalê Celsjusza).
---	  Wskazówka:
---	  TC = 5/9 * (TF - 32) TF = 9/5 * TC + 32
+-- 1. Napisz pakiet KONWERSJA zawierajÄ…cy funkcje CELS_TO_FAHR (konwertujÄ…cÄ… skalÄ™ Celsjusza na
+--    skalÄ™ Fahrenheita) i FAHR_TO_CELS (konwertujÄ…cÄ… skalÄ™ Fahrenheita na skalÄ™ Celsjusza).
+--    WskazÃ³wka:
+--    TC = 5/9 * (TF - 32) TF = 9/5 * TC + 32
 
 	CREATE OR REPLACE PACKAGE konwersja
 	IS
@@ -56,18 +56,18 @@
 	/
 
 
--- 2. Przetestuj dzia³anie zmiennych pakietowych. W tym celu utwórz pakiet o nazwie ZMIENNE, w jego
---	  specyfikacji zadeklaruj:
---	  · zmienn¹ vLicznik typu numerycznego, zmienn¹ zainicjalizuj wartoœci¹ 0,
---	  · procedury: ZwiekszLicznik, ZmniejszLicznik oraz funkcjê PokazLicznik.
---	  Nastêpnie w ciele pakietu zaimplementuj:
---	  · procedurê ZwiekszLicznik – jej zadaniem bêdzie zwiêkszenie aktualnej wartoœci zmiennej
---	  vLicznik o 1 i wypisanie na konsoli tekstu „Zwiêkszono”,
---	  · procedurê ZmniejszLicznik – jej zadaniem bêdzie zmniejszenie aktualnej wartoœci zmiennej
---	  vLicznik o 1 i wypisanie na konsoli tekstu „Zmniejszono”,
---	  · funkcjê PokazLicznik – jej wartoœci¹ zwracan¹ bêdzie aktualna wartoœci zmiennej vLicznik,
---	  · czêœæ inicjalizacyjn¹ pakietu – dokona ona ustawienia wartoœci zmiennej vLicznik na 1 i wypisze
---	  na konsoli tekst „Zainicjalizowano”.
+-- 2. Przetestuj dziaÅ‚anie zmiennych pakietowych. W tym celu utwÃ³rz pakiet o nazwie ZMIENNE, w jego
+--    specyfikacji zadeklaruj:
+--    Â· zmiennÄ… vLicznik typu numerycznego, zmiennÄ… zainicjalizuj wartoÅ›ciÄ… 0,
+--    Â· procedury: ZwiekszLicznik, ZmniejszLicznik oraz funkcjÄ™ PokazLicznik.
+--    NastÄ™pnie w ciele pakietu zaimplementuj:
+--    Â· procedurÄ™ ZwiekszLicznik â€“ jej zadaniem bÄ™dzie zwiÄ™kszenie aktualnej wartoÅ›ci zmiennej
+--    vLicznik o 1 i wypisanie na konsoli tekstu â€ZwiÄ™kszonoâ€,
+--    Â· procedurÄ™ ZmniejszLicznik â€“ jej zadaniem bÄ™dzie zmniejszenie aktualnej wartoÅ›ci zmiennej
+--    vLicznik o 1 i wypisanie na konsoli tekstu â€Zmniejszonoâ€,
+--    Â· funkcjÄ™ PokazLicznik â€“ jej wartoÅ›ciÄ… zwracanÄ… bÄ™dzie aktualna wartoÅ›ci zmiennej vLicznik,
+--    Â· czÄ™Å›Ä‡ inicjalizacyjnÄ… pakietu â€“ dokona ona ustawienia wartoÅ›ci zmiennej vLicznik na 1 i wypisze
+--    na konsoli tekst â€Zainicjalizowanoâ€.
 
 	CREATE OR REPLACE PACKAGE zmienne
 	IS
@@ -88,7 +88,7 @@
 		BEGIN
 			vlicznik := vlicznik + 1;
 			
-			DBMS_OUTPUT.PUT_LINE('Zwiêkszono');
+			DBMS_OUTPUT.PUT_LINE('ZwiÄ™kszono');
 		END zwiekszlicznik;
 		
 		PROCEDURE zmniejszlicznik
@@ -113,9 +113,8 @@
 	/
 
 
--- 3. Zaprojektuj procedurê IleRekordow, której parametrem bêdzie nazwa relacji. Procedura ma za zadanie
---	  wypisaæ liczbê rekordów relacji. Przy konstrukcji funkcji wykorzystaj mechanizm dynamicznego
---	  SQL’a.
+-- 3. Zaprojektuj procedurÄ™ IleRekordow, ktÃ³rej parametrem bÄ™dzie nazwa relacji. Procedura ma za zadanie
+--    wypisaÄ‡ liczbÄ™ rekordÃ³w relacji. Przy konstrukcji funkcji wykorzystaj mechanizm dynamicznego SQLâ€™a.
 
 	CREATE OR REPLACE PROCEDURE ilerekordow 
 	(p_nazwa_relacji IN VARCHAR2)
@@ -124,26 +123,26 @@
 		n_ile_rekordow NUMBER;
 	BEGIN
 		v_sql_stmt := 'SELECT	COUNT(*)
-					   FROM		' 
-					   || p_nazwa_relacji;
+			       FROM	' 
+			       || p_nazwa_relacji;
 		
 		EXECUTE IMMEDIATE v_sql_stmt
-		INTO			  n_ile_rekordow;
+		INTO 		  n_ile_rekordow;
 	
-		DBMS_OUTPUT.PUT_LINE('Liczba rekordów relacji ' || UPPER(p_nazwa_relacji) || ': ' || n_ile_rekordow);
+		DBMS_OUTPUT.PUT_LINE('Liczba rekordÃ³w relacji ' || UPPER(p_nazwa_relacji) || ': ' || n_ile_rekordow);
 	END ilerekordow;
 	/
 
 
--- 4. Zaprojektuj pakiet o nazwie MODYFIKACJE. Pakiet ma zawieraæ nastêpuj¹ce procedury:
---	  · DodajKolumne(relacja, kolumna, typ_wartoœci) – dodaje do wskazanej parametrem relacji now¹
---	  kolumnê (parametr) o danym typie wartoœci (parametr),
---	  · UsuñKolumne(relacja, kolumna) – usuwa ze wskazanej parametrem relacji wskazan¹ kolumnê
---	  (parametr),
---	  · ZmieñTypKolumny(relacja, kolumna, typ_wartoœci, czy_zachowaæ_dane) – zmienia typ kolumny
---	  (parametr) wskazanej relacji (parametr) na podany (parametr), ostatni parametr ma wskazywaæ,
---	  czy dane modyfikowanej kolumny maj¹ zostaæ zachowane czy te¿ usuniête.
---	  Pakiet ma wykorzystywaæ mechanizm dynamicznego SQL’a.
+-- 4. Zaprojektuj pakiet o nazwie MODYFIKACJE. Pakiet ma zawieraÄ‡ nastÄ™pujÄ…ce procedury:
+--    Â· DodajKolumne(relacja, kolumna, typ_wartoÅ›ci) â€“ dodaje do wskazanej parametrem relacji nowÄ…
+--    kolumnÄ™ (parametr) o danym typie wartoÅ›ci (parametr),
+--    Â· UsuÅ„Kolumne(relacja, kolumna) â€“ usuwa ze wskazanej parametrem relacji wskazanÄ… kolumnÄ™
+--    (parametr),
+--    Â· ZmieÅ„TypKolumny(relacja, kolumna, typ_wartoÅ›ci, czy_zachowaÄ‡_dane) â€“ zmienia typ kolumny
+--    (parametr) wskazanej relacji (parametr) na podany (parametr), ostatni parametr ma wskazywaÄ‡,
+--    czy dane modyfikowanej kolumny majÄ… zostaÄ‡ zachowane czy teÅ¼ usuniÄ™te.
+--    Pakiet ma wykorzystywaÄ‡ mechanizm dynamicznego SQLâ€™a.
 
 	CREATE OR REPLACE PACKAGE modyfikacje
 	IS
@@ -174,11 +173,11 @@
 			v_sql_stmt VARCHAR2(100);
 		BEGIN
 			v_sql_stmt := 'ALTER TABLE ' 
-						  || p_relacja 
-						  || ' ADD '
-						  || p_kolumna 
-						  || ' '
-						  || p_typ_wartosci;
+				      || p_relacja 
+				      || ' ADD '
+				      || p_kolumna 
+				      || ' '
+				      || p_typ_wartosci;
 
 			EXECUTE IMMEDIATE v_sql_stmt;
 		END;
@@ -190,9 +189,9 @@
 			v_sql_stmt VARCHAR2(100);
 		BEGIN
 			v_sql_stmt := 'ALTER TABLE ' 
-						  || p_relacja 
-						  || ' DROP COLUMN '
-						  || p_kolumna;
+				      || p_relacja 
+				      || ' DROP COLUMN '
+				      || p_kolumna;
 
 			EXECUTE IMMEDIATE v_sql_stmt;
 		END;
@@ -208,26 +207,26 @@
 		BEGIN
 			IF UPPER(p_czy_zachowac_dane) IN ('1', 'Y', 'T', 'TAK') THEN
 				v_sql_1_stmt := 'ALTER TABLE ' 
-								|| p_relacja 
-								|| ' MODIFY '
-								|| p_kolumna 
-								|| ' '
-								|| p_typ_wartosci;
+						|| p_relacja 
+						|| ' MODIFY '
+						|| p_kolumna 
+						|| ' '
+						|| p_typ_wartosci;
 							
 				EXECUTE IMMEDIATE v_sql_1_stmt;
 			ELSIF UPPER(p_czy_zachowac_dane) IN ('0', 'N', 'NIE') THEN
 				v_sql_1_stmt := 'ALTER TABLE ' 
-								|| p_relacja 
-								|| ' MODIFY '
-								|| p_kolumna 
-								|| ' '
-								|| p_typ_wartosci;
+						|| p_relacja 
+						|| ' MODIFY '
+						|| p_kolumna 
+						|| ' '
+						|| p_typ_wartosci;
 				
 				v_sql_2_stmt := 'UPDATE '
-								|| p_relacja
-								|| ' SET '
-								|| p_kolumna
-								|| ' = NULL';
+						|| p_relacja
+						|| ' SET '
+						|| p_kolumna
+						|| ' = NULL';
 				
 				EXECUTE IMMEDIATE v_sql_1_stmt;
 				EXECUTE IMMEDIATE v_sql_2_stmt;
