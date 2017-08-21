@@ -1,35 +1,35 @@
 /*
 * --------------------------------------------
-* Rozdzia³ 11. Procedury i funkcje
-* sk³adowane – zadania
+* RozdziaÅ‚ 11. Procedury i funkcje
+* skÅ‚adowane â€“ zadania
 * --------------------------------------------
 * 
-* Plik tworz¹cy bazê do æwiczeñ: Pldemobld.sql
+* Plik tworzÄ…cy bazÄ™ do Ä‡wiczeÅ„: Pldemobld.sql
 * 
 * Plik z zadaniami: 11Procedury_zadania.pdf
 * 
-* Prefiks zmiennych odnosi siê do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
+* Prefiks zmiennych odnosi siÄ™ do ich typu, np. n_zmienna to zmienna o typie NUMBER, v_zmienna - typ VARCHAR2, etc.
 * 
 */
 
 --------------------------------------------------------
--- 1. Napisz procedurê PODWYZKA, która wszystkim pracownikom zespo³u (parametr) podniesie p³acê
---	  podstawow¹ o podany procent (parametr). Domyœlnie podwy¿ka powinna wynosiæ 15%.
+-- 1. Napisz procedurÄ™ PODWYZKA, ktÃ³ra wszystkim pracownikom zespoÅ‚u (parametr) podniesie pÅ‚acÄ™
+--    podstawowÄ… o podany procent (parametr). DomyÅ›lnie podwyÅ¼ka powinna wynosiÄ‡ 15%.
 
 	CREATE OR REPLACE PROCEDURE podwyzka 
 	(p_id_zespolu IN NUMBER
 	,p_procent IN NUMBER) 
 	IS
 	BEGIN
-		UPDATE	PRACOWNICY
-		SET		placa_pod = placa_pod + placa_pod * p_procent / 100
+		UPDATE	pracownicy
+		SET	placa_pod = placa_pod + placa_pod * p_procent / 100
 		WHERE	id_zesp = p_id_zespolu;
 	END podwyzka;
 	/
 
 
--- 2. Dodaj do powy¿szej procedury obs³ugê b³êdu – jeœli podano identyfikator nieistniej¹cego zespo³u to procedura
---	  powinna zasygnalizowaæ odpowiedni b³¹d.
+-- 2. Dodaj do powyÅ¼szej procedury obsÅ‚ugÄ™ bÅ‚Ä™du â€“ jeÅ›li podano identyfikator nieistniejÄ…cego zespoÅ‚u to procedura
+--    powinna zasygnalizowaÄ‡ odpowiedni bÅ‚Ä…d.
 
 	CREATE OR REPLACE PROCEDURE podwyzka 
 	(p_id_zespolu IN NUMBER
@@ -39,9 +39,9 @@
 		ex_bledny_zespol EXCEPTION;
 	BEGIN
 		SELECT	CASE
-				WHEN EXISTS (SELECT 1 
-							 FROM	zespoly 
-							 WHERE	id_zesp = p_id_zespolu) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    zespoly 
+					     WHERE   id_zesp = p_id_zespolu) 
 				THEN 1 
 				ELSE 0 
 				END 
@@ -52,21 +52,21 @@
 			RAISE ex_bledny_zespol;
 		ELSE
 			UPDATE	pracownicy
-			SET		placa_pod = placa_pod + placa_pod * p_procent / 100
+			SET	placa_pod = placa_pod + placa_pod * p_procent / 100
 			WHERE	id_zesp = p_id_zespolu;
 		END IF;
 	EXCEPTION
 		WHEN ex_bledny_zespol THEN
-			RAISE_APPLICATION_ERROR(-20001, 'Podano identyfikator nieistniej¹cego zespo³u');
+			RAISE_APPLICATION_ERROR(-20001, 'Podano identyfikator nieistniejÄ…cego zespoÅ‚u');
 		WHEN OTHERS THEN
 			DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 	END podwyzka;
 	/
 
 
--- 3. Napisz procedurê LICZBA_PRACOWNIKOW, która dla podanej nazwy zespo³u (parametr) zwróci
---	  liczbê pracowników zatrudnionych w tym zespole. Liczba pracowników powinna byæ zwrócona przez
---	  argument wyjœciowy. Procedura powinna obs³ugiwaæ podanie nieprawid³owej nazwy zespo³u.
+-- 3. Napisz procedurÄ™ LICZBA_PRACOWNIKOW, ktÃ³ra dla podanej nazwy zespoÅ‚u (parametr) zwrÃ³ci
+--    liczbÄ™ pracownikÃ³w zatrudnionych w tym zespole. Liczba pracownikÃ³w powinna byÄ‡ zwrÃ³cona przez
+--    argument wyjÅ›ciowy. Procedura powinna obsÅ‚ugiwaÄ‡ podanie nieprawidÅ‚owej nazwy zespoÅ‚u.
 
 	CREATE OR REPLACE PROCEDURE liczba_pracownikow
 	(p_nazwa_zespolu IN VARCHAR2
@@ -76,9 +76,9 @@
 		ex_bledny_zespol EXCEPTION;
 	BEGIN
 		SELECT	CASE
-				WHEN EXISTS (SELECT	1 
-							 FROM	zespoly 
-							 WHERE	nazwa = p_nazwa_zespolu) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    zespoly 
+					     WHERE   nazwa = p_nazwa_zespolu) 
 				THEN 1 
 				ELSE 0 
 				END
@@ -96,7 +96,7 @@
 		END IF;
 	EXCEPTION
 		WHEN ex_bledny_zespol THEN
-			RAISE_APPLICATION_ERROR(-20001, 'Podano nazwê nieistniej¹cego zespo³u');
+			RAISE_APPLICATION_ERROR(-20001, 'Podano nazwÄ™ nieistniejÄ…cego zespoÅ‚u');
 		WHEN OTHERS THEN
 			DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);	
 	END liczba_pracownikow;
@@ -111,14 +111,14 @@
 		v_nazwa_zespolu := 'ALGORYTMY';
 		
 		liczba_pracownikow(v_nazwa_zespolu
-						   ,n_liczba_pracownikow);
+				  ,n_liczba_pracownikow);
 		
 		IF n_liczba_pracownikow = 0 THEN
-			v_komunikat := 'Zespó³ ' || v_nazwa_zespolu || ' nie ma pracowników.';
+			v_komunikat := 'ZespÃ³Å‚ ' || v_nazwa_zespolu || ' nie ma pracownikÃ³w.';
 		ELSIF n_liczba_pracownikow = 1 THEN
-			v_komunikat := 'Zespó³ ' || v_nazwa_zespolu || ' ma 1 pracownika.';
+			v_komunikat := 'ZespÃ³Å‚ ' || v_nazwa_zespolu || ' ma 1 pracownika.';
 		ELSE
-			v_komunikat := 'Zespó³ ' || v_nazwa_zespolu || ' ma ' || n_liczba_pracownikow || ' pracowników.';
+			v_komunikat := 'ZespÃ³Å‚ ' || v_nazwa_zespolu || ' ma ' || n_liczba_pracownikow || ' pracownikÃ³w.';
 		END IF;
 		
 		DBMS_OUTPUT.PUT_LINE(v_komunikat);
@@ -126,11 +126,11 @@
 	/
 
 
--- 4. Napisz procedurê NOWY_PRACOWNIK, która bêdzie s³u¿y³a do wstawiania nowych pracowników.
---	  Procedura powinna przyjmowaæ nazwisko nowego pracownika, nazwê zespo³u, nazwisko jego szefa i
---	  wartoœæ p³acy podstawowej. Domyœln¹ dat¹ zatrudnienia jest bie¿¹ca data, domyœlnym etatem
---	  STA¯YSTA. Procedura powinna obs³ugiwaæ b³êdy podania b³êdnego zespo³u i b³êdnego nazwiska
---	  szefa.
+-- 4. Napisz procedurÄ™ NOWY_PRACOWNIK, ktÃ³ra bÄ™dzie sÅ‚uÅ¼yÅ‚a do wstawiania nowych pracownikÃ³w.
+--    Procedura powinna przyjmowaÄ‡ nazwisko nowego pracownika, nazwÄ™ zespoÅ‚u, nazwisko jego szefa i
+--    wartoÅ›Ä‡ pÅ‚acy podstawowej. DomyÅ›lnÄ… datÄ… zatrudnienia jest bieÅ¼Ä…ca data, domyÅ›lnym etatem
+--    STAÅ»YSTA. Procedura powinna obsÅ‚ugiwaÄ‡ bÅ‚Ä™dy podania bÅ‚Ä™dnego zespoÅ‚u i bÅ‚Ä™dnego nazwiska
+--    szefa.
 
 	CREATE OR REPLACE PROCEDURE nowy_pracownik
 	(p_nazwisko_pracownika IN VARCHAR2
@@ -147,9 +147,9 @@
 		ex_nie_istnieje_szef EXCEPTION;
 	BEGIN
 		SELECT	CASE
-				WHEN EXISTS (SELECT	1 
-							 FROM	zespoly 
-							 WHERE	nazwa = p_nazwa_zespolu_pracownika) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    zespoly 
+					     WHERE   nazwa = p_nazwa_zespolu_pracownika) 
 				THEN 1 
 				ELSE 0 
 				END
@@ -166,12 +166,12 @@
 		END IF;
 		
 		SELECT	CASE
-				WHEN EXISTS (SELECT	1 
-							 FROM	pracownicy p
-							 WHERE	p.nazwisko = p_nazwisko_szefa_pracownika
-							 AND	(SELECT	COUNT(*)
-									 FROM	pracownicy
-									 WHERE	id_szefa = p.id_prac) > 0) 
+				WHEN EXISTS (SELECT  1 
+					     FROM    pracownicy p
+					     WHERE   p.nazwisko = p_nazwisko_szefa_pracownika
+					     AND     (SELECT  COUNT(*)
+						      FROM    pracownicy
+						      WHERE   id_szefa = p.id_prac) > 0) 
 				THEN 1 
 				ELSE 0 
 				END
@@ -188,37 +188,37 @@
 		END IF;
 		
 		INSERT INTO pracownicy	(ID_PRAC
-								,NAZWISKO
-								,ETAT
-								,ID_SZEFA
-								,ZATRUDNIONY 
-								,PLACA_POD
-								,PLACA_DOD
-								,ID_ZESP)
+					,NAZWISKO
+					,ETAT
+					,ID_SZEFA
+					,ZATRUDNIONY 
+					,PLACA_POD
+					,PLACA_DOD
+					,ID_ZESP)
 		VALUES 
-								((SELECT	MAX(id_prac) + 10
-								  FROM		pracownicy)
-								,UPPER(p_nazwisko_pracownika)
-								,'STAZYSTA'
-								,n_id_szefa
-								,SYSDATE
-								,p_placa_pod_pracownika
-								,NULL
-								,n_id_zespolu);
+					((SELECT  MAX(id_prac) + 10
+					  FROM	  pracownicy)
+					,UPPER(p_nazwisko_pracownika)
+					,'STAZYSTA'
+					,n_id_szefa
+					,SYSDATE
+					,p_placa_pod_pracownika
+					,NULL
+					,n_id_zespolu);
 		
 	EXCEPTION
 		WHEN ex_nie_istnieje_zespol THEN
-			RAISE_APPLICATION_ERROR(-20001, 'Podano nazwê nieistniej¹cego zespo³u');
+			RAISE_APPLICATION_ERROR(-20001, 'Podano nazwÄ™ nieistniejÄ…cego zespoÅ‚u');
 		WHEN ex_nie_istnieje_szef THEN
-			RAISE_APPLICATION_ERROR(-20002, 'Podano b³êdne nazwisko szefa');
+			RAISE_APPLICATION_ERROR(-20002, 'Podano bÅ‚Ä™dne nazwisko szefa');
 		WHEN OTHERS THEN
 			DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);	
 	END nowy_pracownik;
 	/
 
 
--- 5. Napisz funkcjê PLACA_NETTO, która dla podanej p³acy brutto (parametr) i podanej stawki podatku
---	  (parametr o wartoœci domyœlnej 20%) wyliczy p³acê netto.
+-- 5. Napisz funkcjÄ™ PLACA_NETTO, ktÃ³ra dla podanej pÅ‚acy brutto (parametr) i podanej stawki podatku
+--    (parametr o wartoÅ›ci domyÅ›lnej 20%) wyliczy pÅ‚acÄ™ netto.
 	
 	CREATE OR REPLACE FUNCTION placa_netto
 	(p_placa_brutto NUMBER
@@ -235,9 +235,9 @@
 	/
 
 
--- 6. Napisz funkcjê SILNIA, która dla danego n obliczy n! = 1 * 2 * ... * n (zastosuj iteracjê)
+-- 6. Napisz funkcjÄ™ SILNIA, ktÃ³ra dla danego n obliczy n! = 1 * 2 * ... * n (zastosuj iteracjÄ™)
 
-	--wersja 1, z pêtl¹ WHILE
+	--wersja 1, z pÄ™tlÄ… WHILE
 	CREATE OR REPLACE FUNCTION silnia
 	(p_N NUMBER)
 	RETURN NUMBER
@@ -259,7 +259,7 @@
 	END silnia;
 	/
 
-	--wersja 2, z pêtl¹ FOR
+	--wersja 2, z pÄ™tlÄ… FOR
 	CREATE OR REPLACE FUNCTION silnia
 	(p_N NUMBER)
 	RETURN NUMBER
@@ -272,7 +272,7 @@
 		n_poczatkowe_n := p_N;
 		n_suma := 1;
 		
-		FOR i IN 1.. n_poczatkowe_n LOOP
+		FOR i IN 1 .. n_poczatkowe_n LOOP
 			n_suma := n_suma * n_silnia;
 			n_silnia := n_silnia - 1;
 		END LOOP;
@@ -282,7 +282,7 @@
 	/
 
 
--- 7. Napisz rekurencyjn¹ wersjê funkcji SILNIA
+-- 7. Napisz rekurencyjnÄ… wersjÄ™ funkcji SILNIA
 	
 	CREATE OR REPLACE FUNCTION silnia
 	(p_N NUMBER)
@@ -298,7 +298,7 @@
 	/
 
 
--- 8. Napisz funkcjê, która dla daty zatrudnienia pracownika wylicza sta¿ pracy w latach.
+-- 8. Napisz funkcjÄ™, ktÃ³ra dla daty zatrudnienia pracownika wylicza staÅ¼ pracy w latach.
 
 	ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -316,6 +316,6 @@
 
 	--sprawdzenie
 	SELECT	nazwisko
-			,staz_pracy(zatrudniony) AS staz_pracy 
+		,staz_pracy(zatrudniony) AS staz_pracy 
 	FROM	pracownicy;
 
