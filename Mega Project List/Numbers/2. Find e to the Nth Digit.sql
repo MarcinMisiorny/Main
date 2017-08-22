@@ -21,10 +21,10 @@ CREATE OR REPLACE FUNCTION fn_e_v1
 (p_precision IN NUMBER) 
 RETURN NUMBER
 IS
-    n_e NUMBER;
+	n_e NUMBER;
 	
 	ex_negative_number EXCEPTION;
-    ex_too_big_number EXCEPTION;
+	ex_too_big_number EXCEPTION;
 BEGIN
 	IF p_precision < 0 THEN 
 		RAISE ex_negative_number;
