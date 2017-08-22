@@ -15,6 +15,8 @@
 CREATE OR REPLACE PROCEDURE pr_fibonacci_sequence
 (p_n_value IN NUMBER)
 IS
+	ex_negative_number EXCEPTION;
+	
 	-- main calculating recursive function
 	FUNCTION fn_calc_fibonacci_sequence
 	(p_element IN NUMBER) 
@@ -52,8 +54,10 @@ IS
 	FUNCTION fn_sum_sequence_elements
 	(p_element IN NUMBER)
 	RETURN NUMBER IS
-		n_result NUMBER := 0;
+		n_result NUMBER;
 	BEGIN
+		n_result := 0;
+	
 		FOR i IN 1 .. p_element LOOP
 			n_result := n_result + fn_calc_fibonacci_sequence(i);
 		END LOOP;
@@ -61,9 +65,18 @@ IS
 		RETURN n_result;
 	END;
 BEGIN
+	IF p_n_value < 0 THEN 
+		RAISE ex_negative_number;
+	END IF;
+
 	DBMS_OUTPUT.PUT_LINE('List of Fibonacci numbers for n = '|| p_n_value || ' is: ' || fn_create_sequence(p_n_value));
 	DBMS_OUTPUT.PUT_LINE('Fibonacci sequence for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_calc_fibonacci_sequence(p_n_value)));
 	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
+EXCEPTION
+	WHEN ex_negative_number THEN
+        RAISE_APPLICATION_ERROR(-20001,
+        'Value of parameter "precision" should not be a negative number. Value given by user: '
+        || p_n_value);
 END pr_fibonacci_sequence;
 /
 
