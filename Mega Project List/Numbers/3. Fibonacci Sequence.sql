@@ -69,9 +69,9 @@ BEGIN
 		RAISE ex_negative_number;
 	END IF;
 
-	DBMS_OUTPUT.PUT_LINE('List of Fibonacci numbers for n = '|| p_n_value || ' is: ' || fn_create_sequence(p_n_value));
-	DBMS_OUTPUT.PUT_LINE('Fibonacci sequence for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_calc_fibonacci_sequence(p_n_value)));
-	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
+	DBMS_OUTPUT.PUT_LINE('List of Fibonacci numbers for n = ' || p_n_value || ' is: ' || fn_create_sequence(p_n_value));
+	DBMS_OUTPUT.PUT_LINE('Fibonacci sequence for n = ' || p_n_value || ' is: ' || TO_CHAR(fn_calc_fibonacci_sequence(p_n_value)));
+	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = ' || p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
 EXCEPTION
 	WHEN ex_negative_number THEN
         	RAISE_APPLICATION_ERROR(-20001,
