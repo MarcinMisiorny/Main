@@ -74,9 +74,9 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
 EXCEPTION
 	WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Value of parameter "precision" should not be a negative number. Value given by user: '
-        || p_n_value);
+        	RAISE_APPLICATION_ERROR(-20001,
+        	'Value of parameter "precision" should not be a negative number. Value given by user: '
+        	|| p_n_value);
 END pr_fibonacci_sequence;
 /
 
