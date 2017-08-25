@@ -69,16 +69,22 @@ BEGIN
 		RAISE ex_negative_number;
 	END IF;
 
-	DBMS_OUTPUT.PUT_LINE('List of Fibonacci numbers for n = '|| p_n_value || ' is: ' || fn_create_sequence(p_n_value));
-	DBMS_OUTPUT.PUT_LINE('Fibonacci sequence for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_calc_fibonacci_sequence(p_n_value)));
-	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = '|| p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
+	DBMS_OUTPUT.PUT_LINE('List of Fibonacci numbers for n = ' || p_n_value || ' is: ' || fn_create_sequence(p_n_value));
+	DBMS_OUTPUT.PUT_LINE('Fibonacci sequence for n = ' || p_n_value || ' is: ' || TO_CHAR(fn_calc_fibonacci_sequence(p_n_value)));
+	DBMS_OUTPUT.PUT_LINE('Sum of Fibonacci numbers for n = ' || p_n_value || ' is: ' || TO_CHAR(fn_sum_sequence_elements(p_n_value)));
 EXCEPTION
 	WHEN ex_negative_number THEN
+<<<<<<< HEAD
         RAISE_APPLICATION_ERROR(-20001,
         'Value of parameter "precision" should not be a negative number. Value given by user: '
         || p_n_value);
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
+=======
+        	RAISE_APPLICATION_ERROR(-20001,
+        	'Value of parameter "precision" should not be a negative number. Value given by user: '
+        	|| p_n_value);
+>>>>>>> e72a392f11212b492a5f83d1b738514a28378450
 END pr_fibonacci_sequence;
 /
 
