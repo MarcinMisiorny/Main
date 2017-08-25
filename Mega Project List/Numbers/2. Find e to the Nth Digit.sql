@@ -105,6 +105,8 @@ EXCEPTION
         	RAISE_APPLICATION_ERROR(-20002,
         	'Value of parameter "precision" cannot be a negative number. Value given by user: '
         	|| p_precision);
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END fn_e_v2;
 /
 
