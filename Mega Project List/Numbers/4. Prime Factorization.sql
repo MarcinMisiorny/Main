@@ -53,13 +53,13 @@ BEGIN
 	 DBMS_OUTPUT.PUT_LINE(v_result);
 EXCEPTION
 	WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Input parameter cannot be a negative number. Value given by user: '
-        || p_input);
+		RAISE_APPLICATION_ERROR(-20001,
+		'Input parameter cannot be a negative number. Value given by user: '
+		|| p_input);
 	WHEN ex_too_low_number THEN
 		RAISE_APPLICATION_ERROR(-20002,
-        'Input parameter cannot be less than 2. Value given by user: '
-        || p_input);
+		'Input parameter cannot be less than 2. Value given by user: '
+		|| p_input);
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END pr_prime_factorization;
