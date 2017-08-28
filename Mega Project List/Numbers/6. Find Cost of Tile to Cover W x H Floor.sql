@@ -50,7 +50,7 @@ BEGIN
 	n_calculations := ROUND(n_area / n_area_covered * n_cost_per_unit ,2);
 	
 	DBMS_OUTPUT.PUT_LINE('You need to cover a total of ' || n_area || ' square meters.' || CHR(13)
-						|| 'The total cost will be: ' || n_calculations);
+							     || 'The total cost will be: ' || n_calculations);
 EXCEPTION
     WHEN ex_negative_number THEN
         RAISE_APPLICATION_ERROR(-20001,
