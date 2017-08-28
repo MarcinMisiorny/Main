@@ -11,7 +11,9 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /* My solution: */ 
-	
+
+SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE PROCEDURE pr_prime_factorization
 (p_input IN NUMBER)
 IS
