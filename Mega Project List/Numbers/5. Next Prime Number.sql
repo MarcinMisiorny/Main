@@ -19,17 +19,22 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /* My solution: */ 
+
+SET SERVEROUTPUT ON;
 	
 CREATE OR REPLACE PROCEDURE pr_prime_list
 (n_start_number IN NUMBER
-,n_how_many_primes IN NUMBER
-)
+,n_how_many_primes IN NUMBER)
 IS
 	n_start_number_val NUMBER;
 	n_counter NUMBER;
 	v_msg VARCHAR2(500);
 	v_result VARCHAR2(4000);
-
+	v_error_msg VARCHAR2(20);
+	v_error_parameter_msg VARCHAR2(10);
+	
+	ex_negative_number EXCEPTION;
+	
 	-- function finding prime numbers
 	FUNCTION fn_is_prime
 	(p_input_number NUMBER)
@@ -69,6 +74,16 @@ IS
 			|| p_input_number);
 	END;
 BEGIN
+	IF n_start_number < 1 THEN
+		v_error_msg := '"start number"';
+		v_error_parameter_msg := TO_CHAR(n_start_number);
+		RAISE ex_negative_number;
+	ELSIF n_how_many_primes < 1 THEN
+		v_error_msg := '"how many primes"';
+		v_error_parameter_msg := TO_CHAR(n_how_many_primes);
+		RAISE ex_negative_number;
+	END IF;	
+		
 	n_start_number_val := n_start_number;
 	n_counter := 0;
 
@@ -92,6 +107,10 @@ BEGIN
 	END IF;
 
 	DBMS_OUTPUT.PUT_LINE(v_msg || v_result);
+EXCEPTION
+    WHEN ex_negative_number THEN
+        RAISE_APPLICATION_ERROR(-20001,
+        'Parameter ' || v_error_msg || ' cannot be less than 1. Value given by User: ' || v_error_parameter_msg);
 END pr_prime_list;
 /
 
