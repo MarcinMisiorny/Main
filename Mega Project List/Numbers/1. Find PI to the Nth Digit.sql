@@ -18,6 +18,8 @@
 
 /* My solution: */ 
 
+SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE FUNCTION fn_pi 
 (p_precision IN NUMBER) 
 RETURN NUMBER
@@ -38,11 +40,11 @@ BEGIN
 EXCEPTION
     WHEN ex_too_big_number THEN
         RAISE_APPLICATION_ERROR(-20001,
-        'Max possible input value of parameter "precision" is 38. Value given by user: '
+        'Max possible input value of parameter "precision" is 38. Value given by User: '
         || p_precision);
     WHEN ex_negative_number THEN
         RAISE_APPLICATION_ERROR(-20002,
-        'Value of parameter "precision" cannot be a negative number. Value given by user: '
+        'Value of parameter "precision" cannot be a negative number. Value given by User: '
         || p_precision);
     WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20999, 
