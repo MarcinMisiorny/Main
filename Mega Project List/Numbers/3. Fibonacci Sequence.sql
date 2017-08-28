@@ -12,6 +12,8 @@
 
 /* My solution: */  
 
+SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE PROCEDURE pr_fibonacci_sequence
 (p_n_value IN NUMBER)
 IS
