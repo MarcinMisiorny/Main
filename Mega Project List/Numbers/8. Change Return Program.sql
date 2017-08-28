@@ -26,10 +26,10 @@ CREATE OR REPLACE PROCEDURE pr_change_return
 IS
 	CURSOR c_parsing(p_input_string VARCHAR2) IS
 	SELECT	TO_NUMBER(banknote) AS banknote
-			,COUNT(banknote) AS quantity
+		,COUNT(banknote) AS quantity
 	FROM(SELECT	TRIM(regexp_substr(p_input_string, '[^;]+', 1, LEVEL)) AS banknote
-		 FROM	dual
-		 CONNECT BY INSTR(p_input_string, ';', 1, LEVEL - 1) > 0)
+	     FROM	dual
+	     CONNECT BY INSTR(p_input_string, ';', 1, LEVEL - 1) > 0)
 	GROUP BY banknote
 	ORDER BY banknote DESC;
 	
@@ -93,9 +93,9 @@ BEGIN
 	END IF;
 
 EXCEPTION
-    WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Parameter ' || v_error_msg || ' cannot be less than 0.01. Value given by User: ' || v_error_parameter_msg);
+	WHEN ex_negative_number THEN
+        	RAISE_APPLICATION_ERROR(-20001,
+        	'Parameter ' || v_error_msg || ' cannot be less than 0.01. Value given by User: ' || v_error_parameter_msg);
 	WHEN ex_wrong_amount THEN
 		RAISE_APPLICATION_ERROR(-20002,
 		'Your cost (' || n_cost || ' PLN) is greater than your given amount (' || n_amount_given ||' PLN).');
