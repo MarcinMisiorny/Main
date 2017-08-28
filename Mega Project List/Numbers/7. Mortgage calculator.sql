@@ -54,12 +54,12 @@ BEGIN
 	v_total_interest := TRIM(TO_CHAR(ROUND((n_result * n_number_of_payments_val) - n_amount_borrowed, 2), '999G999G999D99')) ;
 	
 	DBMS_OUTPUT.PUT_LINE('Monthly pay: ' || TRIM(TO_CHAR(n_result, '999G999G999D99')) || CHR(13)
-						|| 'Total of ' || n_number_of_payments_val || ' mortgage payments: ' || v_total_payments || CHR(13)
-						|| 'Total interest: ' || v_total_interest || CHR(13)
-						|| 'Mortgage payoff date: ' || v_payoff_date || CHR(13)
-						|| CHR(13)
-						|| 'Payment per week: ' || TRIM(TO_CHAR(ROUND(n_result / 4, 2), '999G999G999D99')) || CHR(13)
-						|| 'Payment per year: ' || TRIM(TO_CHAR(ROUND(n_result * 12, 2), '999G999G999D99')));
+					     || 'Total of ' || n_number_of_payments_val || ' mortgage payments: ' || v_total_payments || CHR(13)
+					     || 'Total interest: ' || v_total_interest || CHR(13)
+					     || 'Mortgage payoff date: ' || v_payoff_date || CHR(13)
+					     || CHR(13)
+					     || 'Payment per week: ' || TRIM(TO_CHAR(ROUND(n_result / 4, 2), '999G999G999D99')) || CHR(13)
+					     || 'Payment per year: ' || TRIM(TO_CHAR(ROUND(n_result * 12, 2), '999G999G999D99')));
 
 EXCEPTION
     WHEN ex_negative_number THEN
