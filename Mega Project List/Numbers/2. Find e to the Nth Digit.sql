@@ -16,6 +16,8 @@
 
 /* My solution: */ 
 
+SET SERVEROUTPUT ON;
+
 -- first version, based on built in EXP function
 CREATE OR REPLACE FUNCTION fn_e_v1
 (p_precision IN NUMBER) 
