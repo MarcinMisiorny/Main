@@ -70,6 +70,8 @@ BEGIN
 		RAISE ex_negative_number;
 	ELSIF p_input_dec > 255 THEN
 		RAISE ex_too_big_number;
+	ELSIF INSTR(TO_CHAR(p_input_dec), ',') > 0 THEN
+		RAISE ex_wrong_number;
 	END IF;
 
 	v_temp := p_input_dec;
@@ -87,7 +89,7 @@ EXCEPTION
 	WHEN ex_too_big_number THEN
 		RAISE_APPLICATION_ERROR(-20002, 'Input digit cannot be greater than 255.  Value given by User: ' || p_input_dec);
 	WHEN ex_wrong_number THEN
-		RAISE_APPLICATION_ERROR(-20003, 'Input digit must be an integer.  Value given by User: ' || p_input_dec);
+		RAISE_APPLICATION_ERROR(-20003, 'Input digit must be an integer.  Number given by User: ' || p_input_dec);
 END fn_dec2bin;
 /
 
