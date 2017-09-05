@@ -52,9 +52,9 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('You need to cover a total of ' || n_area || ' square meters.' || CHR(13)
 							     || 'The total cost will be: ' || n_calculations);
 EXCEPTION
-    WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Parameter ' || v_error_msg || ' cannot be less than 1. Value given by User: ' || v_error_parameter_msg);
+	WHEN ex_negative_number THEN
+		RAISE_APPLICATION_ERROR(-20001,
+		'Parameter ' || v_error_msg || ' cannot be less than 1. Value given by User: ' || v_error_parameter_msg);
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END pr_flooring_calculator;
