@@ -22,7 +22,12 @@ CREATE OR REPLACE FUNCTION fn_calc
 RETURN NUMBER
 IS
 	v_result NUMBER;
+	ex_unknown_operation EXCEPTION;
 BEGIN
+	IF v_operation NOT IN ('+', '-', '*', '/', 'MOD', 'POWER', 'LOG') THEN
+		RAISE ex_unknown_operation;
+	END IF;
+
 	IF v_operation = '+' THEN
 		v_result := n_first_number + n_second_number;
 	ELSIF v_operation = '-'  THEN
@@ -31,14 +36,20 @@ BEGIN
 		v_result := n_first_number * n_second_number;
 	ELSIF v_operation = '/'  THEN
 		v_result := n_first_number / n_second_number;
-	ELSIF v_operation = 'MOD'  THEN
+	ELSIF v_operation = 'MOD' THEN
 		v_result := MOD(n_first_number, n_second_number);
-	ELSIF v_operation = 'POWER'  THEN
+	ELSIF v_operation = 'POWER' THEN
 		v_result := POWER(n_first_number, n_second_number);
-	ELSIF v_operation = 'LOG'  THEN
+	ELSIF v_operation = 'LOG' THEN
 		v_result := LOG(n_first_number, n_second_number);
 	END IF;
 RETURN v_result;
+EXCEPTION
+	WHEN ex_unknown_operation THEN
+		RAISE_APPLICATION_ERROR(-20001, 
+		'Unknown operation. Available: "+", "-", "*", "/", "MOD", "POWER", "LOG"');
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END fn_calc;
 /
 
