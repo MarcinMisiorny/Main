@@ -62,9 +62,9 @@ BEGIN
 					     || 'Payment per year: ' || TRIM(TO_CHAR(ROUND(n_result * 12, 2), '999G999G999D99')));
 
 EXCEPTION
-    WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Parameter ' || v_error_msg || ' cannot be less than 1. Value given by User: ' || v_error_parameter_msg);
+	WHEN ex_negative_number THEN
+		RAISE_APPLICATION_ERROR(-20001,
+		'Parameter ' || v_error_msg || ' cannot be less than 1. Value given by User: ' || v_error_parameter_msg);
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END pr_mortgage_calculator;
