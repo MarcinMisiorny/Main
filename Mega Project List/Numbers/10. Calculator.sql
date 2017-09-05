@@ -4,8 +4,8 @@
 * Description: A simple calculator to do basic operators. Make it a scientific calculator for added complexity.
 * 
 * My comment:
-* It's hard to do good calculator without graphical interface, so I made simple calculator as function. IMHO there is no need to do this 
-* more complexity.
+* It's hard to make good calculator without graphical interface, so I made simple calculator as function - in a procedural languages like PL/SQL, 
+* complex calculator is IMHO a triumph of form over content and there is no need to do this more complexity.
 * 
 */
  
