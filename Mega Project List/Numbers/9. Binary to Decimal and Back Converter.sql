@@ -51,6 +51,8 @@ EXCEPTION
 		RAISE_APPLICATION_ERROR(-20001, 'Length of input number must be equal 8. Current length: ' || LENGTH(p_input_bin));
 	WHEN ex_wrong_number THEN
 		RAISE_APPLICATION_ERROR(-20002, 'The binary number must consists only 0 and 1. Found "' || v_current_digit || '" on position ' || n_counter);
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END fn_bin2dec;
 /
 
@@ -90,6 +92,8 @@ EXCEPTION
 		RAISE_APPLICATION_ERROR(-20002, 'Input digit cannot be greater than 255.  Value given by User: ' || p_input_dec);
 	WHEN ex_wrong_number THEN
 		RAISE_APPLICATION_ERROR(-20003, 'Input digit must be an integer.  Number given by User: ' || p_input_dec);
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
 END fn_dec2bin;
 /
 
