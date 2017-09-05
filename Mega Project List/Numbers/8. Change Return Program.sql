@@ -94,8 +94,8 @@ BEGIN
 
 EXCEPTION
 	WHEN ex_negative_number THEN
-        RAISE_APPLICATION_ERROR(-20001,
-        'Parameter ' || v_error_msg || ' cannot be less than 0.01. Value given by User: ' || v_error_parameter_msg);
+        	RAISE_APPLICATION_ERROR(-20001,
+        	'Parameter ' || v_error_msg || ' cannot be less than 0.01. Value given by User: ' || v_error_parameter_msg);
 	WHEN ex_wrong_amount THEN
 		RAISE_APPLICATION_ERROR(-20002,
 		'Your cost (' || n_cost || ' PLN) is greater than your given amount (' || n_amount_given ||' PLN).');
