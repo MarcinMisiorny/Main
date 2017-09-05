@@ -81,9 +81,6 @@ EXCEPTION
 		|| p_n_value);
 	WHEN OTHERS THEN
 		DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_STACK);
-        	RAISE_APPLICATION_ERROR(-20001,
-        	'Value of parameter "precision" should not be a negative number. Value given by user: '
-        	|| p_n_value);
 END pr_fibonacci_sequence;
 /
 
