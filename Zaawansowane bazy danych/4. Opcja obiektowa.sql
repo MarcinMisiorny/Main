@@ -29,10 +29,10 @@
 --------------------------------------------------------
 -- 3. Wyświetl zawartość tabeli obiektowej w trybie dostępu relacyjnego i obiektowego.
 
-    SELECT    *
+    SELECT   *
     FROM     PracownicyObjTab;
     
-    SELECT    VALUE(p)
+    SELECT   VALUE(p)
     FROM     PracownicyObjTab p;
 
 --------------------------------------------------------
@@ -55,11 +55,11 @@
 --------------------------------------------------------
 -- 5. Wyświetl zawartość nowoutworzonej tabeli. Sprawdź, jak funkcjonuje dostęp do składowych obiektów za pomocą notacji kropkowej.
 
-    SELECT    nazwa
+    SELECT  nazwa
             ,kierownik
     FROM    ProjektyTab;
     
-    SELECT    p.kierownik.nazwisko
+    SELECT  p.kierownik.nazwisko
     FROM    ProjektyTab p;
  
 --------------------------------------------------------
@@ -96,7 +96,7 @@
 -- 7. Wyświetl wiek pracowników umieszczonych w tabeli PracownicyObjTab. Następnie, przyznaj 200 zł podwyżki 
 --    kierownikowi projektu 'AB 001' (tabela ProjektyTab)
     
-    SELECT   p.nazwisko
+    SELECT  p.nazwisko
             ,p.data_ur
             ,p.wiek()
     FROM    PracownicyObjTab p;
@@ -119,7 +119,7 @@
 --------------------------------------------------------
 -- 8. Wyświetl unikalne identyfikatory (OIDs) obiektów przechowywanych w tabeli PracownicyObjTab.
 
-    SELECT   VALUE(p)
+    SELECT  VALUE(p)
             ,REF(p)
     FROM    PracownicyObjTab p;
  
@@ -265,7 +265,7 @@
     CREATE TABLE OsobyObjTab OF osoba;
     
     ALTER TABLE OsobyObjTab 
-    ADD    SCOPE FOR(gdziemieszka) IS AdresyObjTab;
+    ADD SCOPE FOR(gdziemieszka) IS AdresyObjTab;
     
     INSERT INTO AdresyObjTab 
     VALUES (NEW adres('Kolejowa'
@@ -314,7 +314,7 @@
 
     DELETE
     FROM    AdresyObjTab a
-    WHERE    a.ulica = 'Kolejowa';
+    WHERE   a.ulica = 'Kolejowa';
     
     SELECT  *
     FROM    OsobyObjTab o
