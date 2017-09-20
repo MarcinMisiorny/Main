@@ -5,7 +5,7 @@
 * want to convert to and then the value. The program will then make the conversion.
 * 
 * My comment:
-* Simple, but laborious function returns numbers.
+* Simple, but laborious function returns converted units.
 * 
 */
  
