@@ -133,7 +133,7 @@ EXCEPTION
     WHEN ex_negative_number THEN
         RAISE_APPLICATION_ERROR(-20002, 'Credit card number cannot be a negative number.');
 END pr_validate_credit_card_number;
-
+/
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /* Test: */
