@@ -31,6 +31,7 @@ decimal equivalent.
 being entered, the type of unit they want to convert to and then the value. The program will then make the conversion.
 
 12. **Alarm Clock** - A simple clock where it plays a sound after X number of minutes/seconds or at a particular time.
+**This is impossible to do for me at Oracle Database, more details in "12. Alarm clock.sql" file.**
 
 13. **Distance Between Two Cities** - Calculates the distance between two cities and allows the user to specify a unit of distance. 
 This program may require finding coordinates for the cities like latitude and longitude.
