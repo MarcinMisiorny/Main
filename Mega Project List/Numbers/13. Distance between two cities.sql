@@ -33,23 +33,23 @@ IS
     n_result NUMBER;
     n_degrees_to_radians CONSTANT NUMBER := 57.29577951;
     v_error_msg VARCHAR2(100);
-	
-	ex_empty_parameter EXCEPTION;
+
+    ex_empty_parameter EXCEPTION;
     ex_wrong_unit EXCEPTION;
 BEGIN
-	IF p_first_latitude IS NULL THEN
-		v_error_msg := '"p_first_latitude"';
-		RAISE ex_empty_parameter;
-	ELSIF p_first_longitude IS NULL THEN
-		v_error_msg := '"p_first_longitude"';
-		RAISE ex_empty_parameter;
-	ELSIF p_second_latitude IS NULL THEN	
-		v_error_msg := '"p_second_latitude"';
-		RAISE ex_empty_parameter;
-	ELSIF p_second_longitude IS NULL THEN		
-		v_error_msg := '"p_second_longitude"';
-		RAISE ex_empty_parameter;
-	END IF;
+    IF p_first_latitude IS NULL THEN
+        v_error_msg := '"p_first_latitude"';
+        RAISE ex_empty_parameter;
+    ELSIF p_first_longitude IS NULL THEN
+        v_error_msg := '"p_first_longitude"';
+        RAISE ex_empty_parameter;
+    ELSIF p_second_latitude IS NULL THEN	
+        v_error_msg := '"p_second_latitude"';
+        RAISE ex_empty_parameter;
+    ELSIF p_second_longitude IS NULL THEN		
+        v_error_msg := '"p_second_longitude"';
+        RAISE ex_empty_parameter;
+    END IF;
 	
     IF p_unit NOT IN ('KM', 'MI') THEN
         RAISE ex_wrong_unit;
@@ -62,21 +62,21 @@ BEGIN
         n_radius := 3961;
     END IF;
     
-	-- All calculations are based on Haversine formula. This is the method recommended for calculating short distances by Bob Chamberlain of Caltech and NASA's Jet Propulsion Laboratory 
-	-- as described on the U.S. Census Bureau Web site.
-	n_result := ROUND(2 * n_radius * ASIN(SQRT(POWER((SIN(((p_second_latitude - p_first_latitude) / n_degrees_to_radians) / 2)), 2)
+    -- All calculations are based on Haversine formula. This is the method recommended for calculating short distances by Bob Chamberlain of Caltech and NASA's Jet Propulsion Laboratory 
+    -- as described on the U.S. Census Bureau Web site.
+    n_result := ROUND(2 * n_radius * ASIN(SQRT(POWER((SIN(((p_second_latitude - p_first_latitude) / n_degrees_to_radians) / 2)), 2)
                + COS(p_first_latitude / n_degrees_to_radians) * COS(p_second_latitude / n_degrees_to_radians) * POWER((SIN(((p_second_longitude - p_first_longitude) / n_degrees_to_radians) / 2)), 2))) ,2);
-			   
-	IF p_first_city_name IS NOT NULL AND p_second_city_name IS NOT NULL THEN
-		DBMS_OUTPUT.PUT_LINE('Distance between ' || p_first_city_name || ' and ' || p_second_city_name || ' is ' || n_result || ' ' || p_unit);
-	ELSE
-		DBMS_OUTPUT.PUT_LINE('Calculated distance is ' || n_result || ' ' || p_unit);
-	END IF;
+    
+    IF p_first_city_name IS NOT NULL AND p_second_city_name IS NOT NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Distance between ' || p_first_city_name || ' and ' || p_second_city_name || ' is ' || n_result || ' ' || p_unit);
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Calculated distance is ' || n_result || ' ' || p_unit);
+    END IF;
 EXCEPTION
-	WHEN ex_empty_parameter THEN
-		RAISE_APPLICATION_ERROR(-20001, 'Parameter ' || v_error_msg || ' cannot be a NULL value.');
-	WHEN ex_wrong_unit THEN
-		RAISE_APPLICATION_ERROR(-20002, 'Incorrect distance unit. Allowed: ''KM'', ''MI''');
+    WHEN ex_empty_parameter THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Parameter ' || v_error_msg || ' cannot be a NULL value.');
+    WHEN ex_wrong_unit THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Incorrect distance unit. Allowed: ''KM'', ''MI''');
 END pr_distance;
 /
 ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -109,20 +109,20 @@ Distance between San Francisco and New York is 2571,16 MI
 -- 1. I've created ACL (Access Control List) for user DEMO. It grants user DEMO privilege to connect to Internet, the Google Maps site.
 
 BEGIN
-  DBMS_NETWORK_ACL_ADMIN.create_acl (
-    acl          => 'google_acl_file.xml',
-    description  => 'Connection to Google APIs',
-    principal    => 'DEMO',
-    is_grant     => TRUE,
-    privilege    => 'connect',
-    start_date   => SYSTIMESTAMP,
-    end_date     => NULL);
+    DBMS_NETWORK_ACL_ADMIN.create_acl (
+        acl          => 'google_acl_file.xml',
+        description  => 'Connection to Google APIs',
+        principal    => 'DEMO',
+        is_grant     => TRUE,
+        privilege    => 'connect',
+        start_date   => SYSTIMESTAMP,
+        end_date     => NULL);
  
-  DBMS_NETWORK_ACL_ADMIN.assign_acl (
-    acl         => 'google_acl_file.xml',
-    host        => 'https://developers.google.com/maps/',
-    lower_port  => 80,
-    upper_port  => null);
+    DBMS_NETWORK_ACL_ADMIN.assign_acl (
+        acl         => 'google_acl_file.xml',
+        host        => 'https://developers.google.com/maps/',
+        lower_port  => 80,
+        upper_port  => null);
 END;
 /
 
@@ -157,61 +157,61 @@ CREATE OR REPLACE PROCEDURE pr_distance_between_cities
 ,p_second_city IN VARCHAR2
 ,p_unit IN VARCHAR2 DEFAULT 'KM')
 IS
-	html_parts_first_city UTL_HTTP.HTML_PIECES;
-	html_parts_second_city UTL_HTTP.HTML_PIECES;	
-	
-	n_first_city_latitude NUMBER;
-	n_first_city_longitude NUMBER;
-	n_second_city_latitude NUMBER;
-	n_second_city_longitude NUMBER;
-	n_radius NUMBER;
-	n_result NUMBER;
+    html_parts_first_city UTL_HTTP.HTML_PIECES;
+    html_parts_second_city UTL_HTTP.HTML_PIECES;	
+    
+    n_first_city_latitude NUMBER;
+    n_first_city_longitude NUMBER;
+    n_second_city_latitude NUMBER;
+    n_second_city_longitude NUMBER;
+    n_radius NUMBER;
+    n_result NUMBER;
     n_degrees_to_radians CONSTANT NUMBER := 57.29577951;
 	
-	ex_wrong_unit EXCEPTION;
+    ex_wrong_unit EXCEPTION;
 BEGIN
-	IF p_unit NOT IN ('KM', 'MI') THEN
+    IF p_unit NOT IN ('KM', 'MI') THEN
         RAISE ex_wrong_unit;
     END IF;
 	
-	-- request for first city
-	html_parts_first_city := UTL_HTTP.REQUEST_PIECES('https://maps.googleapis.com/maps/api/geocode/xml?&address=' || p_first_city);
-	
-	-- extract data [longitude and latitude for first city] from response
-	SELECT	EXTRACTVALUE(XMLTYPE(html_parts_first_city(1)), '//result/geometry/location/lat/text()')
-			,EXTRACTVALUE(XMLTYPE(html_parts_first_city(1)), '//result/geometry/location/lng/text()') 
-	INTO	n_first_city_latitude
-			,n_first_city_longitude
-	FROM	dual;
-	 
-	-- request for second city
-	html_parts_second_city := UTL_HTTP.REQUEST_PIECES('https://maps.googleapis.com/maps/api/geocode/xml?&address=' || p_second_city);
+    -- request for first city
+    html_parts_first_city := UTL_HTTP.REQUEST_PIECES('https://maps.googleapis.com/maps/api/geocode/xml?&address=' || p_first_city);
+    
+    -- extract data [longitude and latitude for first city] from response
+    SELECT    EXTRACTVALUE(XMLTYPE(html_parts_first_city(1)), '//result/geometry/location/lat/text()')
+              ,EXTRACTVALUE(XMLTYPE(html_parts_first_city(1)), '//result/geometry/location/lng/text()') 
+    INTO      n_first_city_latitude
+              ,n_first_city_longitude
+    FROM      dual;
+     
+    -- request for second city
+    html_parts_second_city := UTL_HTTP.REQUEST_PIECES('https://maps.googleapis.com/maps/api/geocode/xml?&address=' || p_second_city);
 
-	-- extract data [longitude and latitude for second city] from response
-	SELECT	EXTRACTVALUE(XMLTYPE(html_parts_second_city(1)), '//result/geometry/location/lat/text()')
-			,EXTRACTVALUE(XMLTYPE(html_parts_second_city(1)), '//result/geometry/location/lng/text()') 
-	INTO	n_second_city_latitude
-			,n_second_city_longitude
-	FROM	dual;
-	
-	-- calculating distance
-	-- Earth radius (6373 km or 3961 miles)
+    -- extract data [longitude and latitude for second city] from response
+    SELECT    EXTRACTVALUE(XMLTYPE(html_parts_second_city(1)), '//result/geometry/location/lat/text()')
+              ,EXTRACTVALUE(XMLTYPE(html_parts_second_city(1)), '//result/geometry/location/lng/text()') 
+    INTO      n_second_city_latitude
+              ,n_second_city_longitude
+    FROM      dual;
+    
+    -- calculating distance
+    -- Earth radius (6373 km or 3961 miles)
     IF p_unit = 'KM' THEN
         n_radius := 6373;
     ELSE
         n_radius := 3961;
     END IF;
 	
-	-- All calculations are based on Haversine formula. This is the method recommended for calculating short distances by Bob Chamberlain of Caltech and NASA's Jet Propulsion Laboratory 
-	-- as described on the U.S. Census Bureau Web site.
-	n_result := ROUND(2 * n_radius * ASIN(SQRT(POWER((SIN(((n_second_city_latitude - n_first_city_latitude) / n_degrees_to_radians) / 2)), 2)
-               + COS(n_first_city_latitude / n_degrees_to_radians) * COS(n_second_city_latitude / n_degrees_to_radians) * POWER((SIN(((n_second_city_longitude - n_first_city_longitude) / n_degrees_to_radians) / 2)), 2))) ,2);
-	
-	DBMS_OUTPUT.PUT_LINE('Distance between ' || p_first_city|| ' and ' || p_second_city || ' is ' || n_result || ' ' || p_unit);
+    -- All calculations are based on Haversine formula. This is the method recommended for calculating short distances by Bob Chamberlain of Caltech and NASA's Jet Propulsion Laboratory 
+    -- as described on the U.S. Census Bureau Web site.
+    n_result := ROUND(2 * n_radius * ASIN(SQRT(POWER((SIN(((n_second_city_latitude - n_first_city_latitude) / n_degrees_to_radians) / 2)), 2)
+           + COS(n_first_city_latitude / n_degrees_to_radians) * COS(n_second_city_latitude / n_degrees_to_radians) * POWER((SIN(((n_second_city_longitude - n_first_city_longitude) / n_degrees_to_radians) / 2)), 2))) ,2);
+    
+    DBMS_OUTPUT.PUT_LINE('Distance between ' || p_first_city|| ' and ' || p_second_city || ' is ' || n_result || ' ' || p_unit);
 	
 EXCEPTION
-	WHEN ex_wrong_unit THEN
-		RAISE_APPLICATION_ERROR(-20001, 'Incorrect distance unit. Allowed: ''KM'', ''MI''');
+    WHEN ex_wrong_unit THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Incorrect distance unit. Allowed: ''KM'', ''MI''');
 END pr_distance_between_cities;
 /
 ----------------------------------------------------------------------------------------------------------------------------------------------
