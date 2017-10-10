@@ -13,6 +13,7 @@
 /* My solution: */ 
 
 SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE PROCEDURE pr_tax_calculator
 (p_amount IN NUMBER
 ,p_tax_rate IN NUMBER
