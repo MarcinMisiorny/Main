@@ -68,7 +68,8 @@ EXCEPTION
     WHEN ex_wrong_unit THEN
         RAISE_APPLICATION_ERROR(-20002, 'Incorrect unit. Avaliable: ''BRUTTO'', ''NETTO''.');
 END pr_tax_calculator;
-/ 
+/
+
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /* Test: */
