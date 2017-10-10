@@ -62,13 +62,13 @@ CREATE OR REPLACE FUNCTION fn_factorial
 (p_value NUMBER)
 RETURN NUMBER
 IS
-	n_result NUMBER;
+    n_result NUMBER;
 BEGIN
-	IF p_value <= 1 THEN
-		n_result := 1;
-	ELSE
-		n_result := p_value * fn_factorial(p_value - 1);
-	END IF;
+    IF p_value <= 1 THEN
+        n_result := 1;
+    ELSE
+        n_result := p_value * fn_factorial(p_value - 1);
+    END IF;
 	
 RETURN n_result;
 END fn_factorial;
