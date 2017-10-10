@@ -13,6 +13,7 @@
 /* My solution: */ 
 
 SET SERVEROUTPUT ON;
+
 CREATE OR REPLACE PROCEDURE pr_tax_calculator
 (p_amount IN NUMBER
 ,p_tax_rate IN NUMBER
@@ -68,7 +69,8 @@ EXCEPTION
     WHEN ex_wrong_unit THEN
         RAISE_APPLICATION_ERROR(-20002, 'Incorrect unit. Avaliable: ''BRUTTO'', ''NETTO''.');
 END pr_tax_calculator;
-/ 
+/
+
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /* Test: */
