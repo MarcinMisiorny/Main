@@ -1,8 +1,9 @@
 CREATE OR REPLACE PACKAGE walidatory
 IS
     FUNCTION fn_waliduj_pesel (p_pesel IN VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_iban (p_numer_iban IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_dowod_osobisty (p_numer_dowodu IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_dowod_paszport (p_numer_paszportu IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_iban (p_numer_iban IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nip (p_numer_nip IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_regon (p_numer_regon IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_numer_ksiegi (p_numer_ksiegi IN VARCHAR2) RETURN BOOLEAN;
@@ -95,6 +96,48 @@ IS
        WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_dowod_osobisty;
+
+    
+    FUNCTION fn_waliduj_paszport
+    (p_numer_paszportu VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_liczby NUMBER;
+        n_suma_czynnikow_litery NUMBER;
+        n_suma_czynnikow_liczby NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+        
+        TYPE t_tab IS VARRAY(6) OF INTEGER;
+        t_wagi t_tab := t_tab(1, 7, 3, 1, 7, 3);
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_paszportu, ' ', '');
+        n_liczby := SUBSTR(v_numer_oczyszczony, 4, LENGTH(v_numer_oczyszczony));
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 3, 1);
+        n_suma_czynnikow_liczby := 0;
+        
+        n_suma_czynnikow_litery := ((ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) - 55) * t_wagi(2)) + ((ASCII(SUBSTR(v_numer_oczyszczony, 2, 1)) - 55) * t_wagi(3));
+                
+        FOR i IN 1 .. LENGTH(n_liczby) LOOP
+            n_suma_czynnikow_liczby := n_suma_czynnikow_liczby + SUBSTR(n_liczby, i, 1) * t_wagi(i);
+        END LOOP;
+    
+        n_suma_czynnikow := n_suma_czynnikow_litery + n_suma_czynnikow_liczby;
+    
+        IF MOD(n_suma_czynnikow, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_paszport;
 
     
     FUNCTION fn_waliduj_iban
