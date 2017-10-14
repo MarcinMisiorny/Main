@@ -6,6 +6,9 @@ IS
     FUNCTION fn_waliduj_nip (p_numer_nip IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_regon (p_numer_regon IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_numer_ksiegi (p_numer_ksiegi IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_numer_karty_kred (p_numer_karty VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_isbn_10 (p_numer_isbn_10 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_isbn_13 (p_numer_isbn_13 VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -205,12 +208,13 @@ IS
         WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_regon;
+
     
     FUNCTION fn_waliduj_numer_ksiegi
     (p_numer_ksiegi IN VARCHAR2)
     RETURN BOOLEAN
     IS
-        v_numer VARCHAR2(13);
+        v_numer_oczyszczony VARCHAR2(13);
         b_wynik BOOLEAN;
         n_liczba_kontrolna NUMBER;
         n_suma_czynnikow NUMBER;
@@ -241,12 +245,12 @@ IS
         RETURN n_wartosc;
         END;
     BEGIN
-        v_numer := REPLACE(p_numer_ksiegi, '/', '');
-        n_liczba_kontrolna := SUBSTR(v_numer, LENGTH(v_numer), 1);
+        v_numer_oczyszczony := REPLACE(p_numer_ksiegi, '/', '');
+        n_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
         n_suma_czynnikow := 0;        
         
-        FOR i IN 1 .. LENGTH(v_numer) - 1 LOOP
-            n_suma_czynnikow := n_suma_czynnikow + (fn_wartosc_ascii(SUBSTR(v_numer, i, 1)) * t_wagi(i));
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + (fn_wartosc_ascii(SUBSTR(v_numer_oczyszczony, i, 1)) * t_wagi(i));
         END LOOP;
         
         IF MOD(n_suma_czynnikow, 10) = n_liczba_kontrolna THEN
@@ -257,7 +261,139 @@ IS
         
     RETURN b_wynik;
     END fn_waliduj_numer_ksiegi;
+
     
+    FUNCTION fn_waliduj_numer_karty_kred
+    (p_numer_karty VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_numer_odwrocony VARCHAR2(20);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_karty, '-', ''), ' ', '');
+        n_suma_czynnikow := 0;
+    
+        FOR i IN REVERSE 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            v_numer_odwrocony := v_numer_odwrocony || SUBSTR(v_numer_oczyszczony, i, 1);
+        END LOOP;
+    
+        FOR i IN 1..LENGTH(v_numer_odwrocony) LOOP
+            IF MOD(i, 2) != 0 THEN
+                IF (SUBSTR(v_numer_odwrocony, i, 1) * 2) > 9 THEN
+                    n_suma_czynnikow := n_suma_czynnikow + ((SUBSTR(v_numer_odwrocony, i, 1) * 2) - 9);
+                ELSE
+                    n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_numer_odwrocony, i, 1) * 2);
+                END IF;
+            ELSE
+                n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_odwrocony, i, 1);
+            END IF;
+        END LOOP;
+    
+        IF MOD(n_suma_czynnikow * 9, 10) = SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1) THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_karty_kred;
+    
+    
+    FUNCTION fn_waliduj_isbn_10
+    (p_numer_isbn_10 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_numer_odwrocony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_liczba_kontrolna_mod NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_isbn_10, '-', '');
+        n_suma_czynnikow := 0;
+        
+        IF INSTR(v_numer_oczyszczony, ' ') = 11 THEN
+            v_numer_oczyszczony := SUBSTR(v_numer_oczyszczony, 1, 10);
+        END IF;
+        
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        
+        IF v_liczba_kontrolna = 'X' THEN
+            v_liczba_kontrolna := 10;
+        END IF;
+    
+        FOR i IN REVERSE 1 .. LENGTH(v_numer_oczyszczony) LOOP
+            v_numer_odwrocony := v_numer_odwrocony || SUBSTR(v_numer_oczyszczony, i, 1);
+        END LOOP;
+        
+        FOR i IN REVERSE 2 .. LENGTH(v_numer_odwrocony) LOOP
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_odwrocony, i, 1) * i;
+        END LOOP;
+    
+        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 11);
+        
+        IF MOD(11 - n_liczba_kontrolna_mod, 11) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_isbn_10;
+
+    
+    FUNCTION fn_waliduj_isbn_13
+    (p_numer_isbn_13 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_waga INTEGER;
+        n_liczba_kontrolna_mod NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_isbn_13, '-', '');
+        n_suma_czynnikow := 0;
+        
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(i, 2) != 0 THEN
+                n_waga := 1;
+            ELSE
+                n_waga := 3;
+            END IF;
+            
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
+        END LOOP;
+    
+        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
+        
+        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_isbn_13;
+
 END walidatory;
 /
 
