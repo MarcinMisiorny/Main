@@ -12,6 +12,11 @@ IS
     FUNCTION fn_waliduj_ean_13 (p_numer_ean_13 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_ean_8 (p_numer_ean_8 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_ean_14 (p_numer_ean_14 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_upc_a (p_numer_upc_a VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_gitn_8 (p_numer_gitn_8 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_gitn_12 (p_numer_gitn_12 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_gitn_13 (p_numer_gitn_13 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_gitn_14 (p_numer_gitn_14 VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -397,49 +402,17 @@ IS
             RETURN FALSE;
     END fn_waliduj_isbn_13;
 
-    
+    -- EAN-13 działa na tej samej zasadzie co ISBN-13
     FUNCTION fn_waliduj_ean_13
     (p_numer_ean_13 VARCHAR2)
     RETURN BOOLEAN
     IS
-        v_numer_oczyszczony VARCHAR2(20);
-        v_liczba_kontrolna VARCHAR2(2);
-        n_waga INTEGER;
-        n_liczba_kontrolna_mod NUMBER;
-        n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
-        v_numer_oczyszczony := REPLACE(p_numer_ean_13, '-', '');
-        n_suma_czynnikow := 0;
-        
-        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
-        
-        
-        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
-            IF MOD(i, 2) != 0 THEN
-                n_waga := 1;
-            ELSE
-                n_waga := 3;
-            END IF;
-            
-            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
-        END LOOP;
-    
-        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
-        
-        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
-            b_wynik := TRUE;
-        ELSE
-            b_wynik := FALSE;
-        END IF;        
-    
+        b_wynik := fn_waliduj_isbn_13(p_numer_ean_13);
     RETURN b_wynik;
-    EXCEPTION
-        WHEN OTHERS THEN
-            RETURN FALSE;
     END fn_waliduj_ean_13;
-
+    
     
     FUNCTION fn_waliduj_ean_8
     (p_numer_ean_8 VARCHAR2)
@@ -484,47 +457,76 @@ IS
     END fn_waliduj_ean_8;
     
     
+    -- EAN-14 działa na tej samej zasadzie co EAN-8
     FUNCTION fn_waliduj_ean_14
     (p_numer_ean_14 VARCHAR2)
     RETURN BOOLEAN
     IS
-        v_numer_oczyszczony VARCHAR2(20);
-        v_liczba_kontrolna VARCHAR2(2);
-        n_waga INTEGER;
-        n_liczba_kontrolna_mod NUMBER;
-        n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
-        v_numer_oczyszczony := REPLACE(p_numer_ean_14, '-', '');
-        n_suma_czynnikow := 0;
-        
-        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
-        
-        
-        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
-            IF MOD(i, 2) != 0 THEN
-                n_waga := 3;
-            ELSE
-                n_waga := 1;
-            END IF;
-            
-            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
-        END LOOP;
-    
-        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
-        
-        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
-            b_wynik := TRUE;
-        ELSE
-            b_wynik := FALSE;
-        END IF;        
-    
+        b_wynik := fn_waliduj_ean_8(p_numer_ean_14);
     RETURN b_wynik;
-    EXCEPTION
-        WHEN OTHERS THEN
-            RETURN FALSE;
     END fn_waliduj_ean_14;
+
+    
+    -- UPC-A działa na tej samej zasadzie co EAN-8 i EAN-14
+    FUNCTION fn_waliduj_upc_a
+    (p_numer_upc_a VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_ean_8(p_numer_upc_a);
+    RETURN b_wynik;
+    END fn_waliduj_upc_a;
+    
+    
+    --GTIN 8 cyfrowy czyli GTIN-8 kodowany jest jako EAN-8
+    FUNCTION fn_waliduj_gitn_8
+    (p_numer_gitn_8 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_ean_8(p_numer_gitn_8);
+    RETURN b_wynik;
+    END fn_waliduj_gitn_8;
+    
+    --GTIN 12 cyfrowy czyli GTIN-12 kodowany jest jako UPC-A
+    FUNCTION fn_waliduj_gitn_12
+    (p_numer_gitn_12 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_ean_8(p_numer_gitn_12);
+    RETURN b_wynik;
+    END fn_waliduj_gitn_12;
+    
+    
+    --GTIN 13 cyfrowy czyli GTIN-13 kodowany jest jako EAN-13
+    FUNCTION fn_waliduj_gitn_13
+    (p_numer_gitn_13 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_isbn_13(p_numer_gitn_13);
+    RETURN b_wynik;
+    END fn_waliduj_gitn_13;
+    
+    
+    --GTIN 14 cyfrowy czyli GTIN-14 kodowany jest jako EAN-14
+    FUNCTION fn_waliduj_gitn_14
+    (p_numer_gitn_14 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_ean_8(p_numer_gitn_14);
+    RETURN b_wynik;
+    END fn_waliduj_gitn_14;
+    
 END walidatory;
 /
 
