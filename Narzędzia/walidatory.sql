@@ -9,7 +9,9 @@ IS
     FUNCTION fn_waliduj_numer_karty_kred (p_numer_karty VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_isbn_10 (p_numer_isbn_10 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_isbn_13 (p_numer_isbn_13 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_ean_13 (p_numer_isbn_13 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_ean_13 (p_numer_ean_13 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_ean_8 (p_numer_ean_8 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_ean_14 (p_numer_ean_14 VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -438,6 +440,91 @@ IS
             RETURN FALSE;
     END fn_waliduj_ean_13;
 
+    
+    FUNCTION fn_waliduj_ean_8
+    (p_numer_ean_8 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_waga INTEGER;
+        n_liczba_kontrolna_mod NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_ean_8, '-', '');
+        n_suma_czynnikow := 0;
+        
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(i, 2) != 0 THEN
+                n_waga := 3;
+            ELSE
+                n_waga := 1;
+            END IF;
+            
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
+        END LOOP;
+    
+        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
+        
+        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_ean_8;
+    
+    
+    FUNCTION fn_waliduj_ean_14
+    (p_numer_ean_14 VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_waga INTEGER;
+        n_liczba_kontrolna_mod NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_ean_14, '-', '');
+        n_suma_czynnikow := 0;
+        
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(i, 2) != 0 THEN
+                n_waga := 3;
+            ELSE
+                n_waga := 1;
+            END IF;
+            
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
+        END LOOP;
+    
+        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
+        
+        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_ean_14;
 END walidatory;
 /
 
