@@ -5,6 +5,7 @@ IS
     FUNCTION fn_waliduj_dowod_osobisty (p_numer_dowodu IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nip (p_numer_nip IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_regon (p_numer_regon IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_numer_ksiegi (p_numer_ksiegi IN VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -28,7 +29,7 @@ IS
                        9 * SUBSTR(p_pesel, 8, 1) +
                        1 * SUBSTR(p_pesel, 9, 1) +
                        3 * SUBSTR(p_pesel, 10, 1) +
-                       1 * SUBSTR(p_pesel, 11, 1)) ,10); 
+                       1 * SUBSTR(p_pesel, 11, 1)), 10); 
     
         IF n_temp = 0 THEN  
             b_czy_poprawny := TRUE; 
@@ -129,7 +130,6 @@ IS
     RETURN BOOLEAN
     IS
         v_nip_oczyszczony VARCHAR2(10);
-        v_nip VARCHAR2(9);
         n_liczba_kontrolna NUMBER;
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
@@ -138,12 +138,11 @@ IS
         t_wagi t_tab := t_tab(6, 5, 7, 2, 3, 4, 5, 6, 7);
     BEGIN
         v_nip_oczyszczony := REPLACE(REPLACE(p_numer_nip, '-', ''), ' ', '');
-        v_nip := SUBSTR(v_nip_oczyszczony, 1, LENGTH(v_nip_oczyszczony) - 1);
         n_liczba_kontrolna := SUBSTR(v_nip_oczyszczony, LENGTH(v_nip_oczyszczony), 1);
         n_suma_czynnikow := 0;
        
-        FOR i IN 1 .. LENGTH(v_nip) LOOP
-            n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_nip, i, 1) * t_wagi(i));
+        FOR i IN 1 .. LENGTH(v_nip_oczyszczony) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_nip_oczyszczony, i, 1) * t_wagi(i));
         END LOOP;
        
         IF MOD(n_suma_czynnikow, 11) = n_liczba_kontrolna THEN
@@ -164,7 +163,6 @@ IS
     RETURN BOOLEAN
     IS
         v_regon_oczyszczony VARCHAR2(14);
-        v_regon VARCHAR2(13);
         n_liczba_kontrolna NUMBER;
         n_suma_czynnikow NUMBER;
         n_mod_suma_czynnikow NUMBER;
@@ -178,24 +176,17 @@ IS
        
     BEGIN
         v_regon_oczyszczony := REPLACE(REPLACE(p_numer_regon, '-', ''), ' ', '');
-       
-        IF LENGTH(v_regon_oczyszczony) = 9 THEN
-            v_regon := SUBSTR(v_regon_oczyszczony, 1, 8);
-        ELSE
-            v_regon := SUBSTR(v_regon_oczyszczony, 1, 13);
-        END IF;
-       
         n_liczba_kontrolna := SUBSTR(v_regon_oczyszczony, LENGTH(v_regon_oczyszczony), 1);
         n_suma_czynnikow := 0;
         n_mod_suma_czynnikow := 0;
        
         IF LENGTH(v_regon_oczyszczony) = 9 THEN
-            FOR i IN 1 .. LENGTH(v_regon) LOOP
-                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon, i, 1) * t_wagi_9(i));
+            FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
+                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_9(i));
             END LOOP;
         ELSE
-            FOR i IN 1 .. LENGTH(v_regon) LOOP
-                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon, i, 1) * t_wagi_14(i));
+            FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
+                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_14(i));
             END LOOP;
         END IF;
        
@@ -214,6 +205,58 @@ IS
         WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_regon;
+    
+    FUNCTION fn_waliduj_numer_ksiegi
+    (p_numer_ksiegi IN VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer VARCHAR2(13);
+        b_wynik BOOLEAN;
+        n_liczba_kontrolna NUMBER;
+        n_suma_czynnikow NUMBER;
+        
+        TYPE t_tab IS VARRAY(12) OF INTEGER;
+        t_wagi t_tab := t_tab(1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7);
+        
+        FUNCTION fn_wartosc_ascii 
+        (p_znak VARCHAR2)
+        RETURN NUMBER
+        IS
+            n_wartosc NUMBER;
+        BEGIN
+            n_wartosc := 0;
+            
+            IF ASCII(p_znak) BETWEEN 48 AND 57 THEN
+                n_wartosc := p_znak;
+            ELSIF p_znak IN ('R', 'S', 'T', 'U') THEN
+                n_wartosc := ASCII(p_znak) - 55;
+            ELSIF p_znak IN ('W', 'Y', 'Z') THEN
+                n_wartosc := ASCII(p_znak) - 56;
+            ELSIF p_znak = 'X' THEN
+                n_wartosc := 10;
+            ELSE
+                n_wartosc := ASCII(p_znak) - 54;
+            END IF;
+            
+        RETURN n_wartosc;
+        END;
+    BEGIN
+        v_numer := REPLACE(p_numer_ksiegi, '/', '');
+        n_liczba_kontrolna := SUBSTR(v_numer, LENGTH(v_numer), 1);
+        n_suma_czynnikow := 0;        
+        
+        FOR i IN 1 .. LENGTH(v_numer) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + (fn_wartosc_ascii(SUBSTR(v_numer, i, 1)) * t_wagi(i));
+        END LOOP;
+        
+        IF MOD(n_suma_czynnikow, 10) = n_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;
+        
+    RETURN b_wynik;
+    END fn_waliduj_numer_ksiegi;
     
 END walidatory;
 /
