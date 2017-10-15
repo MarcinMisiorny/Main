@@ -18,6 +18,13 @@ IS
     FUNCTION fn_waliduj_gitn_12 (p_numer_gitn_12 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_gitn_13 (p_numer_gitn_13 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_gitn_14 (p_numer_gitn_14 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_numer_pwz (p_numer_pwz VARCHAR2) RETURN BOOLEAN; --nr prawa wykonywania zawodu lekarza i lekarza dentysty (PWZ)
+    FUNCTION fn_waliduj_numer_farmaceuty (p_numer_farmaceuty VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_numer_imei (p_numer_imei VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_kolczyk_iacs_v1 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- część numerów liczy się jednym algorytmem, część drugim
+    FUNCTION fn_waliduj_kolczyk_iacs_v2 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- Rozporządzenie Ministra Rolnictwa i Rozwoju Wsi z dnia 30 lipca 2002 r. nie określa tego jednoznacznie
+    FUNCTION fn_waliduj_nr_gospodarstwa (p_numer_gospodarstwa VARCHAR2) RETURN BOOLEAN; -- Numer Identyfikacyjny Gospodarstwa w ARiMR
+    FUNCTION fn_waliduj_nr_banknotu_euro (p_numer_banknotu_euro VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -330,7 +337,7 @@ IS
             v_numer_odwrocony := v_numer_odwrocony || SUBSTR(v_numer_oczyszczony, i, 1);
         END LOOP;
     
-        FOR i IN 1..LENGTH(v_numer_odwrocony) LOOP
+        FOR i IN 1 .. LENGTH(v_numer_odwrocony) LOOP
             IF MOD(i, 2) != 0 THEN
                 IF (SUBSTR(v_numer_odwrocony, i, 1) * 2) > 9 THEN
                     n_suma_czynnikow := n_suma_czynnikow + ((SUBSTR(v_numer_odwrocony, i, 1) * 2) - 9);
@@ -474,7 +481,6 @@ IS
         
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
         
-        
         FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
             IF MOD(i, 2) != 0 THEN
                 n_waga := 3;
@@ -569,6 +575,267 @@ IS
         b_wynik := fn_waliduj_ean_8(p_numer_gitn_14);
     RETURN b_wynik;
     END fn_waliduj_gitn_14;
+    
+    
+    --nr prawa wykonywania zawodu lekarza i lekarza dentysty (PWZ)
+    FUNCTION fn_waliduj_numer_pwz
+    (p_numer_pwz VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(10);
+        v_liczba_kontrolna VARCHAR2(1);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_pwz, ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 1, 1);
+        n_suma_czynnikow := 0;
+        
+        FOR i IN 2 .. LENGTH(v_numer_oczyszczony) LOOP
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * (i - 1);
+        END LOOP;
+    
+        IF MOD(n_suma_czynnikow, 11) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_pwz;
+    
+    
+    FUNCTION fn_waliduj_numer_farmaceuty
+    (p_numer_farmaceuty VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(10);
+        n_waga INTEGER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(p_numer_farmaceuty, ' ', '');
+        n_suma_czynnikow := 0;
+    
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) LOOP
+            IF MOD(i, 2) != 0 THEN
+                n_waga := 3;
+            ELSE
+                n_waga := 1;
+            END IF;
+    
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
+        END LOOP;
+    
+        IF MOD(n_suma_czynnikow, 10) = 0 THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_farmaceuty;
+    
+    
+    FUNCTION fn_waliduj_numer_imei
+    (p_numer_imei VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_numer_odwrocony VARCHAR2(20);
+        n_waga INTEGER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_imei, ' ', ''), '-', '');
+        n_suma_czynnikow := 0;
+    
+        FOR i IN REVERSE 1 .. LENGTH(v_numer_oczyszczony)  LOOP
+            v_numer_odwrocony := v_numer_odwrocony || SUBSTR(v_numer_oczyszczony, i, 1);
+        END LOOP;
+    
+        FOR i IN 1 .. LENGTH(v_numer_odwrocony) LOOP
+            IF MOD(i, 2) = 0 THEN
+                IF (SUBSTR(v_numer_odwrocony, i, 1) * 2) > 9 THEN
+                    n_suma_czynnikow := n_suma_czynnikow + ((SUBSTR(v_numer_odwrocony, i, 1) * 2) - 9);
+                ELSE
+                    n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_numer_odwrocony, i, 1) * 2);
+                END IF;
+            ELSE
+                n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_odwrocony, i, 1);
+            END IF;
+        END LOOP;
+    
+        IF MOD(n_suma_czynnikow, 10) = 0 THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_imei;
+    
+    
+    FUNCTION fn_waliduj_kolczyk_iacs_v1
+    (p_numer_kolczyka_iacs VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_waga INTEGER;
+        n_liczba_kontrolna_mod NUMBER;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_kolczyka_iacs, '-', ''), ' ', '');
+        n_suma_czynnikow := 0;
+   
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(i, 2) != 0 THEN
+                n_waga := 3;
+            ELSE
+                n_waga := 1;
+            END IF;
+            
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * n_waga;
+        END LOOP;
+ 
+        n_liczba_kontrolna_mod := MOD(n_suma_czynnikow, 10);
+ 
+        IF MOD(10 - n_liczba_kontrolna_mod, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_kolczyk_iacs_v1;
+    
+
+    FUNCTION fn_waliduj_kolczyk_iacs_2
+    (p_numer_kolczyka_iacs VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_fn NUMBER;
+        n_an NUMBER;
+        n_wynik_czesciowy NUMBER;
+        n_mod_czesciowy NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_kolczyka_iacs, '-', ''), ' ', '');
+        
+        IF SUBSTR(v_numer_oczyszczony, 1, 2) = 'PL' THEN
+            v_numer_oczyszczony := SUBSTR(v_numer_oczyszczony, 3, LENGTH(v_numer_oczyszczony));
+        END IF;
+   
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        n_fn := SUBSTR(v_numer_oczyszczony, 3, 5);
+        n_an := SUBSTR(v_numer_oczyszczony, 8, 4);
+        n_wynik_czesciowy := 5 * n_fn + n_an;
+        n_mod_czesciowy := MOD(n_wynik_czesciowy, 7);
+
+        IF n_mod_czesciowy + 1 = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_kolczyk_iacs_2;
+
+
+    FUNCTION fn_waliduj_nr_gospodarstwa
+    (p_numer_gospodarstwa VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_parzyste NUMBER;
+        n_liczba_parzystych NUMBER;
+        n_suma_nieparzyste NUMBER;
+        n_mod NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_gospodarstwa, '-', ''), ' ', '');
+        n_suma_parzyste := 0;
+        n_suma_nieparzyste := 0;
+        n_liczba_parzystych := 0;
+       
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(SUBSTR(v_numer_oczyszczony, i, 1), 2) = 0 THEN
+                n_suma_parzyste := n_suma_parzyste + SUBSTR(v_numer_oczyszczony, i, 1);
+                n_liczba_parzystych := n_liczba_parzystych + 1;
+            ELSE
+                n_suma_nieparzyste := n_suma_nieparzyste + SUBSTR(v_numer_oczyszczony, i, 1);
+            END IF;
+        END LOOP;
+
+        n_mod := MOD((23 * n_suma_parzyste) + (17 * n_suma_nieparzyste) + n_liczba_parzystych, 7);
+        
+        IF n_mod = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_nr_gospodarstwa;
+
+    
+    FUNCTION fn_waliduj_nr_banknotu_euro
+    (p_numer_banknotu_euro VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_banknotu_euro, '-', ''), ' ', '');
+        n_suma_czynnikow := 0;
+        
+        FOR i IN 2 .. LENGTH(v_numer_oczyszczony) LOOP
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1);
+        END LOOP;
+      
+        IF MOD((ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) - 64) + n_suma_czynnikow, 9) = 8 THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_nr_banknotu_euro;
     
 END walidatory;
 /
