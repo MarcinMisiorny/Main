@@ -10,23 +10,27 @@ IS
     FUNCTION fn_waliduj_numer_karty_kred (p_numer_karty VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_isbn_10 (p_numer_isbn_10 VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_isbn_13 (p_numer_isbn_13 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_ean_13 (p_numer_ean_13 VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_ean_13 (p_numer_ean_13 VARCHAR2) RETURN BOOLEAN; -- EAN-13 działa na tej samej zasadzie co ISBN-13
     FUNCTION fn_waliduj_ean_8 (p_numer_ean_8 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_ean_14 (p_numer_ean_14 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_upc_a (p_numer_upc_a VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_gitn_8 (p_numer_gitn_8 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_gitn_12 (p_numer_gitn_12 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_gitn_13 (p_numer_gitn_13 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_gitn_14 (p_numer_gitn_14 VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_numer_pwz (p_numer_pwz VARCHAR2) RETURN BOOLEAN; --nr prawa wykonywania zawodu lekarza i lekarza dentysty (PWZ)
+    FUNCTION fn_waliduj_ean_14 (p_numer_ean_14 VARCHAR2) RETURN BOOLEAN; -- EAN-14 działa na tej samej zasadzie co EAN-8
+    FUNCTION fn_waliduj_upc_a (p_numer_upc_a VARCHAR2) RETURN BOOLEAN; -- UPC-A działa na tej samej zasadzie co EAN-8 i EAN-14
+    FUNCTION fn_waliduj_gitn_8 (p_numer_gitn_8 VARCHAR2) RETURN BOOLEAN; -- GTIN 8 cyfrowy czyli GTIN-8 kodowany jest jako EAN-8
+    FUNCTION fn_waliduj_gitn_12 (p_numer_gitn_12 VARCHAR2) RETURN BOOLEAN; -- GTIN 12 cyfrowy czyli GTIN-12 kodowany jest jako UPC-A
+    FUNCTION fn_waliduj_gitn_13 (p_numer_gitn_13 VARCHAR2) RETURN BOOLEAN; -- GTIN 13 cyfrowy czyli GTIN-13 kodowany jest jako EAN-13
+    FUNCTION fn_waliduj_gitn_14 (p_numer_gitn_14 VARCHAR2) RETURN BOOLEAN; -- GTIN 14 cyfrowy czyli GTIN-13 kodowany jest jako EAN-14
+    FUNCTION fn_waliduj_numer_pwz (p_numer_pwz VARCHAR2) RETURN BOOLEAN; -- Numer prawa wykonywania zawodu lekarza i lekarza dentysty (PWZ)
     FUNCTION fn_waliduj_numer_farmaceuty (p_numer_farmaceuty VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_numer_imei (p_numer_imei VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_kolczyk_iacs_v1 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- część numerów liczy się jednym algorytmem, część drugim
+    FUNCTION fn_waliduj_kolczyk_iacs_v1 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- Część numerów liczy się jednym algorytmem, część drugim,
     FUNCTION fn_waliduj_kolczyk_iacs_v2 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- Rozporządzenie Ministra Rolnictwa i Rozwoju Wsi z dnia 30 lipca 2002 r. nie określa tego jednoznacznie
     FUNCTION fn_waliduj_nr_gospodarstwa (p_numer_gospodarstwa VARCHAR2) RETURN BOOLEAN; -- Numer Identyfikacyjny Gospodarstwa w ARiMR
     FUNCTION fn_waliduj_nr_banknotu_euro (p_numer_banknotu_euro VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nr_vin (p_numer_vin VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nr_uic_taboru (p_numer_uic_taboru VARCHAR2) RETURN BOOLEAN; -- Europejski numer pojazdu kolejowego
+    FUNCTION fn_waliduj_numer_kontenera (p_numer_kontenera VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_numer_cas (p_numer_cas VARCHAR2) RETURN BOOLEAN; -- Identyfikatory substancji chemicznych, numer rejestru CAS
+    FUNCTION fn_waliduj_numer_we (p_numer_we VARCHAR2) RETURN BOOLEAN; -- Identyfikatory substancji chemicznych, numer EC/WE substancji (European Community number - EC Number)
+    FUNCTION fn_waliduj_index_number (p_index_number VARCHAR2) RETURN BOOLEAN; --Numer indeksowy substancji, działa na tej samej zasadzie co numer EC/WE substancji
 END walidatory;
 /
 
@@ -532,7 +536,7 @@ IS
     END fn_waliduj_upc_a;
     
     
-    --GTIN 8 cyfrowy czyli GTIN-8 kodowany jest jako EAN-8
+    -- GTIN 8 cyfrowy czyli GTIN-8 kodowany jest jako EAN-8
     FUNCTION fn_waliduj_gitn_8
     (p_numer_gitn_8 VARCHAR2)
     RETURN BOOLEAN
@@ -543,7 +547,7 @@ IS
     RETURN b_wynik;
     END fn_waliduj_gitn_8;
     
-    --GTIN 12 cyfrowy czyli GTIN-12 kodowany jest jako UPC-A
+    -- GTIN 12 cyfrowy czyli GTIN-12 kodowany jest jako UPC-A
     FUNCTION fn_waliduj_gitn_12
     (p_numer_gitn_12 VARCHAR2)
     RETURN BOOLEAN
@@ -555,7 +559,7 @@ IS
     END fn_waliduj_gitn_12;
     
     
-    --GTIN 13 cyfrowy czyli GTIN-13 kodowany jest jako EAN-13
+    -- GTIN 13 cyfrowy czyli GTIN-13 kodowany jest jako EAN-13
     FUNCTION fn_waliduj_gitn_13
     (p_numer_gitn_13 VARCHAR2)
     RETURN BOOLEAN
@@ -567,7 +571,7 @@ IS
     END fn_waliduj_gitn_13;
     
     
-    --GTIN 14 cyfrowy czyli GTIN-14 kodowany jest jako EAN-14
+    -- GTIN 14 cyfrowy czyli GTIN-14 kodowany jest jako EAN-14
     FUNCTION fn_waliduj_gitn_14
     (p_numer_gitn_14 VARCHAR2)
     RETURN BOOLEAN
@@ -947,6 +951,144 @@ IS
         WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_nr_uic_taboru;
+    
+    
+    FUNCTION fn_waliduj_numer_kontenera
+    (p_numer_kontenera VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_czynnikow NUMBER;
+        v_liczba_kontrolna_z_sumy VARCHAR2(2);
+        b_wynik BOOLEAN;
+        
+        TYPE t_tab IS VARRAY(11) OF INTEGER;
+        t_wagi t_tab := t_tab(1,  2,  4, 8, 16, 32, 64, 128, 256, 512, 1024);
+
+        FUNCTION fn_wartosc_ascii 
+        (p_znak VARCHAR2)
+        RETURN NUMBER
+        IS
+            n_wartosc NUMBER;
+        BEGIN
+            n_wartosc := 0;
+            
+            IF ASCII(p_znak) BETWEEN 48 AND 57 THEN
+                n_wartosc := p_znak;
+            ELSIF ASCII(p_znak) BETWEEN 66 AND 75 THEN
+                n_wartosc := ASCII(p_znak) - 54;
+            ELSIF ASCII(p_znak) BETWEEN 76 AND 85 THEN
+                n_wartosc := ASCII(p_znak) - 53;
+            ELSIF ASCII(p_znak) BETWEEN 86 AND 90 THEN
+                n_wartosc := ASCII(p_znak) - 52;
+            ELSIF p_znak = 'A' THEN
+                n_wartosc := 10;
+            ELSE
+                n_wartosc := 0; -- podano błędny znak
+            END IF;
+            
+        RETURN n_wartosc;
+        END fn_wartosc_ascii;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_kontenera, '-', ''), ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        n_suma_czynnikow := 0;
+        
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + fn_wartosc_ascii(SUBSTR(v_numer_oczyszczony, i, 1)) * t_wagi(i);
+        END LOOP;
+       
+        IF MOD(n_suma_czynnikow, 11) = 10 THEN
+            v_liczba_kontrolna_z_sumy := 0;
+        ELSE
+            v_liczba_kontrolna_z_sumy := MOD(n_suma_czynnikow, 11);
+        END IF;
+        
+        IF v_liczba_kontrolna_z_sumy = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_kontenera;
+    
+    
+    FUNCTION fn_waliduj_numer_cas
+    (p_numer_cas VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_numer_odwrocony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_cas, '-', ''), ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        n_suma_czynnikow := 0;
+        
+        FOR i IN REVERSE 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony) - i, 1) * i;
+        END LOOP;
+       
+        IF MOD(n_suma_czynnikow, 10) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_cas;
+    
+    
+    FUNCTION fn_waliduj_numer_we
+    (p_numer_we VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_we, '-', ''), ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        n_suma_czynnikow := 0;
+        
+        FOR i IN  1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1) * i;
+        END LOOP;
+       
+        IF MOD(n_suma_czynnikow, 11) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_numer_we;
+    
+    -- Index number działa na tej samej zasadzie co numer EC/WE substancji
+    FUNCTION fn_waliduj_index_number
+    (p_index_number VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        b_wynik := fn_waliduj_numer_we(p_index_number);
+    RETURN b_wynik;
+    END fn_waliduj_index_number;
 END walidatory;
 /
 
