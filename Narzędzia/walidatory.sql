@@ -26,6 +26,7 @@ IS
     FUNCTION fn_waliduj_nr_gospodarstwa (p_numer_gospodarstwa VARCHAR2) RETURN BOOLEAN; -- Numer Identyfikacyjny Gospodarstwa w ARiMR
     FUNCTION fn_waliduj_nr_banknotu_euro (p_numer_banknotu_euro VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nr_vin (p_numer_vin VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_nr_uic_taboru (p_numer_uic_taboru VARCHAR2) RETURN BOOLEAN; -- Europejski numer pojazdu kolejowego
 END walidatory;
 /
 
@@ -878,7 +879,7 @@ IS
         RETURN n_wartosc;
         END fn_wartosc_z_ascii;
     BEGIN
-        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_vin, ' ', ''), ' ', '');
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_vin, '-', ''), ' ', '');
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 9, 1);
         n_suma_czynnikow := 0;
        
@@ -903,6 +904,49 @@ IS
     END fn_waliduj_nr_vin;
 
     
+    FUNCTION fn_waliduj_nr_uic_taboru
+    (p_numer_uic_taboru VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_czynnikow NUMBER;
+        v_liczba_kontrolna_z_sumy VARCHAR2(2);
+        b_wynik BOOLEAN;
+        
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_uic_taboru, '-', ''), ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
+        n_suma_czynnikow := 0;
+        v_liczba_kontrolna_z_sumy := 0;
+    
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
+            IF MOD(i, 2) != 0 THEN
+                IF 2 * SUBSTR(v_numer_oczyszczony, i, 1) > 9 THEN
+                    n_suma_czynnikow := n_suma_czynnikow + SUBSTR(2 * SUBSTR(v_numer_oczyszczony, i, 1) , 1, 1) + SUBSTR(2 * SUBSTR(v_numer_oczyszczony, i, 1) , 2, 1);
+                ELSE
+                    n_suma_czynnikow := n_suma_czynnikow + 2 * SUBSTR(v_numer_oczyszczony, i, 1);
+                END IF;
+            ELSE
+                n_suma_czynnikow := n_suma_czynnikow + SUBSTR(v_numer_oczyszczony, i, 1);
+            END IF;
+        END LOOP;
+       
+        IF SUBSTR(n_suma_czynnikow, 2, 1) BETWEEN 1 AND 9 THEN
+            v_liczba_kontrolna_z_sumy := 10 - SUBSTR(n_suma_czynnikow, 2, 1);
+        END IF;
+       
+        IF v_liczba_kontrolna_z_sumy = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_nr_uic_taboru;
 END walidatory;
 /
 
