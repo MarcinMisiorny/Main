@@ -2,7 +2,7 @@ CREATE OR REPLACE PACKAGE walidatory
 IS
     FUNCTION fn_waliduj_pesel (p_pesel IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_dowod_osobisty (p_numer_dowodu IN VARCHAR2) RETURN BOOLEAN;
-    FUNCTION fn_waliduj_dowod_paszport (p_numer_paszportu IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_paszport (p_numer_paszportu IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_iban (p_numer_iban IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nip (p_numer_nip IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_regon (p_numer_regon IN VARCHAR2) RETURN BOOLEAN;
@@ -733,7 +733,7 @@ IS
     END fn_waliduj_kolczyk_iacs_v1;
     
 
-    FUNCTION fn_waliduj_kolczyk_iacs_2
+    FUNCTION fn_waliduj_kolczyk_iacs_v2
     (p_numer_kolczyka_iacs VARCHAR2)
     RETURN BOOLEAN
     IS
@@ -768,7 +768,7 @@ IS
     EXCEPTION
         WHEN OTHERS THEN
             RETURN FALSE;
-    END fn_waliduj_kolczyk_iacs_2;
+    END fn_waliduj_kolczyk_iacs_v2;
 
 
     FUNCTION fn_waliduj_nr_gospodarstwa
