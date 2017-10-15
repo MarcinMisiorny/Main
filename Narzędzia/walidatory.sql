@@ -25,6 +25,7 @@ IS
     FUNCTION fn_waliduj_kolczyk_iacs_v2 (p_numer_kolczyka_iacs VARCHAR2) RETURN BOOLEAN; -- Rozporządzenie Ministra Rolnictwa i Rozwoju Wsi z dnia 30 lipca 2002 r. nie określa tego jednoznacznie
     FUNCTION fn_waliduj_nr_gospodarstwa (p_numer_gospodarstwa VARCHAR2) RETURN BOOLEAN; -- Numer Identyfikacyjny Gospodarstwa w ARiMR
     FUNCTION fn_waliduj_nr_banknotu_euro (p_numer_banknotu_euro VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_nr_vin (p_numer_vin VARCHAR2) RETURN BOOLEAN;
 END walidatory;
 /
 
@@ -301,7 +302,7 @@ IS
             END IF;
             
         RETURN n_wartosc;
-        END;
+        END fn_wartosc_ascii;
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_ksiegi, '/', '');
         n_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
@@ -836,6 +837,71 @@ IS
         WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_nr_banknotu_euro;
+    
+    
+    FUNCTION fn_waliduj_nr_vin
+    (p_numer_vin VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        v_numer_oczyszczony VARCHAR2(20);
+        v_liczba_kontrolna VARCHAR2(2);
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
+        
+        TYPE t_tab IS VARRAY(17) OF INTEGER;
+        t_wagi t_tab := t_tab(8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2);
+        
+        FUNCTION fn_wartosc_z_ascii 
+        (p_znak VARCHAR2)
+        RETURN NUMBER
+        IS
+            n_wartosc NUMBER;
+        BEGIN
+            n_wartosc := 0;
+            
+            IF ASCII(p_znak) BETWEEN 48 AND 57 THEN
+                n_wartosc := p_znak;
+            ELSIF ASCII(p_znak) BETWEEN 65 AND 72 THEN
+                n_wartosc := ASCII(p_znak) - 64;
+            ELSIF ASCII(p_znak) BETWEEN 74 AND 78 THEN
+                n_wartosc := ASCII(p_znak) - 73;
+            ELSIF ASCII(p_znak) BETWEEN 83 AND 90 THEN
+                n_wartosc := ASCII(p_znak) - 81;
+            ELSIF p_znak = 'P' THEN
+                n_wartosc := 7;
+            ELSIF p_znak = 'R' THEN
+                n_wartosc := 8;
+            ELSE
+                n_wartosc := 0; --litery I, O oraz Q nie są dozwolone, ich obecność świadczy o błędzie
+            END IF;
+            
+        RETURN n_wartosc;
+        END fn_wartosc_z_ascii;
+    BEGIN
+        v_numer_oczyszczony := REPLACE(REPLACE(p_numer_vin, ' ', ''), ' ', '');
+        v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 9, 1);
+        n_suma_czynnikow := 0;
+       
+        IF v_liczba_kontrolna = 'X' THEN
+            v_liczba_kontrolna := 10;
+        END IF;
+        
+        FOR i IN 1 .. LENGTH(v_numer_oczyszczony) LOOP
+            n_suma_czynnikow := n_suma_czynnikow + fn_wartosc_z_ascii(SUBSTR(v_numer_oczyszczony, i, 1)) * t_wagi(i);
+        END LOOP;
+       
+        IF MOD(n_suma_czynnikow, 11) = v_liczba_kontrolna THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;        
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_nr_vin;
+
     
 END walidatory;
 /
