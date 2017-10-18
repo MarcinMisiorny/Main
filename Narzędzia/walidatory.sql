@@ -6,6 +6,7 @@ IS
     FUNCTION fn_waliduj_iban (p_numer_iban IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_nip (p_numer_nip IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_regon (p_numer_regon IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION fn_waliduj_email (p_adres_email VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_numer_ksiegi (p_numer_ksiegi IN VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_numer_karty_kred (p_numer_karty VARCHAR2) RETURN BOOLEAN;
     FUNCTION fn_waliduj_isbn_10 (p_numer_isbn_10 VARCHAR2) RETURN BOOLEAN;
@@ -272,8 +273,27 @@ IS
         WHEN OTHERS THEN
             RETURN FALSE;
     END fn_waliduj_regon;
-
     
+    
+    FUNCTION fn_waliduj_email
+    (p_adres_email VARCHAR2)
+    RETURN BOOLEAN
+    IS
+        b_wynik BOOLEAN;
+    BEGIN
+        IF REGEXP_LIKE(p_adres_email, '^[a-zA-Z0-9._%-]+@[a-zA-Z0-9._%-]+\.[a-zA-Z]{2,4}$') THEN
+            b_wynik := TRUE;
+        ELSE
+            b_wynik := FALSE;
+        END IF;
+    
+    RETURN b_wynik;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RETURN FALSE;
+    END fn_waliduj_email;
+  
+  
     FUNCTION fn_waliduj_numer_ksiegi
     (p_numer_ksiegi IN VARCHAR2)
     RETURN BOOLEAN
@@ -1089,6 +1109,7 @@ IS
         b_wynik := fn_waliduj_numer_we(p_index_number);
     RETURN b_wynik;
     END fn_waliduj_index_number;
+
 END walidatory;
 /
 
