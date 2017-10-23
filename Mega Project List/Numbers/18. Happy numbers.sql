@@ -48,7 +48,7 @@ IS
         n_counter := 0;
     
         WHILE n_happy_number != 1 LOOP
-            t_check_repeats.extend;
+            t_check_repeats.EXTEND;
             n_counter := n_counter + 1;
             n_calculations := 0;
         
