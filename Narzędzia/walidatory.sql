@@ -51,7 +51,7 @@ IS
         n_temp := 0;
         
         FOR i IN 1 .. LENGTH(p_pesel) LOOP
-          n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+            n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
         END LOOP;
     
         IF MOD(n_temp, 10) = 0 THEN  
