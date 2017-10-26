@@ -44,20 +44,17 @@ IS
     IS
         n_temp NUMBER;
         b_czy_poprawny BOOLEAN;
+        
+        TYPE t_tab IS TABLE OF INTEGER;
+        t_wagi t_tab := t_tab(1, 3, 7, 9, 1, 3, 7, 9, 1, 3, 1);
     BEGIN
-        n_temp := MOD((1 * SUBSTR(p_pesel, 1, 1) + 
-                       3 * SUBSTR(p_pesel, 2, 1) +
-                       7 * SUBSTR(p_pesel, 3, 1) +
-                       9 * SUBSTR(p_pesel, 4, 1) +
-                       1 * SUBSTR(p_pesel, 5, 1) +
-                       3 * SUBSTR(p_pesel, 6, 1) +
-                       7 * SUBSTR(p_pesel, 7, 1) +
-                       9 * SUBSTR(p_pesel, 8, 1) +
-                       1 * SUBSTR(p_pesel, 9, 1) +
-                       3 * SUBSTR(p_pesel, 10, 1) +
-                       1 * SUBSTR(p_pesel, 11, 1)), 10); 
+        n_temp := 0;
+        
+        FOR i IN 1 .. LENGTH(p_pesel) LOOP
+          n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+        END LOOP;
     
-        IF n_temp = 0 THEN  
+        IF MOD(n_temp, 10) = 0 THEN  
             b_czy_poprawny := TRUE; 
         ELSE
             b_czy_poprawny := FALSE;
@@ -252,7 +249,7 @@ IS
             FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
                 n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_9(i));
             END LOOP;
-        ELSE
+        ELSIF LENGTH(v_regon_oczyszczony) = 14 THEN
             FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
                 n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_14(i));
             END LOOP;
