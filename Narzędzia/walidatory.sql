@@ -71,11 +71,7 @@ IS
         n_suma_czynnikow := 0;
         
         FOR i IN 1 .. LENGTH(p_pesel) LOOP
-<<<<<<< HEAD
           n_suma_czynnikow := n_suma_czynnikow + SUBSTR(p_pesel, i, 1) * t_wagi(i);
-=======
-            n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
->>>>>>> bf0e03066834315d6e60babb4711f09db65fbfe0
         END LOOP;
     
         IF MOD(n_suma_czynnikow, 10) = 0 THEN  
@@ -1169,7 +1165,7 @@ IS
         v_wynik VARCHAR2(10);
     
         TYPE t_tab IS TABLE OF VARCHAR2(2);
-        t_tablica t_tab := t_tab();
+        t_tablica_wynik t_tab := t_tab();
         
         ex_niejednoznaczny_ident EXCEPTION;
     
@@ -1179,8 +1175,8 @@ IS
         BEGIN
             IF p_wynik THEN
                 n_licznik := n_licznik + 1;
-                t_tablica.extend;
-                t_tablica(n_licznik) := p_symbol;
+                t_tablica_wynik.extend;
+                t_tablica_wynik(n_licznik) := p_symbol;
             END IF;
         END pr_sprawdz;
 
@@ -1499,19 +1495,19 @@ IS
             pr_sprawdz(fn_waliduj_email(p_string) , 'E');                   -- email
         END IF;
         
-        IF t_tablica.COUNT > 1 THEN
-            FOR i IN t_tablica.FIRST .. t_tablica.LAST LOOP
+        IF t_tablica_wynik.COUNT > 1 THEN
+            FOR i IN t_tablica_wynik.FIRST .. t_tablica_wynik.LAST LOOP
                 IF v_komunikat_bledu IS NULL THEN
-                    v_komunikat_bledu := t_tablica(i);
+                    v_komunikat_bledu := t_tablica_wynik(i);
                 ELSE
-                    v_komunikat_bledu := v_komunikat_bledu || ', ' || t_tablica(i);
+                    v_komunikat_bledu := v_komunikat_bledu || ', ' || t_tablica_wynik(i);
                 END IF;
             END LOOP;
         
             RAISE ex_niejednoznaczny_ident;
         END IF;
         
-        v_wynik := t_tablica(1);
+        v_wynik := t_tablica_wynik(1);
         
     RETURN v_wynik;
     EXCEPTION
