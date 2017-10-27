@@ -32,6 +32,22 @@ IS
     FUNCTION fn_waliduj_numer_cas (p_numer_cas VARCHAR2) RETURN BOOLEAN; -- Identyfikatory substancji chemicznych, numer rejestru CAS
     FUNCTION fn_waliduj_numer_we (p_numer_we VARCHAR2) RETURN BOOLEAN; -- Identyfikatory substancji chemicznych, numer EC/WE substancji (European Community number - EC Number)
     FUNCTION fn_waliduj_index_number (p_index_number VARCHAR2) RETURN BOOLEAN; --Numer indeksowy substancji, działa na tej samej zasadzie co numer EC/WE substancji
+    FUNCTION fn_sprawdz_string (p_string VARCHAR2, p_typ_ident VARCHAR2 DEFAULT NULL) RETURN VARCHAR2; 
+    /* funkcja w pierwszym trybie sprawdza czym jest podany string (p_typ_ident => NULL), 
+       w drugim waliduje czy podany string jest danym indentyfikatorem (np. czy p_typ_ident => 'P' jest faktycznie peselem) 
+       
+    Parametr p_typ_ident przyjmuje wartości:
+    - 'P'  -- pesel
+    - 'DO' -- dowód osobisty
+    - 'I'  -- iban
+    - 'N'  -- nip
+    - 'R'  -- regon
+    - 'D'  -- data
+    - 'E'  -- email
+    
+    Jeżeli funkcja zwaliduje string prawidłowo, zwraca ten sam p_typ_ident, w przeciwnym razie zwraca X.
+    */
+    
 END walidatory;
 /
 
@@ -42,27 +58,32 @@ IS
     (p_pesel IN VARCHAR2)
     RETURN BOOLEAN
     IS
-        n_temp NUMBER;
-        b_czy_poprawny BOOLEAN;
+        n_suma_czynnikow NUMBER;
+        b_wynik BOOLEAN;
         
         TYPE t_tab IS TABLE OF INTEGER;
         t_wagi t_tab := t_tab(1, 3, 7, 9, 1, 3, 7, 9, 1, 3, 1);
     BEGIN
-        n_temp := 0;
-        
-        FOR i IN 1 .. LENGTH(p_pesel) LOOP
-          n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
-        END LOOP;
-    
-        IF MOD(n_temp, 10) = 0 THEN  
-            b_czy_poprawny := TRUE; 
-        ELSE
-            b_czy_poprawny := FALSE;
+        IF LENGTH(p_pesel) != 11 THEN
+            RAISE PROGRAM_ERROR;
         END IF;
         
-    RETURN b_czy_poprawny;
+        n_suma_czynnikow := 0;
+        
+        FOR i IN 1 .. LENGTH(p_pesel) LOOP
+          n_suma_czynnikow := n_suma_czynnikow + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+        END LOOP;
+    
+        IF MOD(n_suma_czynnikow, 10) = 0 THEN  
+            b_wynik := TRUE; 
+        ELSE
+            b_wynik := FALSE;
+        END IF;
+        
+    RETURN b_wynik;
     EXCEPTION 
-        WHEN OTHERS THEN RETURN FALSE;
+        WHEN OTHERS THEN 
+            RETURN FALSE;
     END fn_waliduj_pesel;
     
     
@@ -70,7 +91,6 @@ IS
     (p_numer_dowodu IN VARCHAR2)
     RETURN BOOLEAN
     IS
-       
         n_liczba_kontrolna NUMBER;
         v_litery VARCHAR2(3);
         n_liczby NUMBER;
@@ -81,7 +101,10 @@ IS
         TYPE t_tab IS VARRAY(5) OF INTEGER;
         t_wagi t_tab := t_tab(7, 3, 1, 7, 3);
     BEGIN
-       
+        IF LENGTH(p_numer_dowodu) != 9 OR ASCII(SUBSTR(p_numer_dowodu, 1, 1)) NOT BETWEEN 65 AND 90 THEN
+            RAISE PROGRAM_ERROR;
+        END IF;
+        
         n_suma_czynnikow_litery := 0;
         n_suma_czynnikow_liczby := 0;
         v_litery := SUBSTR(p_numer_dowodu, 1, 3);
@@ -123,9 +146,13 @@ IS
         
         TYPE t_tab IS VARRAY(6) OF INTEGER;
         t_wagi t_tab := t_tab(1, 7, 3, 1, 7, 3);
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_paszportu, ' ', '');
+        
+        IF LENGTH(v_numer_oczyszczony) != 9 OR ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) NOT BETWEEN 65 AND 90 THEN
+            RAISE PROGRAM_ERROR;
+        END IF;
+        
         n_liczby := SUBSTR(v_numer_oczyszczony, 4, LENGTH(v_numer_oczyszczony));
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 3, 1);
         n_suma_czynnikow_liczby := 0;
@@ -162,7 +189,6 @@ IS
         v_suma_kontrolna VARCHAR2(2);
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-        
     BEGIN
         n_suma_czynnikow := 0;
         v_iban := REPLACE(REPLACE(p_numer_iban, '-', ''), ' ', '');
@@ -190,6 +216,7 @@ IS
             RETURN FALSE;
     END fn_waliduj_iban;
 
+    
     FUNCTION fn_waliduj_nip
     (p_numer_nip IN VARCHAR2)
     RETURN BOOLEAN
@@ -202,7 +229,12 @@ IS
         TYPE t_tab IS VARRAY(9) OF INTEGER;
         t_wagi t_tab := t_tab(6, 5, 7, 2, 3, 4, 5, 6, 7);
     BEGIN
-        v_nip_oczyszczony := REPLACE(REPLACE(p_numer_nip, '-', ''), ' ', '');
+        v_nip_oczyszczony := REPLACE(REPLACE(p_numer_nip, '-', ''), ' ', ''); 
+        
+        IF LENGTH(v_nip_oczyszczony) != 10 THEN
+            RAISE PROGRAM_ERROR;
+        END IF;
+        
         n_liczba_kontrolna := SUBSTR(v_nip_oczyszczony, LENGTH(v_nip_oczyszczony), 1);
         n_suma_czynnikow := 0;
        
@@ -238,9 +270,13 @@ IS
        
         TYPE t_tab_14 IS VARRAY(13) OF INTEGER;
         t_wagi_14 t_tab_14 := t_tab_14(2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8);
-       
     BEGIN
         v_regon_oczyszczony := REPLACE(REPLACE(p_numer_regon, '-', ''), ' ', '');
+        
+        IF LENGTH(v_regon_oczyszczony) NOT IN (9, 14) THEN
+            RAISE PROGRAM_ERROR;
+        END IF;
+        
         n_liczba_kontrolna := SUBSTR(v_regon_oczyszczony, LENGTH(v_regon_oczyszczony), 1);
         n_suma_czynnikow := 0;
         n_mod_suma_czynnikow := 0;
@@ -327,6 +363,11 @@ IS
         END fn_wartosc_ascii;
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_ksiegi, '/', '');
+        
+        IF LENGTH(v_numer_oczyszczony) != 13 THEN
+            RAISE PROGRAM_ERROR;
+        END IF;       
+        
         n_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
         n_suma_czynnikow := 0;        
         
@@ -395,7 +436,6 @@ IS
         n_liczba_kontrolna_mod NUMBER;
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_isbn_10, '-', '');
         n_suma_czynnikow := 0;
@@ -443,13 +483,11 @@ IS
         n_liczba_kontrolna_mod NUMBER;
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_isbn_13, '-', '');
         n_suma_czynnikow := 0;
         
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
-        
         
         FOR i IN 1 .. LENGTH(v_numer_oczyszczony) - 1 LOOP
             IF MOD(i, 2) != 0 THEN
@@ -497,7 +535,6 @@ IS
         n_liczba_kontrolna_mod NUMBER;
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(p_numer_ean_8, '-', '');
         n_suma_czynnikow := 0;
@@ -677,6 +714,11 @@ IS
         b_wynik BOOLEAN;
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_imei, ' ', ''), '-', '');
+        
+        IF LENGTH(v_numer_oczyszczony) != 15 THEN
+            RAISE PROGRAM_ERROR;
+        END IF; 
+        
         n_suma_czynnikow := 0;
     
         FOR i IN REVERSE 1 .. LENGTH(v_numer_oczyszczony)  LOOP
@@ -718,7 +760,6 @@ IS
         n_liczba_kontrolna_mod NUMBER;
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_kolczyka_iacs, '-', ''), ' ', '');
         n_suma_czynnikow := 0;
@@ -761,7 +802,6 @@ IS
         n_wynik_czesciowy NUMBER;
         n_mod_czesciowy NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_kolczyka_iacs, '-', ''), ' ', '');
         
@@ -799,7 +839,6 @@ IS
         n_suma_nieparzyste NUMBER;
         n_mod NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_gospodarstwa, '-', ''), ' ', '');
         n_suma_parzyste := 0;
@@ -839,9 +878,13 @@ IS
         v_numer_oczyszczony VARCHAR2(20);
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
-    
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_banknotu_euro, '-', ''), ' ', '');
+        
+        IF LENGTH(v_numer_oczyszczony) != 12 OR ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) NOT BETWEEN 65 AND 90 THEN
+            RAISE PROGRAM_ERROR;
+        END IF; 
+        
         n_suma_czynnikow := 0;
         
         FOR i IN 2 .. LENGTH(v_numer_oczyszczony) LOOP
@@ -901,6 +944,11 @@ IS
         END fn_wartosc_z_ascii;
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_vin, '-', ''), ' ', '');
+        
+        IF LENGTH(v_numer_oczyszczony) != 17 OR ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) NOT BETWEEN 48 AND 57 THEN
+            RAISE PROGRAM_ERROR;
+        END IF; 
+        
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, 9, 1);
         n_suma_czynnikow := 0;
        
@@ -934,7 +982,6 @@ IS
         n_suma_czynnikow NUMBER;
         v_liczba_kontrolna_z_sumy VARCHAR2(2);
         b_wynik BOOLEAN;
-        
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_uic_taboru, '-', ''), ' ', '');
         v_liczba_kontrolna := SUBSTR(v_numer_oczyszczony, LENGTH(v_numer_oczyszczony), 1);
@@ -1107,6 +1154,368 @@ IS
     RETURN b_wynik;
     END fn_waliduj_index_number;
 
+ 
+    FUNCTION fn_sprawdz_string 
+    (p_string VARCHAR2
+    ,p_typ_ident VARCHAR2 DEFAULT NULL)
+    RETURN VARCHAR2
+    IS
+        n_licznik NUMBER;
+        v_komunikat_bledu VARCHAR2(50);
+        v_wynik VARCHAR2(10);
+    
+        TYPE t_tab IS TABLE OF VARCHAR2(2);
+        t_tablica t_tab := t_tab();
+        
+        ex_niejednoznaczny_ident EXCEPTION;
+    
+        
+        PROCEDURE pr_sprawdz (p_wynik BOOLEAN, p_symbol VARCHAR2) 
+        IS
+        BEGIN
+            IF p_wynik THEN
+                n_licznik := n_licznik + 1;
+                t_tablica.extend;
+                t_tablica(n_licznik) := p_symbol;
+            END IF;
+        END pr_sprawdz;
+
+    
+        FUNCTION fn_waliduj_pesel
+        (p_pesel IN VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            n_temp NUMBER;
+            b_czy_poprawny BOOLEAN;
+            
+            TYPE t_tab IS TABLE OF INTEGER;
+            t_wagi t_tab := t_tab(1, 3, 7, 9, 1, 3, 7, 9, 1, 3, 1);
+        BEGIN
+            IF LENGTH(p_pesel) != 11 THEN
+                RAISE PROGRAM_ERROR; -- podnoszę wyjątek, zwracam FALSE
+            END IF;
+            
+            n_temp := 0;
+            
+            FOR i IN 1 .. LENGTH(p_pesel) LOOP
+                n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+            END LOOP;
+
+            IF MOD(n_temp, 10) = 0 THEN  
+                b_czy_poprawny := TRUE; 
+            ELSE
+                b_czy_poprawny := FALSE;
+            END IF;
+            
+        RETURN b_czy_poprawny;
+        EXCEPTION 
+            WHEN OTHERS THEN RETURN FALSE;
+        END fn_waliduj_pesel;
+        
+        
+        FUNCTION fn_waliduj_dowod_osobisty
+        (p_numer_dowodu IN VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            n_liczba_kontrolna NUMBER;
+            v_litery VARCHAR2(3);
+            n_liczby NUMBER;
+            n_suma_czynnikow_litery NUMBER;
+            n_suma_czynnikow_liczby NUMBER;
+            b_wynik BOOLEAN;
+            
+            TYPE t_tab IS VARRAY(5) OF INTEGER;
+            t_wagi t_tab := t_tab(7, 3, 1, 7, 3);
+        BEGIN
+            IF LENGTH(p_numer_dowodu) != 9 OR ASCII(SUBSTR(p_numer_dowodu, 1, 1)) NOT BETWEEN 65 AND 90 THEN -- jeżeli numer dowodu nie zaczyna się od litery, jest błędny
+                RAISE PROGRAM_ERROR; -- podnoszę wyjątek, zwracam FALSE
+            END IF;
+           
+            n_suma_czynnikow_litery := 0;
+            n_suma_czynnikow_liczby := 0;
+            v_litery := SUBSTR(p_numer_dowodu, 1, 3);
+            n_liczby := SUBSTR(p_numer_dowodu, 5, LENGTH(p_numer_dowodu));
+            n_liczba_kontrolna := SUBSTR(p_numer_dowodu, 4, 1);
+            
+            FOR i IN 1 .. LENGTH(v_litery) LOOP
+                n_suma_czynnikow_litery := n_suma_czynnikow_litery + ((ASCII(SUBSTR(v_litery, i, 1)) - 55) * t_wagi(i));
+            END LOOP;
+           
+            FOR i IN 1 .. LENGTH(n_liczby) LOOP
+                n_suma_czynnikow_liczby := n_suma_czynnikow_liczby + (SUBSTR(n_liczby, i, 1) * t_wagi(i));
+            END LOOP;
+           
+            IF MOD(n_suma_czynnikow_litery + n_suma_czynnikow_liczby, 10) = n_liczba_kontrolna THEN
+                b_wynik := TRUE;
+            ELSE
+                b_wynik := FALSE;
+            END IF;
+           
+        RETURN b_wynik;
+        EXCEPTION
+           WHEN OTHERS THEN
+                RETURN FALSE;
+        END fn_waliduj_dowod_osobisty;
+
+    
+        FUNCTION fn_waliduj_iban
+        (p_numer_iban IN VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            v_iban VARCHAR2(50);
+            v_iban_zlaczenie VARCHAR2(50);
+            v_iban_odwrocony VARCHAR2(50);
+            v_suma_kontrolna_kod_kraju VARCHAR2(4);
+            v_suma_kontrolna VARCHAR2(2);
+            n_suma_czynnikow NUMBER;
+            b_wynik BOOLEAN;
+            
+        BEGIN
+            n_suma_czynnikow := 0;
+            v_iban := REPLACE(REPLACE(p_numer_iban, '-', ''), ' ', '');
+            v_suma_kontrolna := SUBSTR(v_iban, 3, 2);
+            v_suma_kontrolna_kod_kraju := ASCII(SUBSTR(v_iban, 1, 1)) - 55 || ASCII(SUBSTR(v_iban, 2, 1)) - 55;
+            v_iban_zlaczenie := SUBSTR(v_iban, 5, LENGTH(v_iban)) || v_suma_kontrolna_kod_kraju || v_suma_kontrolna;
+        
+            FOR i IN REVERSE 1 .. LENGTH(v_iban_zlaczenie) LOOP
+                v_iban_odwrocony := v_iban_odwrocony || SUBSTR(v_iban_zlaczenie, i, 1);
+            END LOOP;
+        
+            FOR i IN 1 .. LENGTH(v_iban_odwrocony) LOOP
+                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_iban_odwrocony, i, 1) * MOD(POWER(10, i - 1), 97));
+            END LOOP;
+        
+            IF MOD(n_suma_czynnikow, 97) = 1 THEN
+                b_wynik := TRUE;
+            ELSE
+                b_wynik := FALSE;
+            END IF;
+            
+        RETURN b_wynik;
+        EXCEPTION
+            WHEN OTHERS THEN 
+                RETURN FALSE;
+        END fn_waliduj_iban;
+
+        
+        FUNCTION fn_waliduj_nip
+        (p_numer_nip IN VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            v_nip_oczyszczony VARCHAR2(10);
+            n_liczba_kontrolna NUMBER;
+            n_suma_czynnikow NUMBER;
+            b_wynik BOOLEAN;
+           
+            TYPE t_tab IS VARRAY(9) OF INTEGER;
+            t_wagi t_tab := t_tab(6, 5, 7, 2, 3, 4, 5, 6, 7);
+        BEGIN
+            IF LENGTH(p_numer_nip) != 10 THEN
+                RAISE PROGRAM_ERROR; -- podnoszę wyjątek, zwracam FALSE
+            END IF;
+            
+            v_nip_oczyszczony := REPLACE(REPLACE(p_numer_nip, '-', ''), ' ', '');
+            n_liczba_kontrolna := SUBSTR(v_nip_oczyszczony, LENGTH(v_nip_oczyszczony), 1);
+            n_suma_czynnikow := 0;
+           
+            FOR i IN 1 .. LENGTH(v_nip_oczyszczony) - 1 LOOP
+                n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_nip_oczyszczony, i, 1) * t_wagi(i));
+            END LOOP;
+           
+            IF MOD(n_suma_czynnikow, 11) = n_liczba_kontrolna THEN
+                b_wynik := TRUE;
+            ELSE
+                b_wynik := FALSE;
+            END IF;
+           
+        RETURN b_wynik;
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN FALSE;
+        END fn_waliduj_nip;
+     
+
+        FUNCTION fn_waliduj_regon
+        (p_numer_regon IN VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            v_regon_oczyszczony VARCHAR2(14);
+            n_liczba_kontrolna NUMBER;
+            n_suma_czynnikow NUMBER;
+            n_mod_suma_czynnikow NUMBER;
+            b_wynik BOOLEAN;
+            
+            TYPE t_tab_9 IS VARRAY(8) OF INTEGER;
+            t_wagi_9 t_tab_9 := t_tab_9(8, 9, 2, 3, 4, 5, 6, 7);
+           
+            TYPE t_tab_14 IS VARRAY(13) OF INTEGER;
+            t_wagi_14 t_tab_14 := t_tab_14(2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8);
+           
+        BEGIN
+            IF LENGTH(p_numer_regon) NOT IN (9, 14) THEN
+                RAISE PROGRAM_ERROR; -- podnoszę wyjątek, zwracam FALSE
+            END IF;
+            
+            v_regon_oczyszczony := REPLACE(REPLACE(p_numer_regon, '-', ''), ' ', '');
+            n_liczba_kontrolna := SUBSTR(v_regon_oczyszczony, LENGTH(v_regon_oczyszczony), 1);
+            n_suma_czynnikow := 0;
+            n_mod_suma_czynnikow := 0;
+           
+            IF LENGTH(v_regon_oczyszczony) = 9 THEN
+                FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
+                    n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_9(i));
+                END LOOP;
+            ELSIF LENGTH(v_regon_oczyszczony) = 14 THEN
+                FOR i IN 1 .. LENGTH(v_regon_oczyszczony) - 1 LOOP
+                    n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_regon_oczyszczony, i, 1) * t_wagi_14(i));
+                END LOOP;
+            END IF;
+           
+            IF MOD(n_suma_czynnikow, 11) = 10 THEN
+                n_mod_suma_czynnikow := 0;
+            END IF;
+           
+            IF MOD(n_suma_czynnikow, 11) = n_liczba_kontrolna THEN
+                b_wynik := TRUE;
+            ELSE
+                b_wynik := FALSE;
+            END IF;
+           
+        RETURN b_wynik;
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN FALSE;
+        END fn_waliduj_regon;
+    
+    
+        FUNCTION fn_sprawdz_date(p_data VARCHAR2) 
+        RETURN BOOLEAN IS
+        d_data DATE;
+        b_wynik BOOLEAN;
+        
+        FUNCTION c2d(p_val VARCHAR2) 
+        RETURN DATE 
+        IS
+        BEGIN
+        
+            BEGIN
+                RETURN TO_DATE(p_val,'YYYY-MM-DD');
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+            
+            BEGIN
+                RETURN TO_DATE(p_val,'DD-MM-YYYY');
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+            
+            BEGIN
+                RETURN TO_DATE(p_val,'YYYY/MM/DD');
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+            
+            BEGIN
+                RETURN TO_DATE(p_val,'DD/MM/YYYY');
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+            
+            BEGIN
+                RETURN TO_DATE(p_val,'YYYY.MM.DD');
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+        
+        RETURN TO_DATE(p_val,'DD.MM.YYYY');     
+        EXCEPTION WHEN OTHERS THEN
+            RAISE_APPLICATION_ERROR(-20001,'Nieprawidłowa data ' || p_val);        
+        END c2d;
+        BEGIN
+
+            d_data := c2d(p_data);
+            b_wynik := TRUE;
+            
+        RETURN b_wynik;
+        EXCEPTION WHEN OTHERS THEN
+            RETURN FALSE;
+        END fn_sprawdz_date;
+    
+    
+        FUNCTION fn_waliduj_email
+        (p_adres_email VARCHAR2)
+        RETURN BOOLEAN
+        IS
+            b_wynik BOOLEAN;
+        BEGIN
+            IF REGEXP_LIKE(p_adres_email, '^[a-zA-Z0-9._%-]+@[a-zA-Z0-9._%-]+\.[a-zA-Z]{2,4}$') THEN
+                b_wynik := TRUE;
+            ELSE
+                b_wynik := FALSE;
+            END IF;
+        
+        RETURN b_wynik;
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN FALSE;
+        END fn_waliduj_email;
+    BEGIN
+        IF p_string IS NULL THEN
+            RAISE PROGRAM_ERROR; -- podnoszę wyjątek, zwracam 'X'
+        END IF;
+        
+        n_licznik := 0;
+        
+        IF p_typ_ident IS NOT NULL THEN
+            IF p_typ_ident = 'P' THEN
+                pr_sprawdz(fn_waliduj_pesel(p_string), 'P');                -- pesel
+            ELSIF p_typ_ident = 'DO' THEN
+                pr_sprawdz(fn_waliduj_dowod_osobisty(p_string), 'DO');      -- dowód osobisty
+            ELSIF p_typ_ident = 'I' THEN
+                pr_sprawdz(fn_waliduj_iban(p_string), 'I');                 -- iban
+            ELSIF p_typ_ident = 'N' THEN
+                pr_sprawdz(fn_waliduj_nip(p_string), 'N');                  -- nip
+            ELSIF p_typ_ident = 'R' THEN
+                pr_sprawdz(fn_waliduj_regon(p_string), 'R');                -- regon
+            ELSIF p_typ_ident = 'D' THEN
+                pr_sprawdz(fn_sprawdz_date(p_string), 'D');                 -- data
+            ELSIF p_typ_ident = 'E' THEN
+                pr_sprawdz(fn_waliduj_email(p_string) , 'E');               -- email
+            ELSE
+                RAISE PROGRAM_ERROR; -- podnoszę wyjątek gdy p_typ_ident jest błędny, zwracam 'X'
+            END IF;
+        ELSE
+            pr_sprawdz(fn_waliduj_pesel(p_string), 'P');                    -- pesel
+            pr_sprawdz(fn_waliduj_dowod_osobisty(p_string), 'DO');          -- dowód osobisty
+            pr_sprawdz(fn_waliduj_iban(p_string), 'I');                     -- iban
+            pr_sprawdz(fn_waliduj_nip(p_string), 'N');                      -- nip
+            pr_sprawdz(fn_waliduj_regon(p_string), 'R');                    -- regon
+            pr_sprawdz(fn_sprawdz_date(p_string), 'D');                     -- data
+            pr_sprawdz(fn_waliduj_email(p_string) , 'E');                   -- email
+        END IF;
+        
+        IF t_tablica.COUNT > 1 THEN
+            FOR i IN t_tablica.FIRST .. t_tablica.LAST LOOP
+                IF v_komunikat_bledu IS NULL THEN
+                    v_komunikat_bledu := t_tablica(i);
+                ELSE
+                    v_komunikat_bledu := v_komunikat_bledu || ', ' || t_tablica(i);
+                END IF;
+            END LOOP;
+        
+            RAISE ex_niejednoznaczny_ident;
+        END IF;
+        
+        v_wynik := t_tablica(1);
+        
+    RETURN v_wynik;
+    EXCEPTION
+        WHEN ex_niejednoznaczny_ident THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Nie można jednoznacznie określić zawartości pola - spełnia kryteria dla: ' || v_komunikat_bledu);
+        WHEN OTHERS THEN
+            RETURN 'X';
+    END fn_sprawdz_string;
 END walidatory;
 /
 
