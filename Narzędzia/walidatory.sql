@@ -71,7 +71,11 @@ IS
         n_suma_czynnikow := 0;
         
         FOR i IN 1 .. LENGTH(p_pesel) LOOP
+<<<<<<< HEAD
           n_suma_czynnikow := n_suma_czynnikow + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+=======
+            n_temp := n_temp + SUBSTR(p_pesel, i, 1) * t_wagi(i);
+>>>>>>> bf0e03066834315d6e60babb4711f09db65fbfe0
         END LOOP;
     
         IF MOD(n_suma_czynnikow, 10) = 0 THEN  
