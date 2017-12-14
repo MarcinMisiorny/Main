@@ -1,1 +1,1 @@
-Narzędzia i różne inne kody.
+Narzędzia i różne inne skrypty.
