@@ -295,7 +295,7 @@ IS
             n_mod_suma_czynnikow := 0;
         END IF;
        
-        IF MOD(n_suma_czynnikow, 11) = n_liczba_kontrolna THEN
+        IF MOD(n_suma_czynnikow, 11) = n_liczba_kontrolna OR MOD(n_suma_czynnikow, 11) = 10 THEN
             b_wynik := TRUE;
         ELSE
             b_wynik := FALSE;
