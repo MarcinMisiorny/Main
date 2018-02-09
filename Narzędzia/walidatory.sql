@@ -189,10 +189,16 @@ IS
         v_suma_kontrolna VARCHAR2(2);
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
+        
     BEGIN
         n_suma_czynnikow := 0;
         v_iban := REPLACE(REPLACE(p_numer_iban, '-', ''), ' ', '');
         v_suma_kontrolna := SUBSTR(v_iban, 3, 2);
+        
+        IF ASCII(SUBSTR(v_suma_kontrolna, 1, 1)) NOT BETWEEN 65 AND 90 OR ASCII(SUBSTR(v_suma_kontrolna, 2, 1)) NOT BETWEEN 65 AND 90 THEN --dwa pierwszez znaki IBANu muszą być literowym kodem kraju
+            RAISE PROGRAM_ERROR;
+        END IF;
+        
         v_suma_kontrolna_kod_kraju := ASCII(SUBSTR(v_iban, 1, 1)) - 55 || ASCII(SUBSTR(v_iban, 2, 1)) - 55;
         v_iban_zlaczenie := SUBSTR(v_iban, 5, LENGTH(v_iban)) || v_suma_kontrolna_kod_kraju || v_suma_kontrolna;
     
