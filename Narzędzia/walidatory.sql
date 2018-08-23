@@ -178,7 +178,7 @@ IS
     END fn_waliduj_paszport;
 
     
-    FUNCTION fn_waliduj_iban
+FUNCTION fn_waliduj_iban
     (p_numer_iban IN VARCHAR2)
     RETURN BOOLEAN
     IS
@@ -186,6 +186,7 @@ IS
         v_iban_zlaczenie VARCHAR2(50);
         v_iban_odwrocony VARCHAR2(50);
         v_suma_kontrolna_kod_kraju VARCHAR2(4);
+        v_kod_kraju VARCHAR2(2);
         v_suma_kontrolna VARCHAR2(2);
         n_suma_czynnikow NUMBER;
         b_wynik BOOLEAN;
@@ -194,8 +195,9 @@ IS
         n_suma_czynnikow := 0;
         v_iban := REPLACE(REPLACE(p_numer_iban, '-', ''), ' ', '');
         v_suma_kontrolna := SUBSTR(v_iban, 3, 2);
+        v_kod_kraju := SUBSTR(v_iban, 1, 2);
         
-        IF ASCII(SUBSTR(v_suma_kontrolna, 1, 1)) NOT BETWEEN 65 AND 90 OR ASCII(SUBSTR(v_suma_kontrolna, 2, 1)) NOT BETWEEN 65 AND 90 THEN --dwa pierwszez znaki IBANu muszą być literowym kodem kraju
+        IF ASCII(SUBSTR(v_kod_kraju, 1, 1)) NOT BETWEEN 65 AND 90 OR ASCII(SUBSTR(v_kod_kraju, 2, 1)) NOT BETWEEN 65 AND 90 THEN --dwa pierwszez znaki IBANu muszą być literowym kodem kraju
             RAISE PROGRAM_ERROR;
         END IF;
         
@@ -1272,31 +1274,38 @@ IS
             v_iban_zlaczenie VARCHAR2(50);
             v_iban_odwrocony VARCHAR2(50);
             v_suma_kontrolna_kod_kraju VARCHAR2(4);
+            v_kod_kraju VARCHAR2(2);
             v_suma_kontrolna VARCHAR2(2);
             n_suma_czynnikow NUMBER;
             b_wynik BOOLEAN;
-            
+
         BEGIN
             n_suma_czynnikow := 0;
             v_iban := REPLACE(REPLACE(p_numer_iban, '-', ''), ' ', '');
             v_suma_kontrolna := SUBSTR(v_iban, 3, 2);
+            v_kod_kraju := SUBSTR(v_iban, 1, 2);
+
+            IF ASCII(SUBSTR(v_kod_kraju, 1, 1)) NOT BETWEEN 65 AND 90 OR ASCII(SUBSTR(v_kod_kraju, 2, 1)) NOT BETWEEN 65 AND 90 THEN --dwa pierwszez znaki IBANu muszą być literowym kodem kraju
+                RAISE PROGRAM_ERROR;
+            END IF;
+
             v_suma_kontrolna_kod_kraju := ASCII(SUBSTR(v_iban, 1, 1)) - 55 || ASCII(SUBSTR(v_iban, 2, 1)) - 55;
             v_iban_zlaczenie := SUBSTR(v_iban, 5, LENGTH(v_iban)) || v_suma_kontrolna_kod_kraju || v_suma_kontrolna;
-        
+
             FOR i IN REVERSE 1 .. LENGTH(v_iban_zlaczenie) LOOP
                 v_iban_odwrocony := v_iban_odwrocony || SUBSTR(v_iban_zlaczenie, i, 1);
             END LOOP;
-        
+
             FOR i IN 1 .. LENGTH(v_iban_odwrocony) LOOP
                 n_suma_czynnikow := n_suma_czynnikow + (SUBSTR(v_iban_odwrocony, i, 1) * MOD(POWER(10, i - 1), 97));
             END LOOP;
-        
+
             IF MOD(n_suma_czynnikow, 97) = 1 THEN
                 b_wynik := TRUE;
             ELSE
                 b_wynik := FALSE;
             END IF;
-            
+
         RETURN b_wynik;
         EXCEPTION
             WHEN OTHERS THEN 
