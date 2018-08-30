@@ -953,7 +953,7 @@ FUNCTION fn_waliduj_iban
     BEGIN
         v_numer_oczyszczony := REPLACE(REPLACE(p_numer_vin, '-', ''), ' ', '');
         
-        IF LENGTH(v_numer_oczyszczony) != 17 OR ASCII(SUBSTR(v_numer_oczyszczony, 1, 1)) NOT BETWEEN 48 AND 57 THEN
+        IF LENGTH(v_numer_oczyszczony) != 17 THEN
             RAISE PROGRAM_ERROR;
         END IF; 
         
@@ -965,7 +965,7 @@ FUNCTION fn_waliduj_iban
         END IF;
         
         FOR i IN 1 .. LENGTH(v_numer_oczyszczony) LOOP
-            n_suma_czynnikow := n_suma_czynnikow + fn_wartosc_z_ascii(SUBSTR(v_numer_oczyszczony, i, 1)) * t_wagi(i);
+            n_suma_czynnikow := n_suma_czynnikow + fn_wartosc_z_ascii(UPPER(SUBSTR(v_numer_oczyszczony, i, 1))) * t_wagi(i);
         END LOOP;
        
         IF MOD(n_suma_czynnikow, 11) = v_liczba_kontrolna THEN
